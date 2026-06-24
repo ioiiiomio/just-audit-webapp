@@ -1,0 +1,3 @@
+justaudit.kz, www.justaudit.kz {
+	reverse_proxy app:3000
+}

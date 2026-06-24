@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 36 25% 96%; /* brand milk #F7F5F2 */
+    --foreground: 0 0% 10%; /* brand black #1A1A1A */
+
+    --primary: 152 56% 17%; /* brand green #155335 */
+    --primary-foreground: 36 25% 96%;
+
+    --secondary: 36 23% 89%; /* brand beige #EDE9E3 */
+    --secondary-foreground: 0 0% 10%;
+
+    --muted: 36 23% 89%;
+    --muted-foreground: 0 0% 35%;
+
+    --accent: 152 56% 17%;
+    --accent-foreground: 36 25% 96%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 10%;
+
+    --border: 36 15% 85%;
+    --input: 36 15% 85%;
+    --ring: 152 56% 17%;
+
+    --radius: 0.5rem;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-heading;
+  }
+}
