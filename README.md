@@ -6,15 +6,33 @@ Stack: Next.js 15 (App Router) · Payload CMS 3 (embedded) · PostgreSQL · next
 
 ```
 src/
-  app/
-    (frontend)/[locale]/   ← public site, served at /ru/* and /kz/*
-    (payload)/             ← Payload admin UI + REST/GraphQL API (no locale prefix)
-  collections/              Services, TeamMembers, Certificates, Interns, Users, Media
-  globals/                  SiteSettings (hero, contact info)
-  i18n/                     next-intl routing/request/navigation config
-  payload.config.ts         Payload core config (Postgres adapter, localization)
-  middleware.ts              next-intl middleware (excludes /admin and /api)
-messages/                  ru.json / kz.json translation strings
+├── app/
+│   ├── (frontend)/
+│   │   └── [locale]/
+│   │       ├── layout.tsx          ← wraps pages, renders <Navbar />
+│   │       ├── page.tsx            ← homepage (sections w/ ids: #about, #services, etc.)
+│   │       └── team/
+│   │           └── page.tsx
+│   ├── (payload)/                  ← don't touch, Payload-generated
+│   └── data/                       ← whatever this currently is (Payload seed data?) — leaving alone
+├── components/
+│   ├── layout/
+│   │   └── navbar.tsx              ← move from root components/layout/
+│   └── ui/                         ← from shadcn init
+├── data/
+│   └── navigation.ts                ← new, kept separate from app/data to avoid clashing
+├── i18n/
+│   ├── request.ts                   ← next-intl server config
+│   └── navigation.ts                 ← exports Link, usePathname, etc. (used by navbar.tsx)
+├── lib/
+│   └── utils.ts                     ← from shadcn init
+├── messages/
+│   ├── ru.json                       ← move from root messages/
+│   └── kz.json
+├── middleware.ts                     ← already exists, needs updating (see below)
+├── collections/
+├── globals/
+└── payload.config.ts
 ```
 
 Two route groups, two root layouts: `(frontend)` renders the public, localized
