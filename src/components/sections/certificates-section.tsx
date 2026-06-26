@@ -7,11 +7,11 @@ import { CertificatesCarousel } from "@/components/sections/certificates-carouse
 export async function CertificatesSection({ locale }: { locale: string }) {
   const t = await getTranslations("certificates");
   const payload = await getPayload({ config });
-
   const { docs } = await payload.find({
     collection: "certificates",
     locale: locale as "ru" | "kz",
     sort: "order",
+    depth: 1,
   });
 
   return (
@@ -23,10 +23,16 @@ export async function CertificatesSection({ locale }: { locale: string }) {
       </div>
       <div className="mt-14">
         <CertificatesCarousel
+          locale={locale}
           certificates={docs.map((doc) => ({
-            id: doc.id,
+            id: String(doc.id),
             title: doc.title,
-            image: { url: doc.image?.url, alt: doc.image?.alt },
+            fileType:
+              doc.image?.mimeType === "application/pdf" ? "pdf" : "image",
+            thumbnail:
+              doc.image?.mimeType === "application/pdf"
+                ? { url: doc.thumbnail?.url, alt: doc.thumbnail?.alt }
+                : { url: doc.image?.url, alt: doc.image?.alt },
           }))}
         />
       </div>

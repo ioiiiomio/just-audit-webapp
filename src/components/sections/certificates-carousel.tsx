@@ -1,6 +1,5 @@
 // src/components/sections/certificates-carousel.tsx
 "use client";
-
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
@@ -8,13 +7,16 @@ import { ChevronLeft, ChevronRight, X } from "lucide-react";
 type Certificate = {
   id: string;
   title: string;
-  image: { url: string; alt?: string };
+  fileType: "image" | "pdf";
+  thumbnail: { url: string; alt?: string };
 };
 
 export function CertificatesCarousel({
   certificates,
+  locale,
 }: {
   certificates: Certificate[];
+  locale: string;
 }) {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState<Certificate | null>(null);
@@ -39,6 +41,18 @@ export function CertificatesCarousel({
     el.scrollBy({ left: amount * direction, behavior: "smooth" });
   };
 
+  const handleCardClick = (cert: Certificate) => {
+    if (cert.fileType === "pdf") {
+      window.open(
+        `/${locale}/certificates/${cert.id}`,
+        "_blank",
+        "noopener,noreferrer",
+      );
+    } else {
+      setActive(cert);
+    }
+  };
+
   return (
     <>
       <div className="relative">
@@ -46,24 +60,25 @@ export function CertificatesCarousel({
           ref={scrollerRef}
           className="flex snap-x snap-mandatory gap-6 overflow-x-auto scroll-smooth pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
-          {certificates.map((cert) => (
-            <button
-              key={cert.id}
-              data-card
-              type="button"
-              onClick={() => setActive(cert)}
-              className="relative aspect-[4/3] w-[280px] shrink-0 snap-start overflow-hidden rounded-2xl bg-white shadow-sm transition-transform hover:scale-[1.02] sm:w-[360px]"
-            >
-              <Image
-                src={cert.image.url}
-                alt={cert.image.alt ?? cert.title}
-                fill
-                className="object-contain p-3"
-              />
-            </button>
-          ))}
+          {certificates
+            .filter((cert) => cert.thumbnail.url)
+            .map((cert) => (
+              <button
+                key={cert.id}
+                data-card
+                type="button"
+                onClick={() => handleCardClick(cert)}
+                className="relative aspect-[4/3] w-[280px] shrink-0 snap-start overflow-hidden rounded-2xl bg-white shadow-sm transition-transform hover:scale-[1.02] sm:w-[360px]"
+              >
+                <Image
+                  src={cert.thumbnail.url}
+                  alt={cert.thumbnail.alt ?? cert.title}
+                  fill
+                  className="object-contain p-3"
+                />
+              </button>
+            ))}
         </div>
-
         <button
           type="button"
           aria-label="Scroll left"
@@ -95,14 +110,13 @@ export function CertificatesCarousel({
           >
             <X className="size-5" />
           </button>
-
           <div
             className="relative max-h-[85vh] w-full max-w-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <Image
-              src={active.image.url}
-              alt={active.image.alt ?? active.title}
+              src={active.thumbnail.url}
+              alt={active.thumbnail.alt ?? active.title}
               width={1000}
               height={1300}
               className="h-auto max-h-[85vh] w-full rounded-lg object-contain"
