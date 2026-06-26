@@ -16,10 +16,13 @@ export function HeroSection() {
         className="object-cover"
       />
 
-      {/* Gradient: solid milk behind the text up top, fading to the photo lower down */}
-      <div className="absolute inset-0 bg-gradient-to-r from-brand-milk from-[30%] via-brand-milk/70 via-[60%] to-transparent to-[100%]" />
+      {/* Gradient: solid milk behind the text up top, fading to the photo lower down (desktop) */}
+      <div className="absolute inset-0 hidden bg-gradient-to-r from-brand-milk from-[40%] via-brand-milk/70 via-[55%] to-transparent to-[80%] lg:block" />
 
-      <div className="relative z-10 flex h-full max-w-7xl items-center px-6 lg:px-16">
+      {/* Solid milk panel behind the text on mobile, since there's no room for the gradient to do its job */}
+      <div className="absolute inset-0 bg-brand-milk/90 lg:hidden" />
+
+      <div className="relative z-10 flex h-full max-w-7xl items-center px-6 lg:px-24">
         <div className="max-w-lg">
           <h1 className="font-heading text-3xl font-bold uppercase leading-[1.2] text-brand-green lg:text-[3.25rem]">
             {t("title")}

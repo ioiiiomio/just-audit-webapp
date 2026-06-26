@@ -35,6 +35,9 @@ const montserratAlt = Montserrat_Alternates({
 export const metadata: Metadata = {
   title: "Just Audit",
   description: "Профессиональные аудиторские услуги в Казахстане",
+  icons: {
+    icon: "/icon-tab.svg",
+  },
 };
 
 type Props = {

@@ -6,7 +6,7 @@ export function AboutSection() {
   const t = useTranslations("about");
 
   return (
-    <section id="about" className="bg-brand-milk px-6 py-20 lg:px-16 lg:py-28">
+    <section id="about" className="bg-brand-milk px-6 py-20 lg:px-24 lg:py-28">
       <div className="mx-auto grid max-w-7xl gap-16 lg:grid-cols-2 lg:gap-24">
         {/* Left: company description */}
         <div>

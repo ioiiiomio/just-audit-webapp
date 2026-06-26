@@ -22,7 +22,7 @@ export async function ContactSection({ locale }: { locale: string }) {
   ];
 
   return (
-    <section id="contact" className="bg-brand-milk px-40 py-24 lg:px-16">
+    <section id="contact" className="bg-brand-milk px-24 py-24 lg:px-16">
       <div className="mx-auto grid max-w-6xl gap-16 lg:grid-cols-2 lg:gap-24">
         <div>
           <h2 className="font-heading text-4xl font-bold uppercase leading-tight text-brand-green sm:text-5xl">

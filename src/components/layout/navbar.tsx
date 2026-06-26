@@ -7,6 +7,7 @@ import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { navItems } from "@/data/navigation";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 export function Navbar() {
   const t = useTranslations();
@@ -28,9 +29,14 @@ export function Navbar() {
     <header className="sticky top-0 z-50 bg-[#F7F5F2] text-[#155335] lg:bg-[#F7F5F2]/70">
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
         {/* Logo */}
-        <Link href="/" className="font-[var(--font-playfair)] leading-tight">
-          <span className="block text-lg tracking-wide">JUST</span>
-          <span className="block text-lg tracking-wide">AUDIT</span>
+        <Link href="/" className="flex items-center">
+          <Image
+            src="/images/logo.svg"
+            alt="Just Audit"
+            width={80}
+            height={20}
+            priority
+          />
         </Link>
 
         {/* Desktop links */}
@@ -79,7 +85,7 @@ export function Navbar() {
 
           <Button
             asChild
-            className="rounded-full bg-[#155335] text-white hover:bg-[#155335]/90"
+            className="rounded-l bg-[#155335] text-white hover:bg-[#155335]/90"
           >
             <Link
               href="#contact"
@@ -135,7 +141,7 @@ export function Navbar() {
           </div>
           <Button
             asChild
-            className="rounded-full bg-[#155335] text-white hover:bg-[#155335]/90"
+            className="rounded-l bg-[#155335] text-white hover:bg-[#155335]/90"
           >
             <Link
               href="#contact"
