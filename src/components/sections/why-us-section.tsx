@@ -1,4 +1,4 @@
-// src/components/sections/why-us-section.tsx
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { trustPoints } from "@/data/why-us";
 
@@ -6,8 +6,23 @@ export function WhyUsSection() {
   const t = useTranslations("whyUs");
 
   return (
-    <section className="px-6 py-24 lg:px-16">
-      <div className="mx-auto max-w-3xl text-center">
+    <section
+      id="why-us"
+      className="relative overflow-hidden px-6 py-24 lg:px-16"
+    >
+      {/* Background layer */}
+      <Image
+        src="/images/why-us-bg.png"
+        alt=""
+        fill
+        priority={false}
+        className="object-cover"
+      />
+      {/* Overlay for text readability */}
+      <div className="absolute inset-0" />
+
+      {/* Content — sits above background */}
+      <div className="relative z-10 mx-auto max-w-3xl text-center">
         <span className="font-label text-sm font-bold uppercase tracking-wide text-brand-green">
           {t("eyebrow")}
         </span>
@@ -16,7 +31,7 @@ export function WhyUsSection() {
         </h2>
       </div>
 
-      <div className="mx-auto mt-16 flex max-w-5xl flex-wrap justify-center gap-6">
+      <div className="relative z-10 mx-auto mt-16 flex max-w-5xl flex-wrap justify-center gap-6">
         {trustPoints.map(({ id, icon: Icon }) => (
           <div
             key={id}

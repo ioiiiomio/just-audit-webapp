@@ -40,7 +40,7 @@ export async function ServicesSection({ locale }: { locale: string }) {
                 {service.title}
               </h3>
               <p className="mt-4 font-body text-sm text-brand-black/80">
-                {service.description}
+                {service.shortDescription}
               </p>
             </div>
           );

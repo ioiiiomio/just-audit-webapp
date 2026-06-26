@@ -10,7 +10,7 @@ export function ApproachSection() {
   return (
     <section className="relative overflow-hidden py-24 lg:py-32">
       <Image
-        src="/images/approach-desk.jpg"
+        src="/images/approach-desk.png"
         alt=""
         fill
         className="object-cover"

@@ -25,7 +25,7 @@ export function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-[#155335] text-white">
+    <header className="sticky top-0 z-50 bg-[#F7F5F2] text-[#155335] lg:bg-[#F7F5F2]/70">
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
         {/* Logo */}
         <Link href="/" className="font-[var(--font-playfair)] leading-tight">
@@ -79,7 +79,7 @@ export function Navbar() {
 
           <Button
             asChild
-            className="rounded-full bg-white/10 text-white ring-1 ring-white/40 hover:bg-white/20"
+            className="rounded-full bg-[#155335] text-white hover:bg-[#155335]/90"
           >
             <Link
               href="#contact"
@@ -102,7 +102,7 @@ export function Navbar() {
 
       {/* Mobile menu */}
       {open && (
-        <div className="flex flex-col gap-4 bg-[#155335] px-6 pb-6 lg:hidden">
+        <div className="flex flex-col gap-4 bg-[#F7F5F2] px-6 pb-6 lg:hidden">
           {navItems.map((item) =>
             item.type === "anchor" ? (
               <Link
@@ -135,7 +135,7 @@ export function Navbar() {
           </div>
           <Button
             asChild
-            className="rounded-full bg-white/10 text-white ring-1 ring-white/40"
+            className="rounded-full bg-[#155335] text-white hover:bg-[#155335]/90"
           >
             <Link
               href="#contact"
