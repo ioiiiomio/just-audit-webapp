@@ -40,7 +40,7 @@ export function Navbar() {
         </Link>
 
         {/* Desktop links */}
-        <ul className="hidden items-center gap-8 font-[var(--font-montserrat)] text-sm font-semibold lg:flex">
+        <ul className="hidden items-center gap-8 font-[family-name:var(--font-montserrat)] text-sm font-semibold lg:flex">
           {navItems.map((item) => (
             <li key={item.label}>
               {item.type === "anchor" ? (
@@ -115,7 +115,7 @@ export function Navbar() {
                 key={item.label}
                 href={`/${item.href}`}
                 onClick={(e) => handleAnchorClick(e, item.href)}
-                className="font-[var(--font-montserrat)] font-semibold"
+                className="font-[family-name:var(--font-montserrat)] font-semibold"
               >
                 {t(item.label)}
               </Link>
@@ -123,7 +123,7 @@ export function Navbar() {
               <Link
                 key={item.label}
                 href={item.href}
-                className="font-[var(--font-montserrat)] font-semibold"
+                className="font-[family-name:var(--font-montserrat)] font-semibold"
                 onClick={() => setOpen(false)}
               >
                 {t(item.label)}
