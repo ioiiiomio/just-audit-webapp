@@ -35,7 +35,7 @@ export const Certificates: CollectionConfig = {
       type: "date",
       admin: {
         date: {
-          pickerAppearance: "dayAndMonth",
+          pickerAppearance: "default",
         },
       },
     },
