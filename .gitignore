@@ -7,3 +7,6 @@ src/app/(payload)/admin/importMap.js
 src/payload-types.ts
 *.log
 .DS_Store
+
+# Local Netlify folder
+.netlify
