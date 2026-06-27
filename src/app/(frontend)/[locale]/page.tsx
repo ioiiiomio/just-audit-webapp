@@ -10,7 +10,43 @@ import { HeroSection } from "@/components/sections/hero-section";
 import { ServicesSection } from "@/components/sections/services-section";
 import { SpecialistsSection } from "@/components/sections/specialists-section";
 import { WhyUsSection } from "@/components/sections/why-us-section";
+// src/app/(frontend)/[locale]/layout.tsx
+import type { Metadata } from "next";
+export const revalidate = 60;
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
 
+  return {
+    title: {
+      default:
+        locale === "ru"
+          ? "Just Audit — Аудит и консалтинг"
+          : "Just Audit — Аудит және консалтинг",
+      template: "%s | Just Audit",
+    },
+    description:
+      locale === "ru"
+        ? "Профессиональный аудит и консалтинг в Казахстане"
+        : "Қазақстандағы кәсіби аудит және консалтинг",
+    alternates: {
+      canonical: `https://justaudit.kz/${locale}`,
+      languages: {
+        "ru-KZ": "https://justaudit.kz/ru",
+        "kk-KZ": "https://justaudit.kz/kz",
+      },
+    },
+    openGraph: {
+      type: "website",
+      locale: locale === "ru" ? "ru_KZ" : "kk_KZ",
+      url: `https://justaudit.kz/${locale}`,
+      siteName: "Just Audit",
+    },
+  };
+}
 export default async function HomePage({
   params,
 }: {
