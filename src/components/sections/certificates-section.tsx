@@ -2,6 +2,7 @@ import { getPayload } from "payload";
 import config from "@payload-config";
 import { getTranslations } from "next-intl/server";
 import { CertificatesCarousel } from "./certificates-carousel";
+import { resolveCertificateImage } from "@/lib/certificate-image";
 
 interface CertificatesSectionProps {
   locale: string;
@@ -21,7 +22,7 @@ export async function CertificatesSection({
   });
 
   const certificates = docs.filter(
-    (cert) => cert.image && typeof cert.image === "object" && cert.image.url,
+    (cert) => resolveCertificateImage(cert) !== null,
   );
 
   if (certificates.length === 0) return null;
@@ -37,7 +38,6 @@ export async function CertificatesSection({
             {t("subtitle")}
           </p>
         </div>
-
         <CertificatesCarousel certificates={certificates} />
       </div>
     </section>
