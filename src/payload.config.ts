@@ -8,7 +8,7 @@ import sharp from "sharp";
 import { Users } from "./collections/Users";
 import { Media } from "./collections/Media";
 import { Services } from "./collections/Services";
-// import { Certificates } from "./globals/Certificates";
+import { Certificates } from "./collections/Certificates";
 import { Interns } from "./globals/Interns";
 import { SiteSettings } from "./globals/SiteSettings";
 import { Hero } from "./globals/Hero";
@@ -29,17 +29,15 @@ export default buildConfig({
       titleSuffix: " — Just Audit CMS",
     },
   },
-  collections: [Users, Media, Submissions, Services, Announcements],
-  globals: [
-    SiteSettings,
-    Hero,
-    About,
-    // Certificates,
-    Approach,
-    TeamMembers,
-    WhyUs,
-    Interns,
+  collections: [
+    Users,
+    Media,
+    Submissions,
+    Services,
+    Announcements,
+    Certificates,
   ],
+  globals: [SiteSettings, Hero, About, Approach, TeamMembers, WhyUs, Interns],
 
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",

@@ -4,7 +4,7 @@ import { Footer } from "@/components/layout/footer";
 import { AboutSection } from "@/components/sections/about-section";
 import { AnnouncementsBanner } from "@/components/sections/announcements-banner";
 import { ApproachSection } from "@/components/sections/approach-section";
-// import { CertificatesSection } from "@/components/sections/certificates-section";
+import { CertificatesSection } from "@/components/sections/certificates-section";
 import { ContactSection } from "@/components/sections/contact-section";
 import { HeroSection } from "@/components/sections/hero-section";
 import { ServicesSection } from "@/components/sections/services-section";
@@ -49,7 +49,7 @@ export default async function HomePage({
       <AboutSection {...about} principles={about.principles ?? []} />
       <ApproachSection {...approach} items={approach.items ?? []} />
       <SpecialistsSection locale={locale} />
-      {/* <CertificatesSection locale={locale} /> */}
+      <CertificatesSection locale={locale} />
       <ServicesSection locale={locale} />
       <WhyUsSection {...whyUs} points={whyUs.points ?? []} />
       <ContactSection locale={locale} />
