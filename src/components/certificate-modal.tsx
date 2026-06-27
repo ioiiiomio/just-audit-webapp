@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { X } from "lucide-react";
+import { PdfPageCanvas } from "@/components/pdf-page-canvas";
 
 interface CertificateModalProps {
   title: string;
@@ -10,12 +11,7 @@ interface CertificateModalProps {
   onClose: () => void;
 }
 
-export function CertificateModal({
-  title,
-  url,
-  isPdf,
-  onClose,
-}: CertificateModalProps) {
+export function CertificateModal({ title, url, isPdf, onClose }: CertificateModalProps) {
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -46,11 +42,11 @@ export function CertificateModal({
       </button>
 
       <div
-        className="relative h-full max-h-[90vh] w-full max-w-3xl overflow-hidden rounded-lg bg-white"
+        className="relative h-[92vh] max-h-[1400px] w-auto max-w-[95vw] aspect-[1/1.4142] overflow-hidden rounded-lg bg-white shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         {isPdf ? (
-          <iframe src={url} title={title} className="h-full w-full border-0" />
+          <PdfPageCanvas url={url} targetWidth={1200} className="h-full w-full" />
         ) : (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={url} alt={title} className="h-full w-full object-contain" />

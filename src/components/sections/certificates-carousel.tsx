@@ -10,6 +10,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { CertificateModal } from "@/components/certificate-modal";
+import { PdfPageCanvas } from "@/components/pdf-page-canvas";
 import { resolveCertificateImage } from "@/lib/certificate-image";
 import type { Certificate } from "@/payload-types";
 
@@ -43,19 +44,27 @@ export function CertificatesCarousel({
                   onClick={() =>
                     setSelected({
                       title: cert.title,
-                      url: resolved.fullUrl,
+                      url: resolved.url,
                       isPdf: resolved.isPdf,
                     })
                   }
                   className="flex h-full w-full flex-col overflow-hidden rounded-lg border border-brand-beige bg-white text-left"
                 >
-                  <div className="relative aspect-[4/3] w-full">
-                    <Image
-                      src={resolved.thumbnailUrl}
-                      alt={cert.title}
-                      fill
-                      className="object-cover"
-                    />
+                  <div className="relative aspect-[4/3] w-full bg-brand-beige/30">
+                    {resolved.isPdf ? (
+                      <PdfPageCanvas
+                        url={resolved.url}
+                        targetWidth={400}
+                        className="h-full w-full"
+                      />
+                    ) : (
+                      <Image
+                        src={resolved.url}
+                        alt={cert.title}
+                        fill
+                        className="object-cover"
+                      />
+                    )}
                   </div>
                   <div className="flex flex-1 flex-col gap-1 p-4">
                     <h3 className="font-label text-sm font-medium text-brand-black">
