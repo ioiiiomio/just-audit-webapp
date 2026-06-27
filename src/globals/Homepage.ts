@@ -66,6 +66,39 @@ export const Homepage: GlobalConfig = {
             },
           ],
         },
+        {
+          name: "approach",
+          label: "Approach",
+          fields: [
+            { name: "eyebrow", type: "text", localized: true, required: true },
+            { name: "title", type: "text", localized: true, required: true },
+            {
+              name: "backgroundImage",
+              type: "upload",
+              relationTo: "media",
+            },
+            {
+              name: "items",
+              type: "array",
+              minRows: 1,
+              maxRows: 3, // matches the sm:grid-cols-3 layout; remove if you want more than 3 someday
+              fields: [
+                {
+                  name: "title",
+                  type: "text",
+                  localized: true,
+                  required: true,
+                },
+                {
+                  name: "description",
+                  type: "textarea",
+                  localized: true,
+                  required: true,
+                },
+              ],
+            },
+          ],
+        },
       ],
     },
     // About, Approach, Specialists, Certificates, Services, WhyUs, Contact — pending their component files
