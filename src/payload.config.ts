@@ -48,6 +48,7 @@ export default buildConfig({
     pool: {
       connectionString: process.env.DATABASE_URI,
     },
+    push: process.env.NODE_ENV !== "production",
   }),
   sharp,
   // NOTE: 'kz' is used here as the project's chosen URL/locale code for the
