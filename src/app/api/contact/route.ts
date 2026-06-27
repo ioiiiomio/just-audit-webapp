@@ -6,7 +6,7 @@ import config from "@payload-config";
 export async function POST(request: Request) {
   const body = await request.json();
 
-  if (!body.name || !body.phone) {
+  if (!body.name || !body.phone || !body.email) {
     return NextResponse.json(
       { error: "Missing required fields" },
       { status: 400 },
@@ -20,6 +20,7 @@ export async function POST(request: Request) {
     data: {
       name: body.name,
       phone: body.phone,
+      email: body.email,
       company: body.company ?? "",
       comment: body.comment ?? "",
     },

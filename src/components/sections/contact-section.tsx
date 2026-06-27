@@ -61,11 +61,16 @@ export async function ContactSection({ locale }: { locale: string }) {
             labels={{
               name: t("form.name"),
               phone: t("form.phone"),
+              email: t("form.email"),
               company: t("form.company"),
               comment: t("form.comment"),
               submit: t("form.submit"),
               success: t("form.success"),
               error: t("form.error"),
+              errorName: t("form.errorName"),
+              errorPhone: t("form.errorPhone"),
+              errorEmail: t("form.errorEmail"),
+              errorComment: t("form.errorComment"),
             }}
           />
         </div>
