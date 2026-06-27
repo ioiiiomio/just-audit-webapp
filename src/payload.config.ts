@@ -3,8 +3,8 @@ import { fileURLToPath } from "url";
 import { postgresAdapter } from "@payloadcms/db-postgres";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { buildConfig } from "payload";
+import { s3Storage } from "@payloadcms/storage-s3";
 import sharp from "sharp";
-
 import { Users } from "./collections/Users";
 import { Media } from "./collections/Media";
 import { Services } from "./collections/Services";
@@ -38,7 +38,6 @@ export default buildConfig({
     Certificates,
   ],
   globals: [SiteSettings, Hero, About, Approach, TeamMembers, WhyUs, Interns],
-
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",
   typescript: {
@@ -61,4 +60,21 @@ export default buildConfig({
   },
   cors: [process.env.NEXT_PUBLIC_SERVER_URL || ""].filter(Boolean),
   csrf: [process.env.NEXT_PUBLIC_SERVER_URL || ""].filter(Boolean),
+  plugins: [
+    s3Storage({
+      collections: {
+        media: true,
+      },
+      bucket: process.env.R2_BUCKET || "",
+      config: {
+        endpoint: process.env.R2_ENDPOINT,
+        region: "auto",
+        credentials: {
+          accessKeyId: process.env.R2_ACCESS_KEY_ID || "",
+          secretAccessKey: process.env.R2_SECRET_ACCESS_KEY || "",
+        },
+        forcePathStyle: true,
+      },
+    }),
+  ],
 });

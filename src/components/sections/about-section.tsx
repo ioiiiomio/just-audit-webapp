@@ -51,7 +51,7 @@ export function AboutSection({
           <span className="font-label text-sm font-bold uppercase tracking-wide text-brand-green">
             {principlesEyebrow}
           </span>
-          <ul className="mt-6 divide-y divide-brand-black/10">
+          <ul className="mt-8 divide-y divide-brand-black/10">
             {principles.map((principle, i) => {
               const Icon = getIcon(principle.icon);
               return (
@@ -60,7 +60,7 @@ export function AboutSection({
                     <Icon className="size-6 text-brand-green" />
                   </div>
                   <div>
-                    <h3 className="font-heading text-lg font-bold text-brand-green">
+                    <h3 className="font-heading text-xxl font-bold text-brand-green">
                       {principle.title}
                     </h3>
                     <p className="mt-2 font-body text-brand-black/80">

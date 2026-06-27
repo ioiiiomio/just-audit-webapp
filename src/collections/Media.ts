@@ -22,10 +22,7 @@ export const Media: CollectionConfig = {
     },
   ],
   upload: {
-    // Local VPS volume for now. When moving to S3-compatible storage,
-    // swap this block for the @payloadcms/storage-s3 plugin in payload.config.ts
-    // and drop staticDir below — the collection shape itself stays the same.
-    staticDir: path.resolve(dirname, "../../uploads"),
+    // Storage handled by @payloadcms/storage-s3 plugin (Cloudflare R2) in payload.config.ts
     imageSizes: [
       { name: "thumbnail", width: 400, height: 300, position: "centre" },
       { name: "card", width: 768, height: 576, position: "centre" },
