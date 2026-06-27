@@ -8,6 +8,7 @@ import {
 } from "next/font/google";
 import { notFound } from "next/navigation";
 import { Navbar } from "@/components/layout/navbar";
+import { ScrollToTopButton } from "@/components/ui/scroll-to-top-button";
 import React from "react";
 
 import { routing } from "@/i18n/routing";
@@ -65,6 +66,7 @@ export default async function LocaleLayout({ children, params }: Props) {
       >
         <NextIntlClientProvider messages={messages}>
           <Navbar />
+          <ScrollToTopButton />
           {children}
         </NextIntlClientProvider>
       </body>
