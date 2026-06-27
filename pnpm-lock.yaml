@@ -69,9 +69,6 @@ importers:
         specifier: ^1.0.7
         version: 1.0.7(tailwindcss@3.4.19(tsx@4.22.4))
     devDependencies:
-      '@netlify/plugin-nextjs':
-        specifier: ^5.15.12
-        version: 5.15.12
       '@types/node':
         specifier: ^22.10.5
         version: 22.20.0
@@ -1194,10 +1191,6 @@ packages:
   '@netlify/database@1.1.0':
     resolution: {integrity: sha512-Y36JMyQfxwHxvtFzF8K+2PyooGFQXzPNINw/guujQfMujfAwUTwv7f6XiSL3c5orNy8YZTqVVWVjkbFarhDRjw==}
     engines: {node: '>=20.6.1'}
-
-  '@netlify/plugin-nextjs@5.15.12':
-    resolution: {integrity: sha512-eydPd4gtc/OJOx9IbIJ5CRrC5K3rLxfEQS/S/fRNEAAT0qFvPoQVy23VdK3jRXKFJWXdCRl6ZudWLEZECQPSRQ==}
-    engines: {node: '>=18.0.0'}
 
   '@netlify/runtime-utils@2.3.0':
     resolution: {integrity: sha512-cW8weDvsKV7zfia2m5EcBy6KILGoPD+eYZ3qWNGnIo05DGF28goPES0xKSDkNYgAF/2rRSIhie2qcBhbGVgSRg==}
@@ -4010,8 +4003,6 @@ snapshots:
       - pg-query-stream
       - postgres
       - utf-8-validate
-
-  '@netlify/plugin-nextjs@5.15.12': {}
 
   '@netlify/runtime-utils@2.3.0': {}
 
