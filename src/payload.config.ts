@@ -8,12 +8,16 @@ import sharp from "sharp";
 import { Users } from "./collections/Users";
 import { Media } from "./collections/Media";
 import { Services } from "./collections/Services";
-import { TeamMembers } from "./collections/TeamMembers";
-import { Certificates } from "./collections/Certificates";
-import { Interns } from "./collections/Interns";
-import { Submissions } from "./collections/Submissions";
+// import { Certificates } from "./globals/Certificates";
+import { Interns } from "./globals/Interns";
 import { SiteSettings } from "./globals/SiteSettings";
-import { Homepage } from "./globals/Homepage";
+import { Hero } from "./globals/Hero";
+import { About } from "./globals/About";
+import { Approach } from "./globals/Approach";
+import { TeamMembers } from "./globals/TeamMembers";
+import { WhyUs } from "./globals/WhyUs";
+import { Submissions } from "./collections/Submissions";
+import { Announcements } from "./collections/Announcements";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -25,16 +29,18 @@ export default buildConfig({
       titleSuffix: " — Just Audit CMS",
     },
   },
-  collections: [
-    Users,
-    Media,
-    Services,
+  collections: [Users, Media, Submissions, Services, Announcements],
+  globals: [
+    SiteSettings,
+    Hero,
+    About,
+    // Certificates,
+    Approach,
     TeamMembers,
-    Certificates,
+    WhyUs,
     Interns,
-    Submissions,
   ],
-  globals: [SiteSettings, Homepage],
+
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",
   typescript: {

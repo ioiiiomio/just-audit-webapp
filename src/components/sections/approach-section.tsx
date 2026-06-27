@@ -9,7 +9,7 @@ interface ApproachItem {
 interface ApproachSectionProps {
   eyebrow: string;
   title: string;
-  backgroundImage?: Media | string | null;
+  backgroundImage?: Media | number | string | null;
   items: ApproachItem[];
 }
 
@@ -22,7 +22,7 @@ export function ApproachSection({
   const imageUrl =
     backgroundImage && typeof backgroundImage === "object"
       ? backgroundImage.url
-      : "/images/approach-desk.png"; // fallback if no image set in Payload yet
+      : "/images/approach-desk.png";
 
   return (
     <section className="relative overflow-hidden py-24 lg:py-32">

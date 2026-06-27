@@ -1,13 +1,13 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import type { Media } from "@/payload-types"; // adjust path if your generated types live elsewhere
+import type { Media } from "@/payload-types";
 import Link from "next/link";
 
 interface HeroSectionProps {
   title: string;
   subtitle: string;
   ctaLabel: string;
-  backgroundImage?: Media | string | null;
+  backgroundImage?: Media | number | string | null;
 }
 
 export function HeroSection({
@@ -19,7 +19,7 @@ export function HeroSection({
   const imageUrl =
     backgroundImage && typeof backgroundImage === "object"
       ? backgroundImage.url
-      : "/images/hero-team.png"; // fallback if no image set in Payload yet
+      : "/images/hero-team.png";
 
   return (
     <section className="relative min-h-[500px] overflow-hidden py-24 lg:min-h-[600px] lg:py-32">

@@ -9,16 +9,25 @@ import { ContactForm } from "@/components/sections/contact-form";
 export async function ContactSection({ locale }: { locale: string }) {
   const t = await getTranslations("contact");
   const payload = await getPayload({ config });
+
   const settings = await payload.findGlobal({
     slug: "site-settings",
     locale: locale as "ru" | "kz",
   });
 
   const links = [
-    { icon: MessageCircle, label: "WhatsApp", href: settings.whatsapp },
-    { icon: Linkedin, label: "LinkedIn", href: settings.linkedin },
-    { icon: Mail, label: settings.email, href: `mailto:${settings.email}` },
-    { icon: MapPin, label: settings.address, href: undefined },
+    {
+      icon: MessageCircle,
+      label: "WhatsApp",
+      href: settings.contact?.whatsapp,
+    },
+    { icon: Linkedin, label: "LinkedIn", href: settings.contact?.linkedin },
+    {
+      icon: Mail,
+      label: settings.contact?.email,
+      href: `mailto:${settings.contact?.email}`,
+    },
+    { icon: MapPin, label: settings.contact?.address, href: undefined },
   ];
 
   return (
@@ -32,7 +41,6 @@ export async function ContactSection({ locale }: { locale: string }) {
             <p>{t("paragraph1")}</p>
             <p>{t("paragraph2")}</p>
           </div>
-
           <ul className="mt-10 space-y-4">
             {links.map((item) => (
               <li key={item.label} className="flex items-center gap-3">
@@ -55,7 +63,6 @@ export async function ContactSection({ locale }: { locale: string }) {
             ))}
           </ul>
         </div>
-
         <div className="lg:border-l lg:border-brand-black/10 lg:pl-16">
           <ContactForm
             labels={{
