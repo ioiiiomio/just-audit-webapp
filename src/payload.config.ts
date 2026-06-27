@@ -13,6 +13,7 @@ import { Certificates } from "./collections/Certificates";
 import { Interns } from "./collections/Interns";
 import { Submissions } from "./collections/Submissions";
 import { SiteSettings } from "./globals/SiteSettings";
+import { Homepage } from "./globals/Homepage";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -33,7 +34,7 @@ export default buildConfig({
     Interns,
     Submissions,
   ],
-  globals: [SiteSettings],
+  globals: [SiteSettings, Homepage],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",
   typescript: {
