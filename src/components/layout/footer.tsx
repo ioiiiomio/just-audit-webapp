@@ -19,30 +19,37 @@ export async function Footer({ locale }: { locale: Locale }) {
   const year = new Date().getFullYear();
   const { contact } = siteSettings;
 
-  const address = [contact?.address1, contact?.address2, contact?.address3]
-    .filter(Boolean)
-    .join(", ");
+  const addressLines = [
+    contact?.address1,
+    contact?.address2,
+    contact?.address3,
+  ].filter(Boolean) as string[];
 
   const whatsappHref = contact?.whatsapp
     ? `https://wa.me/${contact.whatsapp.replace(/\D/g, "")}`
     : undefined;
 
   const contactItems = [
-    { icon: MapPin, label: address },
+    { key: "address", icon: MapPin, lines: addressLines, href: undefined },
     {
+      key: "phone",
       icon: Phone,
-      label: contact?.phone,
-      href: contact?.phone
-        ? `tel:${contact.phone.replace(/\s/g, "")}`
-        : undefined,
+      lines: contact?.phone ? [contact.phone] : [],
+      href: contact?.phone ? `tel:${contact.phone.replace(/\s/g, "")}` : undefined,
     },
     {
+      key: "email",
       icon: Mail,
-      label: contact?.email,
+      lines: contact?.email ? [contact.email] : [],
       href: contact?.email ? `mailto:${contact.email}` : undefined,
     },
-    { icon: MessageCircle, label: "WhatsApp", href: whatsappHref },
-  ].filter((item) => item.label);
+    {
+      key: "whatsapp",
+      icon: MessageCircle,
+      lines: whatsappHref ? ["WhatsApp"] : [],
+      href: whatsappHref,
+    },
+  ].filter((item) => item.lines.length > 0);
 
   return (
     <footer className="bg-brand-green px-6 py-16 text-brand-milk lg:px-16">
@@ -98,21 +105,32 @@ export async function Footer({ locale }: { locale: Locale }) {
             {t("footer.contactsTitle")}
           </h3>
           <ul className="mt-5 space-y-3">
-            {contactItems.map(({ icon: Icon, label, href }) => (
-              <li key={label} className="flex items-center gap-3">
-                <Icon className="size-4 shrink-0 text-brand-milk/70" />
-                {href ? (
-                  <a
-                    href={href}
-                    className="font-body text-sm text-brand-milk/90 hover:text-white"
-                  >
-                    {label}
-                  </a>
-                ) : (
-                  <span className="font-body text-sm text-brand-milk/90">
-                    {label}
-                  </span>
-                )}
+            {contactItems.map(({ key, icon: Icon, lines, href }) => (
+              <li key={key} className="flex items-start gap-3">
+                <Icon className="mt-0.5 size-4 shrink-0 text-brand-milk/70" />
+                <div className="flex flex-col gap-1">
+                  {lines.map((line, i) => {
+                    if (href) {
+                      return (
+                        <Link
+                          key={i}
+                          href={href}
+                          className="font-body text-sm text-brand-milk/90 hover:text-white"
+                        >
+                          {line}
+                        </Link>
+                      );
+                    }
+                    return (
+                      <span
+                        key={i}
+                        className="font-body text-sm text-brand-milk/90"
+                      >
+                        {line}
+                      </span>
+                    );
+                  })}
+                </div>
               </li>
             ))}
           </ul>

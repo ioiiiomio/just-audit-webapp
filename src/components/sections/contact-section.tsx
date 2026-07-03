@@ -43,13 +43,7 @@ export async function ContactSection({ locale }: { locale: string }) {
     },
     {
       icon: MapPin,
-      label: [
-        settings.contact?.address1,
-        settings.contact?.address2,
-        settings.contact?.address3,
-      ]
-        .filter(Boolean)
-        .join(", "),
+      label: [settings.contact?.address1].filter(Boolean).join(", "),
       href: undefined,
     },
   ].filter((item) => item.label); // drop entries with no content at all
