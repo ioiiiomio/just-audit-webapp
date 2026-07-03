@@ -113,7 +113,7 @@ export function SpecialistsGrid({
                 </div>
 
                 <div className="mt-4">
-                  <p className="whitespace-pre-line font-body text-sm text-brand-milk/80">
+                  <p className="whitespace-pre-line font-body text-sm text-brand-black">
                     {member.bio}
                   </p>
                 </div>
