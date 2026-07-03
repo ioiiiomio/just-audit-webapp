@@ -6,26 +6,40 @@ import { getTranslations } from "next-intl/server";
 import { MessageCircle, Linkedin, Mail, MapPin } from "lucide-react";
 import { ContactForm } from "@/components/sections/contact-form";
 
+function buildWhatsappHref(raw?: string | null): string | undefined {
+  if (!raw) return undefined;
+  const trimmed = raw.trim();
+  // Already a full link (e.g. https://wa.me/... or https://api.whatsapp.com/...)
+  if (trimmed.startsWith("http")) return trimmed;
+  // Otherwise treat as a phone number: strip everything but digits
+  const digitsOnly = trimmed.replace(/[^\d]/g, "");
+  if (!digitsOnly) return undefined;
+  return `https://wa.me/${digitsOnly}`;
+}
+
 export async function ContactSection({ locale }: { locale: string }) {
   const t = await getTranslations("contact");
   const payload = await getPayload({ config });
-
   const settings = await payload.findGlobal({
     slug: "site-settings",
     locale: locale as "ru" | "kz",
   });
 
+  const whatsappHref = buildWhatsappHref(settings.contact?.whatsapp);
+
   const links = [
     {
       icon: MessageCircle,
       label: "WhatsApp",
-      href: settings.contact?.whatsapp,
+      href: whatsappHref,
     },
     { icon: Linkedin, label: "LinkedIn", href: settings.contact?.linkedin },
     {
       icon: Mail,
       label: settings.contact?.email,
-      href: `mailto:${settings.contact?.email}`,
+      href: settings.contact?.email
+        ? `mailto:${settings.contact.email}`
+        : undefined,
     },
     {
       icon: MapPin,
@@ -38,7 +52,7 @@ export async function ContactSection({ locale }: { locale: string }) {
         .join(", "),
       href: undefined,
     },
-  ];
+  ].filter((item) => item.label); // drop entries with no content at all
 
   return (
     <section id="contact" className="bg-brand-milk px-24 py-24 lg:px-16">
