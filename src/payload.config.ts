@@ -18,6 +18,7 @@ import { TeamMembers } from "./globals/TeamMembers";
 import { WhyUs } from "./globals/WhyUs";
 import { Submissions } from "./collections/Submissions";
 import { Announcements } from "./collections/Announcements";
+import { NavItems } from "./collections/NavItems";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -36,6 +37,7 @@ export default buildConfig({
     Services,
     Announcements,
     Certificates,
+    NavItems,
   ],
   globals: [SiteSettings, Hero, About, Approach, TeamMembers, WhyUs, Interns],
   editor: lexicalEditor(),

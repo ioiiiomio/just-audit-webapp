@@ -1,39 +1,48 @@
-// src/components/layout/footer.tsx
-import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { MapPin, Phone, Mail, MessageCircle } from "lucide-react";
-import { useTranslations } from "next-intl";
-import { navItems } from "@/data/navigation";
+import { Link } from "@/i18n/navigation";
+import {
+  getFooterNavItems,
+  getFooterServices,
+  getSiteSettings,
+} from "@/lib/get-site-data";
+import type { Locale } from "@/i18n/routing";
 
-const footerServices = [
-  "financialAudit",
-  "taxAudit",
-  "internalAudit",
-  "consulting",
-  "training",
-] as const;
+export async function Footer({ locale }: { locale: Locale }) {
+  const t = await getTranslations({ locale });
+  const [navItems, services, siteSettings] = await Promise.all([
+    getFooterNavItems(locale),
+    getFooterServices(locale),
+    getSiteSettings(locale),
+  ]);
 
-export function Footer() {
-  const t = useTranslations();
   const year = new Date().getFullYear();
+  const { contact } = siteSettings;
+
+  const address = [contact?.address1, contact?.address2, contact?.address3]
+    .filter(Boolean)
+    .join(", ");
+
+  const whatsappHref = contact?.whatsapp
+    ? `https://wa.me/${contact.whatsapp.replace(/\D/g, "")}`
+    : undefined;
 
   const contactItems = [
-    { icon: MapPin, label: t("footer.contacts.address") },
+    { icon: MapPin, label: address },
     {
       icon: Phone,
-      label: t("footer.contacts.phone"),
-      href: `tel:${t("footer.contacts.phone").replace(/\s/g, "")}`,
+      label: contact?.phone,
+      href: contact?.phone
+        ? `tel:${contact.phone.replace(/\s/g, "")}`
+        : undefined,
     },
     {
       icon: Mail,
-      label: t("footer.contacts.email"),
-      href: `mailto:${t("footer.contacts.email")}`,
+      label: contact?.email,
+      href: contact?.email ? `mailto:${contact.email}` : undefined,
     },
-    {
-      icon: MessageCircle,
-      label: "WhatsApp",
-      href: t("footer.contacts.whatsappLink"),
-    },
-  ];
+    { icon: MessageCircle, label: "WhatsApp", href: whatsappHref },
+  ].filter((item) => item.label);
 
   return (
     <footer className="bg-brand-green px-6 py-16 text-brand-milk lg:px-16">
@@ -41,7 +50,7 @@ export function Footer() {
         <div>
           <span className="font-heading text-2xl font-bold">JUST AUDIT</span>
           <p className="mt-4 max-w-xs font-body text-sm text-brand-milk/80">
-            {t("footer.description")}
+            {siteSettings.footerDescription ?? t("footer.description")}
           </p>
           <p className="mt-8 font-body text-sm text-brand-milk/60">
             © {t("footer.copyright", { year })}
@@ -54,12 +63,12 @@ export function Footer() {
           </h3>
           <ul className="mt-5 space-y-3">
             {navItems.map((item) => (
-              <li key={item.href}>
+              <li key={item.id}>
                 <Link
-                  href={item.href}
+                  href={item.type === "anchor" ? `/${item.href}` : item.href}
                   className="font-body text-sm text-brand-milk/90 hover:text-white"
                 >
-                  {t(item.label)}
+                  {item.label}
                 </Link>
               </li>
             ))}
@@ -71,13 +80,13 @@ export function Footer() {
             {t("footer.servicesTitle")}
           </h3>
           <ul className="mt-5 space-y-3">
-            {footerServices.map((id) => (
-              <li key={id}>
+            {services.map((service) => (
+              <li key={service.id}>
                 <Link
-                  href="#services"
+                  href={`/${locale}/services/${service.slug}`}
                   className="font-body text-sm text-brand-milk/90 hover:text-white"
                 >
-                  {t(`footer.services.${id}`)}
+                  {service.title}
                 </Link>
               </li>
             ))}
@@ -93,12 +102,12 @@ export function Footer() {
               <li key={label} className="flex items-center gap-3">
                 <Icon className="size-4 shrink-0 text-brand-milk/70" />
                 {href ? (
-                  <Link
+                  <a
                     href={href}
                     className="font-body text-sm text-brand-milk/90 hover:text-white"
                   >
                     {label}
-                  </Link>
+                  </a>
                 ) : (
                   <span className="font-body text-sm text-brand-milk/90">
                     {label}
