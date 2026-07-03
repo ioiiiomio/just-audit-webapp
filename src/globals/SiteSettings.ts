@@ -24,11 +24,6 @@ export const SiteSettings: GlobalConfig = {
       ],
     },
     {
-      name: "footerDescription",
-      type: "textarea",
-      localized: true,
-    },
-    {
       type: "group",
       name: "contact",
       fields: [

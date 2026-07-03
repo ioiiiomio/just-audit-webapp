@@ -59,8 +59,7 @@ export function SpecialistsGrid({
                 <div className="mt-6">
                   <div className="grid gap-x-10 gap-y-6 sm:grid-cols-2">
                     {member.highlights?.map((h, i) => {
-                      const Icon =
-                        teamIcons[h.icon as keyof typeof teamIcons];
+                      const Icon = teamIcons[h.icon as keyof typeof teamIcons];
                       return (
                         <div
                           key={h.id ?? i}
@@ -114,7 +113,7 @@ export function SpecialistsGrid({
                 </div>
 
                 <div className="mt-4">
-                  <p className="font-body text-sm text-brand-black/80">
+                  <p className="whitespace-pre-line font-body text-sm text-brand-milk/80">
                     {member.bio}
                   </p>
                 </div>

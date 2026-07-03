@@ -19,6 +19,7 @@ import { WhyUs } from "./globals/WhyUs";
 import { Submissions } from "./collections/Submissions";
 import { Announcements } from "./collections/Announcements";
 import { NavItems } from "./collections/NavItems";
+import { Footer } from "./globals/Footer";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -39,7 +40,16 @@ export default buildConfig({
     Certificates,
     NavItems,
   ],
-  globals: [SiteSettings, Hero, About, Approach, TeamMembers, WhyUs, Interns],
+  globals: [
+    SiteSettings,
+    Hero,
+    About,
+    Approach,
+    TeamMembers,
+    WhyUs,
+    Interns,
+    Footer,
+  ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",
   typescript: {

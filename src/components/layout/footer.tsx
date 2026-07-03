@@ -3,21 +3,22 @@ import { MapPin, Phone, Mail, MessageCircle } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import {
   getFooterNavItems,
-  getFooterServices,
+  getFooterSettings,
   getSiteSettings,
 } from "@/lib/get-site-data";
 import type { Locale } from "@/i18n/routing";
 
 export async function Footer({ locale }: { locale: Locale }) {
   const t = await getTranslations({ locale });
-  const [navItems, services, siteSettings] = await Promise.all([
+  const [navItems, footerSettings, siteSettings] = await Promise.all([
     getFooterNavItems(locale),
-    getFooterServices(locale),
+    getFooterSettings(locale),
     getSiteSettings(locale),
   ]);
 
   const year = new Date().getFullYear();
   const { contact } = siteSettings;
+  const { description, services } = footerSettings;
 
   const addressLines = [
     contact?.address1,
@@ -57,7 +58,7 @@ export async function Footer({ locale }: { locale: Locale }) {
         <div>
           <span className="font-heading text-2xl font-bold">JUST AUDIT</span>
           <p className="mt-4 max-w-xs font-body text-sm text-brand-milk/80">
-            {siteSettings.footerDescription ?? t("footer.description")}
+            {description ?? t("footer.description")}
           </p>
           <p className="mt-8 font-body text-sm text-brand-milk/60">
             © {t("footer.copyright", { year })}
