@@ -27,7 +27,17 @@ export async function ContactSection({ locale }: { locale: string }) {
       label: settings.contact?.email,
       href: `mailto:${settings.contact?.email}`,
     },
-    { icon: MapPin, label: settings.contact?.address, href: undefined },
+    {
+      icon: MapPin,
+      label: [
+        settings.contact?.address1,
+        settings.contact?.address2,
+        settings.contact?.address3,
+      ]
+        .filter(Boolean)
+        .join(", "),
+      href: undefined,
+    },
   ];
 
   return (

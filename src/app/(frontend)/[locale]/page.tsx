@@ -89,7 +89,7 @@ export default async function HomePage({
       <ServicesSection locale={locale} />
       <WhyUsSection {...whyUs} points={whyUs.points ?? []} />
       <ContactSection locale={locale} />
-      <Footer />
+      <Footer locale={locale as "ru" | "kz"} />
     </main>
   );
 }

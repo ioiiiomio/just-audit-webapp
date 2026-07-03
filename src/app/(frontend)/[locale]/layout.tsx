@@ -10,7 +10,7 @@ import { notFound } from "next/navigation";
 import { Navbar } from "@/components/layout/navbar";
 import { ScrollToTopButton } from "@/components/ui/scroll-to-top-button";
 import React from "react";
-
+import type { Locale } from "@/i18n/routing";
 import { routing } from "@/i18n/routing";
 import "./globals.css";
 
@@ -65,7 +65,7 @@ export default async function LocaleLayout({ children, params }: Props) {
         className={`${playfair.variable} ${montserrat.variable} ${montserratAlt.variable} font-body bg-brand-milk text-brand-black antialiased`}
       >
         <NextIntlClientProvider messages={messages}>
-          <Navbar />
+          <Navbar locale={locale as Locale} />
           <ScrollToTopButton />
           {children}
         </NextIntlClientProvider>
