@@ -60,8 +60,18 @@ export default buildConfig({
     defaultLocale: "ru",
     fallback: true,
   },
-  cors: [process.env.NEXT_PUBLIC_SERVER_URL || ""].filter(Boolean),
-  csrf: [process.env.NEXT_PUBLIC_SERVER_URL || ""].filter(Boolean),
+  cors: [
+    "https://justaudit.kz",
+    "https://www.justaudit.kz",
+    "https://just-audit-pi.vercel.app",
+    "http://localhost:3000",
+  ],
+  csrf: [
+    "https://justaudit.kz",
+    "https://www.justaudit.kz",
+    "https://just-audit-pi.vercel.app",
+    "http://localhost:3000",
+  ],
   plugins: [
     s3Storage({
       collections: {
