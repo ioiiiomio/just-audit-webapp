@@ -73,7 +73,7 @@ export function NavbarClient({
           />
         </Link>
 
-        <ul className="hidden items-center gap-8 font-[family-name:var(--font-montserrat)] text-sm font-semibold lg:flex">
+        <ul className="hidden items-center gap-8 font-[family-name:var(--font-montserrat)] text-medium font-semibold lg:flex">
           {navItems.map((item) => (
             <li key={item.id}>
               {renderLink(item, "transition-opacity hover:opacity-80")}
@@ -97,6 +97,14 @@ export function NavbarClient({
               className={cn("px-1", locale === "kz" && "underline")}
             >
               KZ
+            </Link>
+            <span>|</span>
+            <Link
+              href={pathname}
+              locale="en"
+              className={cn("px-1", locale === "en" && "underline")}
+            >
+              EN
             </Link>
           </div>
 
@@ -138,6 +146,10 @@ export function NavbarClient({
             <span>|</span>
             <Link href={pathname} locale="kz">
               KZ
+            </Link>
+            <span>|</span>
+            <Link href={pathname} locale="en">
+              EN
             </Link>
           </div>
           <Button

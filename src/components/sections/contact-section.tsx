@@ -22,7 +22,7 @@ export async function ContactSection({ locale }: { locale: string }) {
   const payload = await getPayload({ config });
   const settings = await payload.findGlobal({
     slug: "site-settings",
-    locale: locale as "ru" | "kz",
+    locale: locale as "ru" | "kz" | "en",
   });
 
   const whatsappHref = buildWhatsappHref(settings.contact?.whatsapp);

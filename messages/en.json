@@ -1,0 +1,132 @@
+{
+  "nav": {
+    "about": "About Us",
+    "services": "Our Services",
+    "whyUs": "Why Choose Us",
+    "team": "Our Team",
+    "contact": "Contact",
+    "cta": "Get a Consultation"
+  },
+  "hero": {
+    "title": "Order in finances. Confidence in decisions.",
+    "subtitle": "We provide financial and tax audits, accounting support, and financial statement preparation.",
+    "cta": "Get a Consultation"
+  },
+  "about": {
+    "eyebrow": "ABOUT US",
+    "title": "JUST AUDIT",
+    "paragraph1": "Just Audit is an audit and consulting firm performing financial statement audits and related services in accordance with ISA, IFRS, and the legislation of the Republic of Kazakhstan.",
+    "paragraph2": "The audit opinion confirms the reliability of financial statements — for owners and investors, banks and creditors, government bodies and regulators.",
+    "paragraph3": "We work with companies of any size and industry — from private businesses to the quasi-public sector and Astana Hub participants.",
+    "principlesEyebrow": "OUR PRINCIPLES",
+    "principles": {
+      "simplicity": {
+        "title": "Simplicity",
+        "description": "We explain complex matters in clear, understandable language."
+      },
+      "systemic": {
+        "title": "Systemic Approach",
+        "description": "We look beyond the numbers to the processes behind them."
+      },
+      "responsibility": {
+        "title": "Responsibility",
+        "description": "A high degree of confidentiality and professional ethics."
+      }
+    }
+  },
+  "approach": {
+    "eyebrow": "OUR APPROACH",
+    "title": "Order without complexity",
+    "items": {
+      "standards": {
+        "title": "Compliance with Standards",
+        "description": "All audit procedures are performed in accordance with ISA and the company's internal methodologies."
+      },
+      "systemic": {
+        "title": "Systemic Approach",
+        "description": "We analyze not only the final figures in the financial statements, but also the processes that shape them: accounting policy, document flow, and internal controls."
+      },
+      "confidentiality": {
+        "title": "Confidentiality",
+        "description": "We strictly adhere to professional ethics and protect client financial information in accordance with the law."
+      }
+    }
+  },
+  "specialists": {
+    "title": "Specialists",
+    "subtitle": "Our team combines experience, professionalism, and a commitment to high audit standards."
+  },
+  "certificates": {
+    "title": "Certificates",
+    "subtitle": "Our licenses and accreditations"
+  },
+  "services": {
+    "eyebrow": "SERVICES",
+    "title": "Audit and consulting for businesses of any size"
+  },
+  "whyUs": {
+    "eyebrow": "WHY CLIENTS TRUST US",
+    "title": "Trust and professionalism are the foundation of our work",
+    "points": {
+      "experience": {
+        "title": "Experience and Expertise",
+        "description": "Over 10 years of practical experience in audit, financial control, and working with government bodies."
+      },
+      "independence": {
+        "title": "Independence and Objectivity",
+        "description": "Our audit opinion reflects the true state of affairs within the company."
+      },
+      "compliance": {
+        "title": "Strict Compliance with Standards",
+        "description": "Every project is carried out in accordance with ISA and internal methodologies without deviation from established procedures."
+      },
+      "confidentiality": {
+        "title": "Confidentiality",
+        "description": "We handle the company's financial information in strict accordance with the auditor's professional code of ethics."
+      },
+      "expertise": {
+        "title": "Industry Expertise",
+        "description": "Experience working with the quasi-public sector and Astana Hub participants — areas that require specialized legal knowledge."
+      }
+    }
+  },
+  "contact": {
+    "title": "Let's discuss your business needs",
+    "paragraph1": "If your company needs an audit, financial analysis, or advice on accounting and taxation — get in touch with us.",
+    "paragraph2": "We will carefully review your situation and offer the optimal solution.",
+    "form": {
+      "name": "Name",
+      "phone": "Phone",
+      "company": "Company",
+      "comment": "Comment",
+      "submit": "Get a Consultation",
+      "success": "Thank you! We will contact you shortly.",
+      "error": "Failed to submit the form. Please try again.",
+      "email": "Email",
+      "errorName": "Name must contain only letters (Cyrillic or Latin)",
+      "errorPhone": "Enter the number in the format +7 7XX XXX XX XX",
+      "errorEmail": "Enter a valid email address",
+      "errorComment": "Comment must not exceed 320 characters"
+    }
+  },
+  "footer": {
+    "description": "Order without complexity. An audit firm with a modern approach to financial transparency.",
+    "copyright": "Just Audit {year}. All rights reserved.",
+    "navigationTitle": "Navigation",
+    "servicesTitle": "Services",
+    "contactsTitle": "Contacts",
+    "services": {
+      "financialAudit": "Financial Audit",
+      "taxAudit": "Tax Audit",
+      "internalAudit": "Internal Audit",
+      "consulting": "Consulting",
+      "training": "Training"
+    },
+    "contacts": {
+      "address": "Astana, Kazakhstan",
+      "phone": "+7 700 607 0785",
+      "email": "justoffice@justkz.com",
+      "whatsappLink": "https://wa.me/77006070785"
+    }
+  }
+}

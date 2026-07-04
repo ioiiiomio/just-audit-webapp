@@ -12,7 +12,27 @@ import { SpecialistsSection } from "@/components/sections/specialists-section";
 import { WhyUsSection } from "@/components/sections/why-us-section";
 // src/app/(frontend)/[locale]/layout.tsx
 import type { Metadata } from "next";
+
 export const revalidate = 60;
+
+const TITLES: Record<string, string> = {
+  ru: "Just Audit — Аудит и консалтинг",
+  kz: "Just Audit — Аудит және консалтинг",
+  en: "Just Audit — Audit and Consulting",
+};
+
+const DESCRIPTIONS: Record<string, string> = {
+  ru: "Профессиональный аудит и консалтинг в Казахстане",
+  kz: "Қазақстандағы кәсіби аудит және консалтинг",
+  en: "Professional audit and consulting services in Kazakhstan",
+};
+
+const OG_LOCALES: Record<string, string> = {
+  ru: "ru_KZ",
+  kz: "kk_KZ",
+  en: "en_US",
+};
+
 export async function generateMetadata({
   params,
 }: {
@@ -22,31 +42,27 @@ export async function generateMetadata({
 
   return {
     title: {
-      default:
-        locale === "ru"
-          ? "Just Audit — Аудит и консалтинг"
-          : "Just Audit — Аудит және консалтинг",
+      default: TITLES[locale] ?? TITLES.ru,
       template: "%s | Just Audit",
     },
-    description:
-      locale === "ru"
-        ? "Профессиональный аудит и консалтинг в Казахстане"
-        : "Қазақстандағы кәсіби аудит және консалтинг",
+    description: DESCRIPTIONS[locale] ?? DESCRIPTIONS.ru,
     alternates: {
       canonical: `https://justaudit.kz/${locale}`,
       languages: {
         "ru-KZ": "https://justaudit.kz/ru",
         "kk-KZ": "https://justaudit.kz/kz",
+        "en-US": "https://justaudit.kz/en",
       },
     },
     openGraph: {
       type: "website",
-      locale: locale === "ru" ? "ru_KZ" : "kk_KZ",
+      locale: OG_LOCALES[locale] ?? OG_LOCALES.ru,
       url: `https://justaudit.kz/${locale}`,
       siteName: "Just Audit",
     },
   };
 }
+
 export default async function HomePage({
   params,
 }: {
@@ -57,24 +73,21 @@ export default async function HomePage({
 
   const hero = await payload.findGlobal({
     slug: "hero",
-    locale: locale as "ru" | "kz",
+    locale: locale as "ru" | "kz" | "en",
     depth: 1,
   });
-
   const about = await payload.findGlobal({
     slug: "about",
-    locale: locale as "ru" | "kz",
+    locale: locale as "ru" | "kz" | "en",
   });
-
   const approach = await payload.findGlobal({
     slug: "approach",
-    locale: locale as "ru" | "kz",
+    locale: locale as "ru" | "kz" | "en",
     depth: 1,
   });
-
   const whyUs = await payload.findGlobal({
     slug: "why-us",
-    locale: locale as "ru" | "kz",
+    locale: locale as "ru" | "kz" | "en",
     depth: 1,
   });
 
@@ -89,7 +102,7 @@ export default async function HomePage({
       <ServicesSection locale={locale} />
       <WhyUsSection {...whyUs} points={whyUs.points ?? []} />
       <ContactSection locale={locale} />
-      <Footer locale={locale as "ru" | "kz"} />
+      <Footer locale={locale as "ru" | "kz" | "en"} />
     </main>
   );
 }

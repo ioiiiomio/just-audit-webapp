@@ -3,7 +3,7 @@ import config from "@payload-config";
 import { AnnouncementsBannerClient } from "./announcements-banner-client";
 
 export async function AnnouncementsBanner({ locale }: { locale: string }) {
-  const typedLocale = locale as "ru" | "kz";
+  const typedLocale = locale as "ru" | "kz" | "en";
   const payload = await getPayload({ config });
   const now = new Date().toISOString();
 

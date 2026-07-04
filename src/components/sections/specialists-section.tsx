@@ -9,7 +9,7 @@ export async function SpecialistsSection({ locale }: { locale: string }) {
 
   const teamMembersGlobal = await payload.findGlobal({
     slug: "team-members",
-    locale: locale as "ru" | "kz",
+    locale: locale as "ru" | "kz" | "en",
     depth: 1, // resolves `photo` to the full Media doc
   });
 

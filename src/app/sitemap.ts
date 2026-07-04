@@ -2,7 +2,7 @@
 import type { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const locales = ["ru", "kz"];
+  const locales = ["ru", "kz", "en"];
   return locales.map((locale) => ({
     url: `https://justaudit.kz/${locale}`,
     lastModified: new Date(),

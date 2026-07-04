@@ -16,7 +16,7 @@ export async function CertificatesSection({
 
   const { docs } = await payload.find({
     collection: "certificates",
-    locale: locale as "ru" | "kz",
+    locale: locale as "ru" | "kz" | "en",
     sort: "order",
     limit: 50,
   });

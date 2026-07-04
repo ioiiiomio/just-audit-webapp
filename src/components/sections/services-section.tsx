@@ -10,7 +10,7 @@ export async function ServicesSection({ locale }: { locale: string }) {
 
   const { docs: services } = await payload.find({
     collection: "services",
-    locale: locale as "ru" | "kz",
+    locale: locale as "ru" | "kz" | "en",
     sort: "order",
   });
 

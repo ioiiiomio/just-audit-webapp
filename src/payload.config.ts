@@ -66,7 +66,7 @@ export default buildConfig({
   // config), even though the strict ISO 639-1 code for Kazakh is 'kk'.
   // Keep this in sync with src/i18n/routing.ts.
   localization: {
-    locales: ["ru", "kz"],
+    locales: ["ru", "kz", "en"],
     defaultLocale: "ru",
     fallback: true,
   },

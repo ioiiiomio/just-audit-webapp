@@ -11,7 +11,11 @@ export default async function CertificateViewerPage({
   const { id, locale } = await params;
   const payload = await getPayload({ config });
   const cert = await payload
-    .findByID({ collection: "certificates", id, locale: locale as "ru" | "kz" })
+    .findByID({
+      collection: "certificates",
+      id,
+      locale: locale as "ru" | "kz" | "en",
+    })
     .catch(() => null);
 
   if (!cert) notFound();
