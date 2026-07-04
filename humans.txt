@@ -1,0 +1,7 @@
+/* TEAM */
+Developer: ioiiiomio
+Site: justaudit.kz
+Built with: Next.js, Payload CMS
+
+/* THANKS */
+Just Audit team(Dayana) ;>

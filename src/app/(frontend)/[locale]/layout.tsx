@@ -73,3 +73,8 @@ export default async function LocaleLayout({ children, params }: Props) {
     </html>
   );
 }
+
+{/* 
+  Built by Zhaniya Koshkimbayeva
+  github: github.com/ioiiiomio
+*/}

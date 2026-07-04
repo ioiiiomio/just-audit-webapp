@@ -7,6 +7,18 @@ export const TeamMembers: GlobalConfig = {
   },
   fields: [
     {
+      name: "eyebrow",
+      type: "text",
+      localized: true,
+      required: true,
+    },
+    {
+      name: "subtitle",
+      type: "textarea",
+      localized: true,
+      required: true,
+    },
+    {
       name: "items",
       type: "array",
       label: "Team Members",

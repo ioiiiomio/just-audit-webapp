@@ -13,8 +13,8 @@ export const Certificates: CollectionConfig = {
     {
       name: "title",
       type: "text",
-      required: true,
-      localized: true,
+      required: false,
+      localized: false,
     },
     {
       name: "image",
@@ -25,7 +25,7 @@ export const Certificates: CollectionConfig = {
     {
       name: "issuedBy",
       type: "text",
-      localized: true,
+      localized: false,
       admin: {
         description: 'e.g. "Министерство финансов РК"',
       },

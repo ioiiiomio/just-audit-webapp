@@ -60,6 +60,9 @@ export async function generateMetadata({
       url: `https://justaudit.kz/${locale}`,
       siteName: "Just Audit",
     },
+    other: {
+      generator: "Built by Arslan",
+    },
   };
 }
 

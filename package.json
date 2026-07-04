@@ -1,5 +1,9 @@
 {
   "name": "just-audit",
+  "author": "ioiiiomio zhanyathebest@gmail.com",
+  "contributors": [
+    "Zhaniya Koshkimbayeva"
+  ],
   "version": "0.1.0",
   "private": true,
   "type": "module",

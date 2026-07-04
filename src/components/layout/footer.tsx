@@ -36,7 +36,9 @@ export async function Footer({ locale }: { locale: Locale }) {
       key: "phone",
       icon: Phone,
       lines: contact?.phone ? [contact.phone] : [],
-      href: contact?.phone ? `tel:${contact.phone.replace(/\s/g, "")}` : undefined,
+      href: contact?.phone
+        ? `tel:${contact.phone.replace(/\s/g, "")}`
+        : undefined,
     },
     {
       key: "email",
@@ -62,6 +64,17 @@ export async function Footer({ locale }: { locale: Locale }) {
           </p>
           <p className="mt-8 font-body text-sm text-brand-milk/60">
             © {t("footer.copyright", { year })}
+          </p>
+          <p className="mt-2 font-body text-xs text-brand-milk/40">
+            Site by{" "}
+            <a
+              href="https://github.com/ioiiiomio"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline hover:text-brand-milk/70"
+            >
+              ioiiiomio
+            </a>
           </p>
         </div>
 
@@ -91,7 +104,7 @@ export async function Footer({ locale }: { locale: Locale }) {
             {services.map((service) => (
               <li key={service.id}>
                 <Link
-                  href={`/${locale}/services/${service.slug}`}
+                  href="/#services"
                   className="font-body text-sm text-brand-milk/90 hover:text-white"
                 >
                   {service.title}
