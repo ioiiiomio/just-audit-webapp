@@ -12,12 +12,14 @@ interface Principle {
   description: string;
 }
 
+interface Paragraph {
+  text: string;
+}
+
 interface AboutSectionProps {
   eyebrow: string;
   title: string;
-  paragraph1: string;
-  paragraph2?: string | null;
-  paragraph3?: string | null;
+  paragraphs: Paragraph[];
   principlesEyebrow: string;
   principles: Principle[];
 }
@@ -25,9 +27,7 @@ interface AboutSectionProps {
 export function AboutSection({
   eyebrow,
   title,
-  paragraph1,
-  paragraph2,
-  paragraph3,
+  paragraphs,
   principlesEyebrow,
   principles,
 }: AboutSectionProps) {
@@ -42,11 +42,12 @@ export function AboutSection({
             {title}
           </h2>
           <div className="mt-6 space-y-5 font-body text-brand-black/80">
-            <p>{paragraph1}</p>
-            {paragraph2 && <p>{paragraph2}</p>}
-            {paragraph3 && <p>{paragraph3}</p>}
+            {paragraphs.map((p, i) => (
+              <p key={i}>{p.text}</p>
+            ))}
           </div>
         </div>
+
         <div className="lg:border-l lg:border-brand-black/10 lg:pl-16">
           <span className="font-label text-sm font-bold uppercase tracking-wide text-brand-green">
             {principlesEyebrow}

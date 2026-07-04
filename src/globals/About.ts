@@ -6,13 +6,22 @@ export const About: GlobalConfig = {
     { name: "eyebrow", type: "text", localized: true, required: true },
     { name: "title", type: "text", localized: true, required: true },
     {
-      name: "paragraph1",
-      type: "textarea",
-      localized: true,
-      required: true,
+      name: "paragraphs",
+      type: "array",
+      minRows: 1,
+      labels: {
+        singular: "Paragraph",
+        plural: "Paragraphs",
+      },
+      fields: [
+        {
+          name: "text",
+          type: "textarea",
+          localized: true,
+          required: true,
+        },
+      ],
     },
-    { name: "paragraph2", type: "textarea", localized: true },
-    { name: "paragraph3", type: "textarea", localized: true },
     {
       name: "principlesEyebrow",
       type: "text",

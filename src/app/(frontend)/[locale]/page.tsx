@@ -95,7 +95,11 @@ export default async function HomePage({
     <main className="min-h-screen">
       <AnnouncementsBanner locale={locale} />
       <HeroSection {...hero} />
-      <AboutSection {...about} principles={about.principles ?? []} />
+      <AboutSection
+        {...about}
+        paragraphs={about.paragraphs ?? []}
+        principles={about.principles ?? []}
+      />
       <ApproachSection {...approach} items={approach.items ?? []} />
       <SpecialistsSection locale={locale} />
       <CertificatesSection locale={locale} />
