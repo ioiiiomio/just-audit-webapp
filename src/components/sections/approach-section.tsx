@@ -39,7 +39,7 @@ export function ApproachSection({
         <h2 className="mt-4 font-heading text-4xl font-bold text-brand-green sm:text-5xl">
           {title}
         </h2>
-        <div className="mt-16 grid grid-cols-1 gap-6 sm:grid-cols-3">
+        <div className="mt-16 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {items.map((item, index) => (
             <div
               key={index}

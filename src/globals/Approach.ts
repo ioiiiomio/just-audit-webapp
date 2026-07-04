@@ -10,7 +10,7 @@ export const Approach: GlobalConfig = {
       name: "items",
       type: "array",
       minRows: 1,
-      maxRows: 3,
+      maxRows: 20,
       fields: [
         { name: "title", type: "text", localized: true, required: true },
         {
