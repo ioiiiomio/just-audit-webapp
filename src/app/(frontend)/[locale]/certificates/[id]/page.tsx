@@ -24,7 +24,7 @@ export default async function CertificateViewerPage({
     <div className="min-h-screen bg-black">
       <PdfViewer
         sourceUrl={`/api/certificates/${id}/source`}
-        title={cert.title}
+        title={cert.title ?? ""}
       />
     </div>
   );

@@ -43,7 +43,7 @@ export function CertificatesCarousel({
                   type="button"
                   onClick={() =>
                     setSelected({
-                      title: cert.title,
+                      title: cert.title ?? "",
                       url: resolved.url,
                       isPdf: resolved.isPdf,
                     })
@@ -60,7 +60,7 @@ export function CertificatesCarousel({
                     ) : (
                       <Image
                         src={resolved.url}
-                        alt={cert.title}
+                        alt={cert.title ?? ""}
                         fill
                         className="object-cover"
                       />
