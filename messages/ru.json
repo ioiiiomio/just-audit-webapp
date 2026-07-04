@@ -128,5 +128,21 @@
       "email": "justoffice@justkz.com",
       "whatsappLink": "https://wa.me/77006070785"
     }
-  }
+  },
+  "careers": {
+    "primaryButtonFallback": "Присоединиться к команде",
+    "secondaryButtonFallback": "Отправить резюме",
+    "form": {
+      "title": "Отправить резюме",
+      "name": "Имя и фамилия",
+      "phone": "Телефон",
+      "email": "Email",
+      "city": "Город",
+      "position": "Желаемая позиция",
+      "comment": "Расскажите о себе / мотивации",
+      "resume": "Прикрепить резюме (PDF)",
+      "submit": "Отправить заявку",
+      "success": "Спасибо! Мы свяжемся с вами в ближайшее время."
+      }
+    }
 }

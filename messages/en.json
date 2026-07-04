@@ -128,5 +128,21 @@
       "email": "justoffice@justkz.com",
       "whatsappLink": "https://wa.me/77006070785"
     }
+  },
+  "careers": {
+    "primaryButtonFallback": "Join the Team",
+    "secondaryButtonFallback": "Submit Resume",
+    "form": {
+      "title": "Submit Resume",
+      "name": "Full Name",
+      "phone": "Phone",
+      "email": "Email",
+      "city": "City",
+      "position": "Desired Position",
+      "comment": "Tell us about yourself / your motivation",
+      "resume": "Attach Resume (PDF)",
+      "submit": "Submit Application",
+      "success": "Thank you! We will contact you shortly."
+    }
   }
 }

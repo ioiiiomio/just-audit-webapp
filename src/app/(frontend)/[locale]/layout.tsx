@@ -13,6 +13,7 @@ import React from "react";
 import type { Locale } from "@/i18n/routing";
 import { routing } from "@/i18n/routing";
 import "./globals.css";
+import { Footer } from "@/components/layout/footer";
 
 const playfair = Playfair_Display({
   subsets: ["latin", "cyrillic"],
@@ -68,13 +69,16 @@ export default async function LocaleLayout({ children, params }: Props) {
           <Navbar locale={locale as Locale} />
           <ScrollToTopButton />
           {children}
+          <Footer locale={locale as "ru" | "kz" | "en"} />
         </NextIntlClientProvider>
       </body>
     </html>
   );
 }
 
-{/* 
+{
+  /* 
   Built by Zhaniya Koshkimbayeva
   github: github.com/ioiiiomio
-*/}
+*/
+}

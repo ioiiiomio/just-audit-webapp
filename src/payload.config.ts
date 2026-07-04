@@ -21,6 +21,11 @@ import { Announcements } from "./collections/Announcements";
 import { NavItems } from "./collections/NavItems";
 import { Footer } from "./globals/Footer";
 
+// pages
+import { Careers } from "./globals/Careers";
+import { CareerBenefits } from "./collections/CareerBenefits";
+import { Car } from "lucide-react";
+
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
 
@@ -39,6 +44,7 @@ export default buildConfig({
     Announcements,
     Certificates,
     NavItems,
+    CareerBenefits,
   ],
   globals: [
     SiteSettings,
@@ -49,6 +55,7 @@ export default buildConfig({
     WhyUs,
     Interns,
     Footer,
+    Careers,
   ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",

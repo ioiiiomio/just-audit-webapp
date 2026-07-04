@@ -128,5 +128,21 @@
       "email": "justoffice@justkz.com",
       "whatsappLink": "https://wa.me/77006070785"
     }
+  },
+  "careers": {
+    "primaryButtonFallback": "Командаға қосылу",
+    "secondaryButtonFallback": "Түйіндеме жіберу",
+    "form": {
+      "title": "Түйіндеме жіберу",
+      "name": "Аты-жөні",
+      "phone": "Телефон",
+      "email": "Email",
+      "city": "Қала",
+      "position": "Қалаған лауазымы",
+      "comment": "Өзіңіз және мотивацияңыз туралы айтып беріңіз",
+      "resume": "Түйіндемені тіркеу (PDF)",
+      "submit": "Өтінімді жіберу",
+      "success": "Рақмет! Біз сізбен жақын арада байланысамыз."
+    }
   }
 }
