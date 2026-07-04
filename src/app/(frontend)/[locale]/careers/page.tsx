@@ -29,7 +29,6 @@ export default async function CareersPage({
   return (
     <section className="bg-brand-milk px-6 py-24 lg:px-16">
       <div className="mx-auto max-w-7xl">
-        {/* Full-width title block */}
         <div className="max-w-2xl">
           <h1 className="font-heading text-4xl font-bold leading-tight text-brand-green sm:text-5xl">
             {careers.heroTitle}
@@ -40,7 +39,6 @@ export default async function CareersPage({
           </p>
         </div>
 
-        {/* Benefits + image start at the same row */}
         <div className="mt-12 grid grid-cols-1 gap-12 lg:grid-cols-2 lg:items-start">
           <div className="flex flex-col gap-4">
             {benefits.map((benefit) => {
@@ -66,11 +64,7 @@ export default async function CareersPage({
             })}
 
             <CareerCtaButtons
-              primaryLabel={
-                careers.primaryButtonLabel ?? t("primaryButtonFallback")
-              }
-              primaryHref={careers.primaryButtonHref ?? "#"}
-              secondaryLabel={
+              label={
                 careers.secondaryButtonLabel ?? t("secondaryButtonFallback")
               }
               modalLabels={{
@@ -84,6 +78,14 @@ export default async function CareersPage({
                 resume: t("form.resume"),
                 submit: t("form.submit"),
                 success: t("form.success"),
+                error: t("form.error"),
+                errorName: t("form.errorName"),
+                errorPhone: t("form.errorPhone"),
+                errorEmail: t("form.errorEmail"),
+                errorPosition: t("form.errorPosition"),
+                errorComment: t("form.errorComment"),
+                errorResumeType: t("form.errorResumeType"),
+                errorResumeSize: t("form.errorResumeSize"),
               }}
             />
           </div>

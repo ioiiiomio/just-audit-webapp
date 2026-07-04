@@ -13,7 +13,7 @@ export const Submissions: CollectionConfig = {
   slug: "submissions",
   admin: {
     useAsTitle: "name",
-    defaultColumns: ["name", "phone", "email", "company", "createdAt"],
+    defaultColumns: ["type", "name", "phone", "email", "position", "createdAt"],
   },
   access: {
     read: ({ req }) => Boolean(req.user),
@@ -22,6 +22,16 @@ export const Submissions: CollectionConfig = {
     delete: ({ req }) => Boolean(req.user),
   },
   fields: [
+    {
+      name: "type",
+      type: "select",
+      required: true,
+      defaultValue: "contact",
+      options: [
+        { label: "Контактная форма", value: "contact" },
+        { label: "Заявка на вакансию", value: "career" },
+      ],
+    },
     {
       name: "name",
       type: "text",
@@ -61,6 +71,35 @@ export const Submissions: CollectionConfig = {
     },
     { name: "company", type: "text" },
     {
+      name: "city",
+      type: "text",
+      admin: {
+        condition: (data) => data?.type === "career",
+      },
+    },
+    {
+      name: "position",
+      type: "text",
+      admin: {
+        condition: (data) => data?.type === "career",
+      },
+      validate: (value: string | null | undefined, { data }: any) => {
+        if (data?.type === "career" && !value) {
+          return "Укажите желаемую позицию";
+        }
+        return true;
+      },
+    },
+    {
+      name: "resume",
+      type: "upload",
+      relationTo: "media",
+      admin: {
+        condition: (data) => data?.type === "career",
+        description: "Резюме кандидата (PDF)",
+      },
+    },
+    {
       name: "comment",
       type: "textarea",
       validate: (value: string | null | undefined) => {
@@ -73,19 +112,45 @@ export const Submissions: CollectionConfig = {
   ],
   hooks: {
     afterChange: [
-      async ({ doc, operation }) => {
-        if (operation === "create") {
-          const message = `
+      async ({ doc, operation, req }) => {
+        if (operation !== "create") return;
+
+        let resumeLine = "📎 Без резюме";
+        if (doc.resume) {
+          const resumeUrl =
+            typeof doc.resume === "object" && doc.resume.url
+              ? `${process.env.NEXT_PUBLIC_SITE_URL ?? "https://justaudit.kz"}${doc.resume.url}`
+              : null;
+
+          if (resumeUrl) {
+            resumeLine = `📎 <a href="${resumeUrl}">Резюме</a>`;
+          } else {
+            resumeLine = "📎 Резюме прикреплено (ссылка недоступна)";
+          }
+        }
+
+        const message =
+          doc.type === "career"
+            ? `
+🧑‍💼 <b>Новая заявка на вакансию — Just Audit</b>
+👤 ${doc.name}
+📞 ${doc.phone}
+✉️ ${doc.email}
+🏙️ ${doc.city ?? "—"}
+💼 ${doc.position ?? "—"}
+${resumeLine}
+💬 ${doc.comment ?? "—"}
+            `.trim()
+            : `
 🔔 <b>Новая заявка — Just Audit</b>
 👤 ${doc.name}
 📞 ${doc.phone}
 ✉️ ${doc.email}
 🏢 ${doc.company ?? "—"}
 💬 ${doc.comment ?? "—"}
-          `.trim();
+            `.trim();
 
-          await sendTelegramNotification(message);
-        }
+        await sendTelegramNotification(message);
       },
     ],
   },

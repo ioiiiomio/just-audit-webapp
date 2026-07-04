@@ -1,13 +1,11 @@
+// src/app/(frontend)/[locale]/careers/CareerCtaButtons.tsx
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
-import { CareerApplicationModal } from "./career-application-modal";
+import { CareerApplicationModal } from "./CareerApplicationModal";
 
 interface CareerCtaButtonsProps {
-  primaryLabel: string;
-  primaryHref: string;
-  secondaryLabel: string;
+  label: string;
   modalLabels: {
     title: string;
     name: string;
@@ -19,46 +17,32 @@ interface CareerCtaButtonsProps {
     resume: string;
     submit: string;
     success: string;
+    error: string;
+    errorName: string;
+    errorPhone: string;
+    errorEmail: string;
+    errorPosition: string;
+    errorComment: string;
+    errorResumeType: string;
+    errorResumeSize: string;
   };
 }
 
 export function CareerCtaButtons({
-  primaryLabel,
-  primaryHref,
-  secondaryLabel,
+  label,
   modalLabels,
 }: CareerCtaButtonsProps) {
   const [open, setOpen] = useState(false);
-  const isExternalOrAnchor =
-    primaryHref.startsWith("http") ||
-    primaryHref.startsWith("mailto:") ||
-    primaryHref.startsWith("#");
 
   return (
     <>
-      <div className="mt-10 flex flex-wrap gap-4">
-        {isExternalOrAnchor ? (
-          <a
-            href={primaryHref}
-            className="rounded-full bg-brand-green px-6 py-3 text-sm font-medium text-white transition hover:bg-brand-green/90"
-          >
-            {primaryLabel}
-          </a>
-        ) : (
-          <Link
-            href={primaryHref}
-            className="rounded-full bg-brand-green px-6 py-3 text-sm font-medium text-white transition hover:bg-brand-green/90"
-          >
-            {primaryLabel}
-          </Link>
-        )}
-
+      <div className="mt-6">
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="rounded-full border border-brand-green px-6 py-3 text-sm font-medium text-brand-green transition hover:bg-brand-green/5"
+          className="rounded-full bg-brand-green px-6 py-3 text-sm font-medium text-white transition hover:bg-brand-green/90"
         >
-          {secondaryLabel}
+          {label}
         </button>
       </div>
 

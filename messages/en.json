@@ -130,19 +130,27 @@
     }
   },
   "careers": {
-    "primaryButtonFallback": "Join the Team",
-    "secondaryButtonFallback": "Submit Resume",
+    "primaryButtonFallback": "Join the team",
+    "secondaryButtonFallback": "Submit resume",
     "form": {
-      "title": "Submit Resume",
-      "name": "Full Name",
+      "title": "Submit resume",
+      "name": "Full name",
       "phone": "Phone",
       "email": "Email",
       "city": "City",
-      "position": "Desired Position",
+      "position": "Desired position",
       "comment": "Tell us about yourself / your motivation",
-      "resume": "Attach Resume (PDF)",
-      "submit": "Submit Application",
-      "success": "Thank you! We will contact you shortly."
+      "resume": "Attach resume (PDF)",
+      "submit": "Submit application",
+      "success": "Thank you! We will contact you shortly.",
+      "error": "Failed to submit the application. Please try again.",
+      "errorName": "Enter a valid name (letters only)",
+      "errorPhone": "Enter the number in the format +7 7XX XXX XX XX",
+      "errorEmail": "Enter a valid email",
+      "errorPosition": "Specify the desired position",
+      "errorComment": "The text is too long",
+      "errorResumeType": "The file must be in PDF format",
+      "errorResumeSize": "The resume file exceeds 5MB"
     }
   }
 }
