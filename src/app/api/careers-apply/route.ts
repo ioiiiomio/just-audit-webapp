@@ -1,13 +1,48 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getPayload } from "payload";
 import config from "@payload-config";
+import { cookies } from "next/headers";
+
+import { formRateLimit } from "@/lib/rate-limit";
 
 const MAX_RESUME_BYTES = 5 * 1024 * 1024;
 const ALLOWED_RESUME_TYPES = ["application/pdf"];
+const COOLDOWN_SECONDS = 60;
+const COOKIE_NAME = "careers_last_submit";
 
 export async function POST(req: NextRequest) {
+  const ip = req.headers.get("x-forwarded-for")?.split(",")[0] ?? "unknown";
+  const { success } = await formRateLimit.limit(ip);
+
+  if (!success) {
+    return NextResponse.json(
+      { error: "Слишком много попыток. Попробуйте позже." },
+      { status: 429 },
+    );
+  }
+
+  const cookieStore = await cookies();
+  const lastSubmit = cookieStore.get(COOKIE_NAME)?.value;
+
+  if (lastSubmit) {
+    const secondsSince = (Date.now() - Number(lastSubmit)) / 1000;
+    if (secondsSince < COOLDOWN_SECONDS) {
+      return NextResponse.json(
+        {
+          error: `Подождите ${Math.ceil(COOLDOWN_SECONDS - secondsSince)} сек. перед повторной отправкой`,
+        },
+        { status: 429 },
+      );
+    }
+  }
+
   try {
     const formData = await req.formData();
+
+    const honeypot = formData.get("website")?.toString();
+    if (honeypot) {
+      return NextResponse.json({ success: true });
+    }
 
     const name = formData.get("name")?.toString().trim();
     const phone = formData.get("phone")?.toString().trim();
@@ -72,8 +107,14 @@ export async function POST(req: NextRequest) {
         resume: resumeId,
       },
     });
-
-    return NextResponse.json({ success: true, id: submission.id });
+    const response = NextResponse.json({ success: true, id: submission.id });
+    response.cookies.set(COOKIE_NAME, Date.now().toString(), {
+      httpOnly: true,
+      maxAge: COOLDOWN_SECONDS,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+    });
+    return response;
   } catch (error: any) {
     const validationMessage =
       error?.data?.errors?.[0]?.message ?? error?.message ?? "Ошибка отправки";

@@ -63,10 +63,14 @@ export function CareerApplicationModal({
   onClose,
   labels,
 }: CareerApplicationModalProps) {
-  const [status, setStatus] = useState <"idle" | "submitting" | "success" | "error">("idle");
+  const [status, setStatus] = useState<
+    "idle" | "submitting" | "success" | "error"
+  >("idle");
   const [form, setForm] = useState<FormState>(emptyForm);
   const [resume, setResume] = useState<File | null>(null);
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
+  const [serverError, setServerError] = useState<string | null>(null);
+  const [honeypot, setHoneypot] = useState("");
 
   if (!open) return null;
 
@@ -135,6 +139,8 @@ export function CareerApplicationModal({
     }
 
     setStatus("submitting");
+    setServerError(null);
+
     try {
       const formData = new FormData();
       formData.append("name", form.name);
@@ -143,6 +149,7 @@ export function CareerApplicationModal({
       formData.append("city", form.city);
       formData.append("position", form.position);
       formData.append("comment", form.comment);
+      formData.append("website", honeypot); // honeypot — real users never fill this
       if (resume) formData.append("resume", resume);
 
       const res = await fetch("/api/careers-apply", {
@@ -150,13 +157,20 @@ export function CareerApplicationModal({
         body: formData,
       });
 
-      if (!res.ok) throw new Error("Request failed");
+      const data = await res.json().catch(() => null);
+
+      if (!res.ok) {
+        setServerError(data?.error ?? labels.error);
+        setStatus("error");
+        return;
+      }
 
       setStatus("success");
       setForm(emptyForm);
       setResume(null);
       setFieldErrors({});
     } catch {
+      setServerError(labels.error);
       setStatus("error");
     }
   };
@@ -168,6 +182,8 @@ export function CareerApplicationModal({
     setForm(emptyForm);
     setResume(null);
     setFieldErrors({});
+    setServerError(null);
+    setHoneypot("");
   };
 
   return (
@@ -201,6 +217,18 @@ export function CareerApplicationModal({
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Honeypot — hidden from real users, bots tend to fill every field */}
+            <input
+              type="text"
+              name="website"
+              value={honeypot}
+              onChange={(e) => setHoneypot(e.target.value)}
+              tabIndex={-1}
+              autoComplete="off"
+              aria-hidden="true"
+              className="absolute left-[-9999px] top-auto h-px w-px overflow-hidden"
+            />
+
             <div>
               <input
                 required
@@ -321,8 +349,8 @@ export function CareerApplicationModal({
             >
               {status === "submitting" ? "…" : labels.submit}
             </Button>
-            {status === "error" && (
-              <p className="font-body text-sm text-red-600">{labels.error}</p>
+            {status === "error" && serverError && (
+              <p className="font-body text-sm text-red-600">{serverError}</p>
             )}
           </form>
         )}

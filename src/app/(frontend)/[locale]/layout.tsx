@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
-import { getMessages } from "next-intl/server";
+import { getMessages, getTranslations } from "next-intl/server";
 import {
   Playfair_Display,
   Montserrat,
@@ -14,19 +14,18 @@ import type { Locale } from "@/i18n/routing";
 import { routing } from "@/i18n/routing";
 import "./globals.css";
 import { Footer } from "@/components/layout/footer";
+import { CookieConsent } from "@/components/cookie-consent";
 
 const playfair = Playfair_Display({
   subsets: ["latin", "cyrillic"],
   variable: "--font-playfair",
   display: "swap",
 });
-
 const montserrat = Montserrat({
   subsets: ["latin", "cyrillic"],
   variable: "--font-montserrat",
   display: "swap",
 });
-
 const montserratAlt = Montserrat_Alternates({
   subsets: ["latin", "cyrillic"],
   weight: ["400", "500", "600", "700"],
@@ -59,6 +58,7 @@ export default async function LocaleLayout({ children, params }: Props) {
   }
 
   const messages = await getMessages();
+  const t = await getTranslations("cookies");
 
   return (
     <html lang={locale}>
@@ -70,12 +70,20 @@ export default async function LocaleLayout({ children, params }: Props) {
           <ScrollToTopButton />
           {children}
           <Footer locale={locale as "ru" | "kz" | "en"} />
+          <CookieConsent
+            locale={locale}
+            labels={{
+              message: t("message"),
+              policyLinkText: t("policyLinkText"),
+              accept: t("accept"),
+              decline: t("decline"),
+            }}
+          />
         </NextIntlClientProvider>
       </body>
     </html>
   );
 }
-
 {
   /* 
   Built by Zhaniya Koshkimbayeva

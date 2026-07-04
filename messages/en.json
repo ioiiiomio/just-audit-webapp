@@ -152,5 +152,11 @@
       "errorResumeType": "The file must be in PDF format",
       "errorResumeSize": "The resume file exceeds 5MB"
     }
+  },
+  "cookies": {
+    "message": "We use cookies to improve the website experience.",
+    "policyLinkText": "Learn more",
+    "accept": "Accept",
+    "decline": "Decline"
   }
 }

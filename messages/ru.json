@@ -152,5 +152,11 @@
       "errorResumeType": "Файл должен быть в формате PDF",
       "errorResumeSize": "Файл резюме превышает 5MB"
     }
+  },
+  "cookies": {
+    "message": "Мы используем файлы cookie для улучшения работы сайта.",
+    "policyLinkText": "Подробнее",
+    "accept": "Принять",
+    "decline": "Отклонить"
   }
 }
