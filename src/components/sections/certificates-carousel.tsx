@@ -50,11 +50,11 @@ export function CertificatesCarousel({
                   }
                   className="flex h-full w-full flex-col overflow-hidden rounded-lg border border-brand-beige bg-white text-left"
                 >
-                  <div className="relative aspect-[4/3] w-full bg-brand-beige/30">
+                  <div className="relative mx-auto h-[180px] w-full bg-brand-beige/30 sm:h-[200px] md:h-[240px] md:w-[320px] lg:h-[260px] lg:w-[360px]">
                     {resolved.isPdf ? (
                       <PdfPageCanvas
                         url={resolved.url}
-                        targetWidth={400}
+                        targetWidth={480}
                         className="h-full w-full"
                       />
                     ) : (
