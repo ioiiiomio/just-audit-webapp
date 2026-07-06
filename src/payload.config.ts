@@ -27,6 +27,8 @@ import { CareerBenefits } from "./collections/CareerBenefits";
 import { ContactDetails } from "./collections/ContactDetails";
 import { Pages } from "./collections/Pages";
 
+import { resendAdapter } from "@payloadcms/email-resend";
+
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
 
@@ -37,6 +39,11 @@ export default buildConfig({
       titleSuffix: " — Just Audit CMS",
     },
   },
+  email: resendAdapter({
+    defaultFromAddress: "no-reply@justaudit.kz", // домен нужно верифицировать в Resend
+    defaultFromName: "Just Audit",
+    apiKey: process.env.RESEND_API_KEY || "",
+  }),
   collections: [
     Users,
     Media,
