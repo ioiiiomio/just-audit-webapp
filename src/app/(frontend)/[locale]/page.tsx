@@ -1,6 +1,6 @@
 import { getPayload } from "payload";
 import config from "@payload-config";
-import { Footer } from "@/components/layout/footer";
+
 import { AboutSection } from "@/components/sections/about-section";
 import { AnnouncementsBanner } from "@/components/sections/announcements-banner";
 import { ApproachSection } from "@/components/sections/approach-section";

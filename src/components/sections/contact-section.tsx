@@ -1,52 +1,54 @@
-// src/components/sections/contact-section.tsx
 import Link from "next/link";
-import { getPayload } from "payload";
-import config from "@payload-config";
 import { getTranslations } from "next-intl/server";
 import { MessageCircle, Linkedin, Mail, MapPin } from "lucide-react";
 import { ContactForm } from "@/components/sections/contact-form";
-
-function buildWhatsappHref(raw?: string | null): string | undefined {
-  if (!raw) return undefined;
-  const trimmed = raw.trim();
-  // Already a full link (e.g. https://wa.me/... or https://api.whatsapp.com/...)
-  if (trimmed.startsWith("http")) return trimmed;
-  // Otherwise treat as a phone number: strip everything but digits
-  const digitsOnly = trimmed.replace(/[^\d]/g, "");
-  if (!digitsOnly) return undefined;
-  return `https://wa.me/${digitsOnly}`;
-}
+import { getContactDetails } from "@/lib/get-site-data";
+import {
+  buildContactHref,
+  findFirstContact,
+  type ContactDetailDoc,
+} from "@/lib/contact-details";
+import type { Locale } from "@/i18n/routing";
 
 export async function ContactSection({ locale }: { locale: string }) {
   const t = await getTranslations("contact");
-  const payload = await getPayload({ config });
-  const settings = await payload.findGlobal({
-    slug: "site-settings",
-    locale: locale as "ru" | "kz" | "en",
-  });
+  const contactDetails = (await getContactDetails(
+    locale as Locale,
+  )) as ContactDetailDoc[];
 
-  const whatsappHref = buildWhatsappHref(settings.contact?.whatsapp);
+  const whatsapp = findFirstContact(contactDetails, "whatsapp");
+  const linkedin = findFirstContact(contactDetails, "linkedin");
+  const email = findFirstContact(contactDetails, "email");
+  const address = findFirstContact(contactDetails, "address");
 
   const links = [
     {
       icon: MessageCircle,
       label: "WhatsApp",
-      href: whatsappHref,
-    },
-    { icon: Linkedin, label: "LinkedIn", href: settings.contact?.linkedin },
-    {
-      icon: Mail,
-      label: settings.contact?.email,
-      href: settings.contact?.email
-        ? `mailto:${settings.contact.email}`
+      href: whatsapp?.value
+        ? buildContactHref("whatsapp", whatsapp.value)
         : undefined,
     },
     {
+      icon: Linkedin,
+      label: "LinkedIn",
+      href: linkedin?.value
+        ? buildContactHref("linkedin", linkedin.value)
+        : undefined,
+    },
+    {
+      icon: Mail,
+      label: email?.value ?? undefined,
+      href: email?.value ? buildContactHref("email", email.value) : undefined,
+    },
+    {
       icon: MapPin,
-      label: [settings.contact?.address1].filter(Boolean).join(", "),
+      label: address?.addressValue ?? undefined,
       href: undefined,
     },
-  ].filter((item) => item.label); // drop entries with no content at all
+  ].filter(
+    (item): item is typeof item & { label: string } => Boolean(item.label),
+  ); // drop entries with no content at all
 
   return (
     <section id="contact" className="bg-brand-milk px-24 py-24 lg:px-16">

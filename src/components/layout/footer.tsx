@@ -1,58 +1,27 @@
 import { getTranslations } from "next-intl/server";
-import { MapPin, Phone, Mail, MessageCircle } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import {
   getFooterNavItems,
   getFooterSettings,
-  getSiteSettings,
+  getContactDetails,
 } from "@/lib/get-site-data";
+import {
+  groupContactDetails,
+  type ContactDetailDoc,
+} from "@/lib/contact-details";
 import type { Locale } from "@/i18n/routing";
 
 export async function Footer({ locale }: { locale: Locale }) {
   const t = await getTranslations({ locale });
-  const [navItems, footerSettings, siteSettings] = await Promise.all([
+  const [navItems, footerSettings, contactDetails] = await Promise.all([
     getFooterNavItems(locale),
     getFooterSettings(locale),
-    getSiteSettings(locale),
+    getContactDetails(locale),
   ]);
 
   const year = new Date().getFullYear();
-  const { contact } = siteSettings;
   const { description, services } = footerSettings;
-
-  const addressLines = [
-    contact?.address1,
-    contact?.address2,
-    contact?.address3,
-  ].filter(Boolean) as string[];
-
-  const whatsappHref = contact?.whatsapp
-    ? `https://wa.me/${contact.whatsapp.replace(/\D/g, "")}`
-    : undefined;
-
-  const contactItems = [
-    { key: "address", icon: MapPin, lines: addressLines, href: undefined },
-    {
-      key: "phone",
-      icon: Phone,
-      lines: contact?.phone ? [contact.phone] : [],
-      href: contact?.phone
-        ? `tel:${contact.phone.replace(/\s/g, "")}`
-        : undefined,
-    },
-    {
-      key: "email",
-      icon: Mail,
-      lines: contact?.email ? [contact.email] : [],
-      href: contact?.email ? `mailto:${contact.email}` : undefined,
-    },
-    {
-      key: "whatsapp",
-      icon: MessageCircle,
-      lines: whatsappHref ? ["WhatsApp"] : [],
-      href: whatsappHref,
-    },
-  ].filter((item) => item.lines.length > 0);
+  const contactItems = groupContactDetails(contactDetails as ContactDetailDoc[]);
 
   return (
     <footer className="bg-brand-green px-6 py-16 text-brand-milk lg:px-16">
@@ -119,19 +88,19 @@ export async function Footer({ locale }: { locale: Locale }) {
             {t("footer.contactsTitle")}
           </h3>
           <ul className="mt-5 space-y-3">
-            {contactItems.map(({ key, icon: Icon, lines, href }) => (
+            {contactItems.map(({ key, icon: Icon, entries }) => (
               <li key={key} className="flex items-start gap-3">
                 <Icon className="mt-0.5 size-4 shrink-0 text-brand-milk/70" />
                 <div className="flex flex-col gap-1">
-                  {lines.map((line, i) => {
-                    if (href) {
+                  {entries.map((entry, i) => {
+                    if (entry.href) {
                       return (
                         <Link
                           key={i}
-                          href={href}
+                          href={entry.href}
                           className="font-body text-sm text-brand-milk/90 hover:text-white"
                         >
-                          {line}
+                          {entry.text}
                         </Link>
                       );
                     }
@@ -140,7 +109,7 @@ export async function Footer({ locale }: { locale: Locale }) {
                         key={i}
                         className="font-body text-sm text-brand-milk/90"
                       >
-                        {line}
+                        {entry.text}
                       </span>
                     );
                   })}

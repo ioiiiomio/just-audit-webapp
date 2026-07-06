@@ -73,7 +73,7 @@ export function NavbarClient({
           />
         </Link>
 
-        <ul className="hidden items-center gap-8 font-[family-name:var(--font-montserrat)] text-medium font-semibold lg:flex">
+        <ul className="hidden items-center gap-8 font-[family-name:var(--font-montserrat)] text-sm font-semibold lg:flex">
           {navItems.map((item) => (
             <li key={item.id}>
               {renderLink(item, "transition-opacity hover:opacity-80")}

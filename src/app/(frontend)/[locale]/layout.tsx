@@ -13,8 +13,9 @@ import React from "react";
 import type { Locale } from "@/i18n/routing";
 import { routing } from "@/i18n/routing";
 import "./globals.css";
-import { Footer } from "@/components/layout/footer";
+
 import { CookieConsent } from "@/components/cookie-consent";
+import { Footer } from "@/components/layout/footer";
 
 const playfair = Playfair_Display({
   subsets: ["latin", "cyrillic"],

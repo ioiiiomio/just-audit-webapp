@@ -24,7 +24,8 @@ import { Footer } from "./globals/Footer";
 // pages
 import { Careers } from "./globals/Careers";
 import { CareerBenefits } from "./collections/CareerBenefits";
-import { Car } from "lucide-react";
+import { ContactDetails } from "./collections/ContactDetails";
+import { Pages } from "./collections/Pages";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -39,12 +40,14 @@ export default buildConfig({
   collections: [
     Users,
     Media,
+    ContactDetails,
     Submissions,
     Services,
     Announcements,
     Certificates,
     NavItems,
     CareerBenefits,
+    Pages,
   ],
   globals: [
     SiteSettings,

@@ -73,3 +73,15 @@ export async function getFooterSettings(locale: Locale) {
     services,
   };
 }
+
+export async function getContactDetails(locale: Locale) {
+  const payload = await getPayload({ config });
+  // "contact-details" is a collection, not a global — payload.find(), not findGlobal()
+  const result = await payload.find({
+    collection: "contact-details",
+    locale,
+    sort: "order",
+    limit: 100,
+  });
+  return result.docs;
+}
