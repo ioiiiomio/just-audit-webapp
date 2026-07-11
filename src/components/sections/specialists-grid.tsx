@@ -89,8 +89,11 @@ export function SpecialistsGrid({
           const id = member.id ?? `rest-${index}`;
 
           return (
-            <div key={id} className="flex gap-6 rounded-2xl bg-white p-8">
-              <div className="relative aspect-[4/5] w-32 shrink-0 overflow-hidden rounded-xl">
+            <div
+              key={id}
+              className="flex flex-col gap-6 rounded-2xl bg-white p-8 sm:flex-row"
+            >
+              <div className="relative aspect-[4/5] w-full overflow-hidden rounded-xl sm:w-32 sm:shrink-0">
                 {member.photo &&
                   typeof member.photo === "object" &&
                   member.photo.url && (
@@ -102,7 +105,7 @@ export function SpecialistsGrid({
                     />
                   )}
               </div>
-              <div className="flex-1">
+              <div className="flex-1 min-w-0">
                 <div>
                   <h3 className="font-heading text-lg font-bold text-brand-green">
                     {member.name}

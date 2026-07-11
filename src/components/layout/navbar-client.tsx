@@ -67,8 +67,8 @@ export function NavbarClient({
           <Image
             src={logoUrl}
             alt="Just Audit"
-            width={80}
-            height={20}
+            width={120}
+            height={40}
             priority
           />
         </Link>

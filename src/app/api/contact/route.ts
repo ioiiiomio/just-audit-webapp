@@ -3,14 +3,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { getPayload } from "payload";
 import config from "@payload-config";
 import { cookies } from "next/headers";
-import { formRateLimit } from "@/lib/rate-limit";
+import { checkFormRateLimit } from "@/lib/rate-limit";
 
 const COOLDOWN_SECONDS = 60;
 const COOKIE_NAME = "contact_last_submit";
 
 export async function POST(req: NextRequest) {
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0] ?? "unknown";
-  const { success } = await formRateLimit.limit(ip);
+  const { success } = await checkFormRateLimit(ip);
 
   if (!success) {
     return NextResponse.json(

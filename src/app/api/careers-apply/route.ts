@@ -1,9 +1,10 @@
+// src/app/api/careers-apply/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { getPayload } from "payload";
 import config from "@payload-config";
 import { cookies } from "next/headers";
 
-import { formRateLimit } from "@/lib/rate-limit";
+import { checkFormRateLimit } from "@/lib/rate-limit";
 
 const MAX_RESUME_BYTES = 5 * 1024 * 1024;
 const ALLOWED_RESUME_TYPES = ["application/pdf"];
@@ -12,7 +13,7 @@ const COOKIE_NAME = "careers_last_submit";
 
 export async function POST(req: NextRequest) {
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0] ?? "unknown";
-  const { success } = await formRateLimit.limit(ip);
+  const { success } = await checkFormRateLimit(ip);
 
   if (!success) {
     return NextResponse.json(
@@ -107,6 +108,7 @@ export async function POST(req: NextRequest) {
         resume: resumeId,
       },
     });
+
     const response = NextResponse.json({ success: true, id: submission.id });
     response.cookies.set(COOKIE_NAME, Date.now().toString(), {
       httpOnly: true,
