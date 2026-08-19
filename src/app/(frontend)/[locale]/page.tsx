@@ -97,17 +97,36 @@ export default async function HomePage({
   return (
     <main className="min-h-screen">
       <AnnouncementsBanner locale={locale} />
-      <HeroSection {...hero} />
+
+      <HeroSection
+        {...hero}
+        title={hero.title ?? ""}
+        subtitle={hero.subtitle ?? ""}
+        ctaLabel={hero.ctaLabel ?? ""}
+      />
+
       <AboutSection
         {...about}
+        eyebrow={about.eyebrow ?? ""}
+        title={about.title ?? ""}
+        principlesEyebrow={about.principlesEyebrow ?? ""}
         paragraphs={about.paragraphs ?? []}
         principles={about.principles ?? []}
       />
-      <ApproachSection {...approach} items={approach.items ?? []} />
+
+      <ApproachSection
+        {...approach}
+        eyebrow={approach.eyebrow ?? ""}
+        title={approach.title ?? ""}
+        items={approach.items ?? []}
+      />
+
       <SpecialistsSection locale={locale} />
       <CertificatesSection locale={locale} />
       <ServicesSection locale={locale} />
+
       <WhyUsSection {...whyUs} points={whyUs.points ?? []} />
+
       <ContactSection locale={locale} />
     </main>
   );
