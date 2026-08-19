@@ -13,6 +13,7 @@ import type { Locale } from "@/i18n/routing";
 
 export async function Footer({ locale }: { locale: Locale }) {
   const t = await getTranslations({ locale });
+
   const [navItems, footerSettings, contactDetails] = await Promise.all([
     getFooterNavItems(locale),
     getFooterSettings(locale),
@@ -20,8 +21,12 @@ export async function Footer({ locale }: { locale: Locale }) {
   ]);
 
   const year = new Date().getFullYear();
-  const { description, services } = footerSettings;
-  const contactItems = groupContactDetails(contactDetails as ContactDetailDoc[]);
+
+  const { description, services = [] } = footerSettings;
+
+  const contactItems = groupContactDetails(
+    contactDetails as ContactDetailDoc[],
+  );
 
   return (
     <footer className="bg-brand-green px-6 py-16 text-brand-milk lg:px-16">

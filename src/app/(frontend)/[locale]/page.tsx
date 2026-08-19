@@ -10,7 +10,7 @@ import { HeroSection } from "@/components/sections/hero-section";
 import { ServicesSection } from "@/components/sections/services-section";
 import { SpecialistsSection } from "@/components/sections/specialists-section";
 import { WhyUsSection } from "@/components/sections/why-us-section";
-// src/app/(frontend)/[locale]/layout.tsx
+// src/app/(frontend)/[locale]/page.tsx
 import type { Metadata } from "next";
 
 export const revalidate = 60;
@@ -73,24 +73,28 @@ export default async function HomePage({
 }) {
   const { locale } = await params;
   const payload = await getPayload({ config });
+  const payloadLocale = locale as "ru" | "kz" | "en";
 
   const hero = await payload.findGlobal({
     slug: "hero",
-    locale: locale as "ru" | "kz" | "en",
+    locale: payloadLocale,
     depth: 1,
   });
+
   const about = await payload.findGlobal({
     slug: "about",
-    locale: locale as "ru" | "kz" | "en",
+    locale: payloadLocale,
   });
+
   const approach = await payload.findGlobal({
     slug: "approach",
-    locale: locale as "ru" | "kz" | "en",
+    locale: payloadLocale,
     depth: 1,
   });
+
   const whyUs = await payload.findGlobal({
     slug: "why-us",
-    locale: locale as "ru" | "kz" | "en",
+    locale: payloadLocale,
     depth: 1,
   });
 
