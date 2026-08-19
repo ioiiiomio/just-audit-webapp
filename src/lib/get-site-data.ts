@@ -47,20 +47,18 @@ export async function getSiteSettings(locale: Locale) {
   });
 }
 
-export async function getFooterSettings(locale: Locale) {
+export async function getFooterSettings(locale: Locale): Promise<{
+  description: string | null | undefined;
+  services: Service[];
+}> {
   const payload = await getPayload({ config });
-  // globals use findGlobal, not find/findByID — per your earlier gotcha
+
   const footer = await payload.findGlobal({
     slug: "footer",
     locale,
-    depth: 1, // resolves the `services` relationship field into full Service docs
+    depth: 1,
   });
 
-  // `services` is an array of { service: Service | number, id: string }.
-  // On Postgres, an UNPOPULATED relationship comes back as a numeric id,
-  // not a string — so we narrow on `typeof === "object"` rather than
-  // excluding "string". This also defensively drops any relationship left
-  // pointing at a deleted Service (which resolves to null/undefined).
   const services = (footer.services ?? [])
     .map((item) => item.service)
     .filter(

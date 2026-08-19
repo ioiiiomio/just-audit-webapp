@@ -10,6 +10,7 @@ import {
   type ContactDetailDoc,
 } from "@/lib/contact-details";
 import type { Locale } from "@/i18n/routing";
+import { Service } from "@/payload-types";
 
 export async function Footer({ locale }: { locale: Locale }) {
   const t = await getTranslations({ locale });
@@ -22,7 +23,8 @@ export async function Footer({ locale }: { locale: Locale }) {
 
   const year = new Date().getFullYear();
 
-  const { description, services = [] } = footerSettings;
+  const { description } = footerSettings;
+  const services: Service[] = footerSettings.services ?? [];
 
   const contactItems = groupContactDetails(
     contactDetails as ContactDetailDoc[],
