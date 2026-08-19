@@ -125,7 +125,12 @@ export default async function HomePage({
       <CertificatesSection locale={locale} />
       <ServicesSection locale={locale} />
 
-      <WhyUsSection {...whyUs} points={whyUs.points ?? []} />
+      <WhyUsSection
+        {...whyUs}
+        eyebrow={whyUs.eyebrow ?? ""}
+        title={whyUs.title ?? ""}
+        points={whyUs.points ?? []}
+      />
 
       <ContactSection locale={locale} />
     </main>
