@@ -1,7 +1,7 @@
 // Populated-relation shape for EducationMaterials, assuming queries use `depth: 2`
 // so category/topics/expert/thumbnail/downloadFiles.file come back as objects, not IDs.
 // Swap these for the generated types in `@/payload-types` once you've run
-// `pnpm payload generate:types` against the new collections.
+// `pnpm payload generate:types` against the updated collections.
 
 export interface EducationCategory {
   id: string | number
@@ -15,6 +15,10 @@ export interface EducationTopic {
   id: string | number
   name: string
   slug: string
+  /** Subtitle shown under the topic name on the grouped videos page. */
+  description?: string | null
+  /** Controls the display order of topic sections on the grouped videos page. */
+  order?: number | null
 }
 
 export interface EducationMedia {
@@ -47,7 +51,12 @@ export interface EducationMaterial {
   format?: EducationMaterialFormat | null
   level?: EducationMaterialLevel | null
   category?: EducationCategory | null
-  topics?: EducationTopic[] | null
+  /**
+   * Each entry pairs a topic with this material's position *within that
+   * topic* — so the same video can rank differently in different topics.
+   * `order` is set per material/topic pair in the admin (lower = earlier).
+   */
+  topics?: { topic: EducationTopic; order: number }[] | null
   excerpt?: string | null
   videoUrl?: string | null
   content?: unknown

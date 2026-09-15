@@ -77,12 +77,18 @@ export const EducationMaterials: CollectionConfig = {
         },
         {
             name: 'topics',
-            type: 'relationship',
-            relationTo: 'education-topics',
-            hasMany: true,
-            admin: {
-                description: 'Curated "Темы" sidebar filter.',
-            },
+            type: 'array',
+            label: 'Темы',
+            fields: [
+                { name: 'topic', type: 'relationship', relationTo: 'education-topics', required: true },
+                {
+                    name: 'order',
+                    type: 'number',
+                    label: 'Порядок внутри темы',
+                    defaultValue: 0,
+                    admin: { description: 'Меньше — выше в списке этой темы' },
+                },
+            ],
         },
         {
             name: 'excerpt',

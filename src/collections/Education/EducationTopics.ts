@@ -9,7 +9,7 @@ export const EducationTopics: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'name',
-    defaultColumns: ['name', 'slug'],
+    defaultColumns: ['name', 'slug', 'order'],
     group: 'Education',
   },
   access: {
@@ -28,6 +28,24 @@ export const EducationTopics: CollectionConfig = {
       unique: true,
       hooks: {
         beforeValidate: [sanitizeSlug],
+      },
+    },
+    {
+      name: 'description',
+      type: 'text',
+      localized: true,
+      label: 'Подзаголовок',
+      admin: {
+        description: 'Короткая подпись под названием темы на странице видео (необязательно).',
+      },
+    },
+    {
+      name: 'order',
+      type: 'number',
+      defaultValue: 0,
+      label: 'Порядок секции',
+      admin: {
+        description: 'Определяет, в каком порядке темы идут на странице видео. Меньше — выше.',
       },
     },
   ],
