@@ -191,9 +191,9 @@ export default async function VideoDetailPage({
           </aside>
         </section>
 
-        <section className="mx-auto max-w-6xl px-6 pb-20 lg:px-16">
-          <NewsletterCTA />
-        </section>
+        {/*<section className="mx-auto max-w-6xl px-6 pb-20 lg:px-16">*/}
+        {/*  <NewsletterCTA />*/}
+        {/*</section>*/}
       </div>
   )
 }

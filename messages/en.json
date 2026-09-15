@@ -164,13 +164,17 @@
     "categoriesTitle": "Categories",
     "seminarsTitle": "Seminars and Materials",
     "viewAll": "View All",
-    "videosTitle": "YouTube Videos",
+    "videosTitle": "Video materials",
     "imageAlt": "JUST Audit Knowledge Base",
     "seminarsList": {
       "breadcrumb": "Seminars and Materials",
       "title": "Seminars and Materials",
       "subtitle": "Practical materials from our experts — seminars, articles, and analyses with presentations and additional files.",
-      "resultsLabel": "materials"
+      "resultsLabel": "materials",
+      "filtersTitle": "Filters",
+      "materialTypeLabel": "Material Type",
+      "topicsLabel": "Topics",
+      "allTopicsLabel": "All Topics"
     },
     "seminarDetail": {
       "breadcrumb": "Text Seminar",
@@ -182,7 +186,16 @@
       "consultationCta": "Get a Consultation",
       "relatedTitle": "Related Seminars and Materials",
       "expertTitle": "Seminar Expert",
-      "contentsTitle": "Contents"
+      "contentsTitle": "Contents",
+      "downloads": {
+        "title": "Materials for download",
+        "downloadAll": "Download all materials",
+        "downloadPdf": "Download PDF",
+        "emailPrompt": "Enter the email address to send the materials to:",
+        "sendEmail": "Send to email",
+        "sent": "Sent",
+        "error": "Error, please try again"
+      }
     },
     "videosList": {
       "titleLine1": "Video materials",
@@ -193,7 +206,10 @@
       "duration10to30": "10–30 minutes",
       "duration30to60": "30–60 minutes",
       "durationOver60": "Over 60 minutes",
-      "yearOlder": "2021 and earlier"
+      "yearOlder": "2021 and earlier",
+      "allCategoriesLabel": "All categories",
+      "yearLabel": "Year",
+      "allYearsLabel": "All years"
     },
     "videoDetail": {
       "videoUnavailable": "Video unavailable",
@@ -206,6 +222,22 @@
       "tagsTitle": "Tags",
       "otherVideosTitle": "Other videos",
       "allVideosCta": "All videos"
+    },
+    "allMaterials": "All materials",
+    "searchSortBar": {
+      "sortNewest": "Newest first",
+      "sortOldest": "Oldest first",
+      "sortByTitle": "By title",
+      "searchPlaceholder": "Search by title or description...",
+      "gridViewLabel": "Grid",
+      "listViewLabel": "List",
+      "foundLabel": "Found"
+    },
+    "pagination": {
+      "nextLabel": "Next"
+    },
+    "formatBadge": {
+      "documentLabel": "Presentation"
     }
   },
   "cookies": {

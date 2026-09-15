@@ -163,13 +163,17 @@
     "categoriesTitle": "Санаттар",
     "seminarsTitle": "Семинарлар мен материалдар",
     "viewAll": "Барлығын көру",
-    "videosTitle": "YouTube бейнелері",
+    "videosTitle": "Бейне материалдар",
     "imageAlt": "JUST Audit білім қоры",
     "seminarsList": {
       "breadcrumb": "Семинарлар мен материалдар",
       "title": "Семинарлар мен материалдар",
       "subtitle": "Сарапшыларымыздан алынған практикалық материалдар: презентациялары мен қосымша файлдары бар семинарлар, мақалалар және шолулар.",
-      "resultsLabel": "материал"
+      "resultsLabel": "материал",
+      "filtersTitle": "Сүзгілер",
+      "materialTypeLabel": "Материал түрі",
+      "topicsLabel": "Тақырыптар",
+      "allTopicsLabel": "Барлық тақырыптар"
     },
     "seminarDetail": {
       "breadcrumb": "Мәтіндік семинар",
@@ -181,7 +185,16 @@
       "consultationCta": "Кеңес алу",
       "relatedTitle": "Ұқсас семинарлар мен материалдар",
       "expertTitle": "Семинар сарапшысы",
-      "contentsTitle": "Мазмұны"
+      "contentsTitle": "Мазмұны",
+      "downloads": {
+        "title": "Жүктеп алуға арналған материалдар",
+        "downloadAll": "Барлық материалдарды жүктеп алу",
+        "downloadPdf": "PDF жүктеп алу",
+        "emailPrompt": "Материалдарды жіберетін email мекенжайын енгізіңіз:",
+        "sendEmail": "Email-ге жіберу",
+        "sent": "Жіберілді",
+        "error": "Қате, қайталап көріңіз"
+      }
   },
     "videosList": {
       "titleLine1": "Бейнематериалдар",
@@ -192,7 +205,10 @@
       "duration10to30": "10–30 минут",
       "duration30to60": "30–60 минут",
       "durationOver60": "60 минуттан көп",
-      "yearOlder": "2021 және бұрын"
+      "yearOlder": "2021 және бұрын",
+      "allCategoriesLabel": "Барлық санаттар",
+      "yearLabel": "Жыл",
+      "allYearsLabel": "Барлық жылдар"
     },
     "videoDetail": {
       "videoUnavailable": "Бейне қолжетімсіз",
@@ -205,6 +221,22 @@
       "tagsTitle": "Тегтер",
       "otherVideosTitle": "Басқа бейнелер",
       "allVideosCta": "Барлық бейнелер"
+    },
+    "allMaterials": "Барлық материалдар",
+    "searchSortBar": {
+      "sortNewest": "Алдымен жаңалары",
+      "sortOldest": "Алдымен ескілері",
+      "sortByTitle": "Атауы бойынша",
+      "searchPlaceholder": "Атауы немесе сипаттамасы бойынша іздеу...",
+      "gridViewLabel": "Тор",
+      "listViewLabel": "Тізім",
+      "foundLabel": "Табылды"
+    },
+    "pagination": {
+      "nextLabel": "Келесі"
+    },
+    "formatBadge": {
+      "documentLabel": "Презентация"
     }
   },
   "cookies": {

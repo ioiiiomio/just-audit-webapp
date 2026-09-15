@@ -9,13 +9,19 @@ const FORMAT_ICON: Record<EducationMaterialFormat, typeof FileText> = {
   video: Video,
 }
 
-export function FormatBadge({ format }: { format: EducationMaterialFormat }) {
+export function FormatBadge({
+                              format,
+                              documentLabel = 'Презентация',
+                            }: {
+  format: EducationMaterialFormat
+  documentLabel?: string
+}) {
   const Icon = FORMAT_ICON[format]
-  const label = format === 'document' ? 'Презентация' : MATERIAL_FORMAT_LABELS[format]
+  const label = format === 'document' ? documentLabel : MATERIAL_FORMAT_LABELS[format]
   return (
-    <span className="inline-flex items-center gap-1.5 text-sm text-[#1A1A1A]/70">
+      <span className="inline-flex items-center gap-1.5 text-sm text-[#1A1A1A]/70">
       <Icon className="h-4 w-4" strokeWidth={1.75} />
-      {label}
+        {label}
     </span>
   )
 }

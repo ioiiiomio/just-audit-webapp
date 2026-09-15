@@ -14,10 +14,24 @@ export function MaterialDownloadsPanel({
                                            files,
                                            materialTitle,
                                            materialSlug,
+                                           title = 'Материалы для скачивания',
+                                           downloadAllLabel = 'Скачать все материалы',
+                                           downloadPdfLabel = 'Скачать PDF',
+                                           emailPromptText = 'Введите email, на который отправить материалы:',
+                                           sendEmailLabel = 'Отправить на email',
+                                           sentLabel = 'Отправлено',
+                                           errorLabel = 'Ошибка, попробуйте снова',
                                        }: {
     files: DownloadFile[]
     materialTitle: string
     materialSlug: string
+    title?: string
+    downloadAllLabel?: string
+    downloadPdfLabel?: string
+    emailPromptText?: string
+    sendEmailLabel?: string
+    sentLabel?: string
+    errorLabel?: string
 }) {
     const [emailStatus, setEmailStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
 
@@ -43,7 +57,7 @@ export function MaterialDownloadsPanel({
     }
 
     const handleSendEmail = async () => {
-        const email = window.prompt('Введите email, на который отправить материалы:')
+        const email = window.prompt(emailPromptText)
         if (!email) return
 
         setEmailStatus('sending')
@@ -69,7 +83,7 @@ export function MaterialDownloadsPanel({
 
     return (
         <div className="rounded-2xl border border-[#EDE9E3] bg-white p-6">
-            <h2 className="mb-4 font-serif text-lg text-[#1A1A1A]">Материалы для скачивания</h2>
+            <h2 className="mb-4 font-serif text-lg text-[#1A1A1A]">{title}</h2>
             <ul className="space-y-3">
                 {files.map((item) => (
                     <li
@@ -92,14 +106,14 @@ export function MaterialDownloadsPanel({
                 onClick={handleDownloadAll}
                 className="mt-5 w-full rounded-lg bg-[#155335] py-3 text-sm font-medium text-white hover:opacity-90"
             >
-                Скачать все материалы
+                {downloadAllLabel}
             </button>
             <button
                 type="button"
                 onClick={handleDownloadPdf}
                 className="mt-3 flex w-full items-center justify-center gap-2 rounded-lg border border-[#EDE9E3] py-3 text-sm text-[#1A1A1A] hover:border-[#155335]/30"
             >
-                <FileDown className="h-4 w-4" /> Скачать PDF
+                <FileDown className="h-4 w-4" /> {downloadPdfLabel}
             </button>
             <button
                 type="button"
@@ -114,11 +128,7 @@ export function MaterialDownloadsPanel({
                 ) : (
                     <Mail className="h-4 w-4" />
                 )}
-                {emailStatus === 'sent'
-                    ? 'Отправлено'
-                    : emailStatus === 'error'
-                        ? 'Ошибка, попробуйте снова'
-                        : 'Отправить на email'}
+                {emailStatus === 'sent' ? sentLabel : emailStatus === 'error' ? errorLabel : sendEmailLabel}
             </button>
         </div>
     )

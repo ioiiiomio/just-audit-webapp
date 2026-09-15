@@ -7,9 +7,7 @@ import type { Locale } from '@/i18n/routing'
 import { RichText } from '@payloadcms/richtext-lexical/react'
 import {
   Folder,
-  GraduationCap,
   Calendar,
-  Clock,
   FileType,
 } from 'lucide-react'
 import { ExpertCard } from '@/components/education/expert-card'
@@ -18,7 +16,7 @@ import { NewsletterCTA } from '@/components/education/newsletter-cta'
 import { FaqAccordion } from '@/components/education/faq-accordion'
 import { MaterialDownloadsPanel } from '@/components/education/material-downloads-panel'
 import { formatDate, extractHeadings } from '@/lib/education/format'
-import { MATERIAL_LEVEL_LABELS, type EducationMaterial } from '@/lib/education/types'
+import type { EducationMaterial } from '@/lib/education/types'
 
 export default async function SeminarDetailPage({
                                                   params,
@@ -80,21 +78,12 @@ export default async function SeminarDetailPage({
               <Folder className="h-4 w-4 text-[#155335]" strokeWidth={1.75} /> {material.category.name}
             </span>
             ) : null}
-            {material.level ? (
-                <span className="flex items-center gap-2">
-              <GraduationCap className="h-4 w-4 text-[#155335]" strokeWidth={1.75} />
-                  {MATERIAL_LEVEL_LABELS[material.level]}
-            </span>
-            ) : null}
             {material.publishedDate ? (
                 <span className="flex items-center gap-2">
               <Calendar className="h-4 w-4 text-[#155335]" strokeWidth={1.75} />
                   {formatDate(material.publishedDate, locale)}
             </span>
             ) : null}
-            <span className="flex items-center gap-2">
-            <Clock className="h-4 w-4 text-[#155335]" strokeWidth={1.75} /> {t('seminarDetail.durationApprox')}
-          </span>
             <span className="flex items-center gap-2">
             <FileType className="h-4 w-4 text-[#155335]" strokeWidth={1.75} /> {t('seminarDetail.formatTextFiles')}
           </span>
@@ -169,14 +158,21 @@ export default async function SeminarDetailPage({
                     files={material.downloadFiles}
                     materialTitle={material.title}
                     materialSlug={material.slug}
+                    title={t('seminarDetail.downloads.title')}
+                    downloadAllLabel={t('seminarDetail.downloads.downloadAll')}
+                    downloadPdfLabel={t('seminarDetail.downloads.downloadPdf')}
+                    emailPromptText={t('seminarDetail.downloads.emailPrompt')}
+                    sendEmailLabel={t('seminarDetail.downloads.sendEmail')}
+                    sentLabel={t('seminarDetail.downloads.sent')}
+                    errorLabel={t('seminarDetail.downloads.error')}
                 />
             ) : null}
           </aside>
         </section>
 
-        <section className="mx-auto max-w-6xl px-6 pb-20 lg:px-16">
-          <NewsletterCTA />
-        </section>
+        {/*<section className="mx-auto max-w-6xl px-6 pb-20 lg:px-16">*/}
+        {/*  <NewsletterCTA />*/}
+        {/*</section>*/}
       </div>
   )
 }

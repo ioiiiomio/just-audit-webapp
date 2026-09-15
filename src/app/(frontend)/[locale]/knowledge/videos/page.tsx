@@ -89,6 +89,7 @@ export default async function VideosListPage({
     }))
 
     const totalPages = Math.ceil(result.totalDocs / PAGE_SIZE)
+    const view = sp.view === 'list' ? 'list' : 'grid'
 
     return (
         <div className="bg-[#F7F5F2]">
@@ -117,12 +118,36 @@ export default async function VideosListPage({
                     categories={categoryOptions}
                     topics={topicOptions}
                     years={yearOptions}
+                    categoriesTitle={t('categoriesTitle')}
+                    allCategoriesLabel={t('videosList.allCategoriesLabel')}
+                    topicsLabel={t('seminarsList.topicsLabel')}
+                    allTopicsLabel={t('seminarsList.allTopicsLabel')}
+                    yearLabel={t('videosList.yearLabel')}
+                    allYearsLabel={t('videosList.allYearsLabel')}
                 />
 
                 <div className="mt-8 flex-1 lg:mt-0">
-                    <SearchSortBar resultsCount={result.totalDocs} resultsLabel={t('videosList.resultsLabel')} />
+                    <SearchSortBar
+                        resultsCount={result.totalDocs}
+                        resultsLabel={t('videosList.resultsLabel')}
+                        sortOptions={[
+                            { value: 'newest', label: t('searchSortBar.sortNewest') },
+                            { value: 'oldest', label: t('searchSortBar.sortOldest') },
+                            { value: 'title', label: t('searchSortBar.sortByTitle') },
+                        ]}
+                        searchPlaceholder={t('searchSortBar.searchPlaceholder')}
+                        gridViewLabel={t('searchSortBar.gridViewLabel')}
+                        listViewLabel={t('searchSortBar.listViewLabel')}
+                        foundLabel={t('searchSortBar.foundLabel')}
+                    />
 
-                    <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                    <div
+                        className={
+                            view === 'list'
+                                ? 'mt-6 flex flex-col gap-4'
+                                : 'mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3'
+                        }
+                    >
                         {(result.docs as EducationMaterial[]).map((material) => (
                             <VideoCard key={material.id} material={material} variant="grid" />
                         ))}
@@ -134,6 +159,7 @@ export default async function VideosListPage({
                             totalPages={totalPages}
                             basePath="/knowledge/videos"
                             searchParams={sp}
+                            nextLabel={t('pagination.nextLabel')}
                         />
                     </div>
                 </div>

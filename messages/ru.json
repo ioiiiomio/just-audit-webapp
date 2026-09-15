@@ -164,13 +164,17 @@
     "categoriesTitle": "Категории",
     "seminarsTitle": "Семинары и материалы",
     "viewAll": "Смотреть все",
-    "videosTitle": "YouTube-видео",
+    "videosTitle": "Видеоматериалы",
     "imageAlt": "База знаний JUST Audit",
     "seminarsList": {
       "breadcrumb": "Семинары и материалы",
       "title": "Семинары и материалы",
       "subtitle": "Практические материалы от наших экспертов: семинары, статьи и разборы с презентациями и дополнительными файлами.",
-      "resultsLabel": "материалов"
+      "resultsLabel": "материалов",
+      "filtersTitle": "Фильтры",
+      "materialTypeLabel": "Тип материала",
+      "topicsLabel": "Темы",
+      "allTopicsLabel": "Все темы"
     },
     "seminarDetail": {
       "breadcrumb": "Текстовый семинар",
@@ -182,7 +186,16 @@
       "consultationCta": "Получить консультацию",
       "relatedTitle": "Похожие семинары и материалы",
       "expertTitle": "Эксперт семинара",
-      "contentsTitle": "Содержание"
+      "contentsTitle": "Содержание",
+      "downloads": {
+        "title": "Материалы для скачивания",
+        "downloadAll": "Скачать все материалы",
+        "downloadPdf": "Скачать PDF",
+        "emailPrompt": "Введите email, на который отправить материалы:",
+        "sendEmail": "Отправить на email",
+        "sent": "Отправлено",
+        "error": "Ошибка, попробуйте снова"
+      }
     },
     "videosList": {
       "titleLine1": "Видеоматериалы",
@@ -193,7 +206,10 @@
       "duration10to30": "10–30 минут",
       "duration30to60": "30–60 минут",
       "durationOver60": "Более 60 минут",
-      "yearOlder": "2021 и ранее"
+      "yearOlder": "2021 и ранее",
+      "allCategoriesLabel": "Все категории",
+      "yearLabel": "Год",
+      "allYearsLabel": "Все годы"
     },
     "videoDetail": {
       "videoUnavailable": "Видео недоступно",
@@ -206,6 +222,22 @@
       "tagsTitle": "Теги",
       "otherVideosTitle": "Другие видео",
       "allVideosCta": "Все видео"
+    },
+    "allMaterials": "Все материалы",
+    "searchSortBar": {
+      "sortNewest": "Сначала новые",
+      "sortOldest": "Сначала старые",
+      "sortByTitle": "По названию",
+      "searchPlaceholder": "Поиск по названию или описанию...",
+      "gridViewLabel": "Сетка",
+      "listViewLabel": "Список",
+      "foundLabel": "Найдено"
+    },
+    "pagination": {
+      "nextLabel": "Следующая"
+    },
+    "formatBadge": {
+      "documentLabel": "Презентация"
     }
   },
   "cookies": {

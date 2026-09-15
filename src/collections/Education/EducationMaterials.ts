@@ -71,15 +71,6 @@ export const EducationMaterials: CollectionConfig = {
             },
         },
         {
-            name: 'level',
-            type: 'select',
-            options: [
-                { label: 'Базовый', value: 'basic' },
-                { label: 'Средний', value: 'medium' },
-                { label: 'Продвинутый', value: 'advanced' },
-            ],
-        },
-        {
             name: 'category',
             type: 'relationship',
             relationTo: 'education-categories',
@@ -133,7 +124,7 @@ export const EducationMaterials: CollectionConfig = {
             type: 'number',
             admin: {
                 description:
-                    'Used for the video duration filter buckets and the seminar length slider. Display strings (e.g. "28:45", "1 ч 20 мин") are computed at render time from this value.',
+                    'Used for the video duration filter buckets. Display strings (e.g. "28:45", "1 ч 20 мин") are computed at render time from this value.',
             },
         },
         {
