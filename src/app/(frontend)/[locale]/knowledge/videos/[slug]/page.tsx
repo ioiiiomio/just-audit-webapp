@@ -5,10 +5,11 @@ import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import { Link } from '@/i18n/navigation'
 import type { Locale } from '@/i18n/routing'
-import { Calendar, Clock, Folder, Radio, Youtube, ExternalLink, ArrowRight } from 'lucide-react'
+import { Calendar, Clock, Folder, Radio, Youtube, Instagram, ExternalLink, ArrowRight } from 'lucide-react'
 import { ExpertCard } from '@/components/education/expert-card'
 import { NewsletterCTA } from '@/components/education/newsletter-cta'
-import { formatClock, formatDate, getYoutubeId } from '@/lib/education/format'
+import { InstagramEmbed } from '@/components/education/instagram-embed'
+import { formatClock, formatDate, getYoutubeId, detectVideoProvider } from '@/lib/education/format'
 import type { EducationMaterial } from '@/lib/education/types'
 
 export default async function VideoDetailPage({
@@ -29,7 +30,7 @@ export default async function VideoDetailPage({
   })
 
   const material = result.docs[0] as EducationMaterial | undefined
-  if (!material) notFound()
+  if (!material) return notFound()
 
   const relatedResult = await payload.find({
     collection: 'education-materials',
@@ -42,7 +43,17 @@ export default async function VideoDetailPage({
     depth: 1,
   })
 
+  const provider = detectVideoProvider(material.videoUrl)
   const youtubeId = getYoutubeId(material.videoUrl)
+
+  const watchButtonConfig = {
+    youtube: { label: t('videoDetail.watchOnYoutube'), icon: Youtube },
+    'youtube-shorts': { label: t('videoDetail.watchOnYoutube'), icon: Youtube },
+    instagram: { label: t('videoDetail.watchOnInstagram'), icon: Instagram },
+    unknown: { label: t('videoDetail.watchOnYoutube'), icon: ExternalLink },
+  } as const
+
+  const WatchIcon = watchButtonConfig[provider].icon
 
   return (
       <div className="bg-[#F7F5F2]">
@@ -61,7 +72,7 @@ export default async function VideoDetailPage({
         <section className="mx-auto max-w-6xl px-6 pb-14 pt-6 lg:px-16">
           <div className="grid gap-8 lg:grid-cols-[1fr_360px]">
             <div className="overflow-hidden rounded-2xl bg-black">
-              {youtubeId ? (
+              {provider === 'youtube' && youtubeId ? (
                   <div className="aspect-video">
                     <iframe
                         className="h-full w-full"
@@ -70,6 +81,20 @@ export default async function VideoDetailPage({
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowFullScreen
                     />
+                  </div>
+              ) : provider === 'youtube-shorts' && youtubeId ? (
+                  <div className="mx-auto aspect-[9/16] max-w-[360px]">
+                    <iframe
+                        className="h-full w-full"
+                        src={`https://www.youtube.com/embed/${youtubeId}`}
+                        title={material.title}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                    />
+                  </div>
+              ) : provider === 'instagram' && material.videoUrl ? (
+                  <div className="bg-white py-6">
+                    <InstagramEmbed url={material.videoUrl} />
                   </div>
               ) : (
                   <div className="flex aspect-video items-center justify-center text-white/40">
@@ -119,8 +144,8 @@ export default async function VideoDetailPage({
                       rel="noopener noreferrer"
                       className="mt-8 flex items-center justify-center gap-2 rounded-lg bg-[#155335] px-6 py-3.5 text-sm font-medium text-white hover:opacity-90"
                   >
-                    <Youtube className="h-4 w-4" />
-                    {t('videoDetail.watchOnYoutube')}
+                    <WatchIcon className="h-4 w-4" />
+                    {watchButtonConfig[provider].label}
                     <ExternalLink className="h-3.5 w-3.5" />
                   </a>
               ) : null}

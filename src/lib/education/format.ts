@@ -37,12 +37,6 @@ export function formatFileSize(bytes?: number | null): string {
   return `${(bytes / (1024 * 1024)).toFixed(1)} МБ`
 }
 
-export function getYoutubeId(url?: string | null): string | null {
-  if (!url) return null
-  const match = url.match(/(?:youtu\.be\/|v=|embed\/)([a-zA-Z0-9_-]{11})/)
-  return match ? match[1] : null
-}
-
 // Best-effort extraction of h2 headings from Payload's Lexical richText JSON,
 // used to build the "Содержание" (table of contents) sidebar. Adjust the node
 // shape here if your richText editor config differs.
@@ -77,4 +71,37 @@ export function extractHeadings(content: unknown): HeadingEntry[] {
 export function getYoutubeThumbnail(url?: string | null): string | null {
   const id = getYoutubeId(url)
   return id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : null
+}
+
+export type VideoProvider = 'youtube' | 'youtube-shorts' | 'instagram' | 'unknown'
+
+export function detectVideoProvider(url?: string | null): VideoProvider {
+  if (!url) return 'unknown'
+  if (/instagram\.com/i.test(url)) return 'instagram'
+  if (/youtube\.com\/shorts\//i.test(url)) return 'youtube-shorts'
+  if (/(youtube\.com|youtu\.be)/i.test(url)) return 'youtube'
+  return 'unknown'
+}
+
+// уже есть getYoutubeId — дополняем паттерн под /shorts/
+export function getYoutubeId(url?: string | null): string | null {
+  if (!url) return null
+  const patterns = [
+    /youtube\.com\/watch\?v=([^&]+)/,
+    /youtube\.com\/shorts\/([^?&]+)/,
+    /youtu\.be\/([^?&]+)/,
+    /youtube\.com\/embed\/([^?&]+)/,
+  ]
+  for (const p of patterns) {
+    const m = url.match(p)
+    if (m) return m[1]
+  }
+  return null
+}
+
+// instagram.com/reel/{id}/ или /p/{id}/
+export function getInstagramPostUrl(url?: string | null): string | null {
+  if (!url) return null
+  const m = url.match(/instagram\.com\/(reel|p|tv)\/([^/?]+)/i)
+  return m ? url.split('?')[0].replace(/\/$/, '') : null
 }

@@ -1,6 +1,13 @@
 import type { CollectionConfig } from 'payload'
 import { sanitizeSlug } from './hooks/sanitizeSlug'
 
+// Kept in sync with lib/education/format.ts#detectVideoProvider — there's no
+// separate "source" field in the schema, so we detect Instagram straight off
+// the URL to decide whether a thumbnail upload is required.
+function isInstagramUrl(url?: string | null): boolean {
+    return typeof url === 'string' && /instagram\.com/i.test(url)
+}
+
 export const EducationMaterials: CollectionConfig = {
     slug: 'education-materials',
     labels: {
@@ -99,7 +106,8 @@ export const EducationMaterials: CollectionConfig = {
             type: 'text',
             admin: {
                 condition: (_, siblingData) => siblingData?.contentType === 'video',
-                description: 'Full YouTube URL. Video ID is parsed at render time.',
+                description:
+                    'Full YouTube, YouTube Shorts, or Instagram (reel/post) URL. Video ID / provider is parsed at render time. Instagram links require a manually uploaded thumbnail below.',
             },
         },
         // --- article-only fields ---
@@ -135,6 +143,17 @@ export const EducationMaterials: CollectionConfig = {
             name: 'thumbnail',
             type: 'upload',
             relationTo: 'media', // adjust if your Media collection slug differs
+            admin: {
+                description:
+                    'Optional for YouTube (falls back to the YouTube-hosted thumbnail). Required for Instagram — there is no free API to fetch an Instagram preview image automatically, so upload a screenshot/cover manually.',
+            },
+            validate: (value, { siblingData }) => {
+                const url = (siblingData as { videoUrl?: string } | undefined)?.videoUrl
+                if (isInstagramUrl(url) && !value) {
+                    return 'Thumbnail is required for Instagram videos (no automatic preview available for Instagram links).'
+                }
+                return true
+            },
         },
         {
             name: 'publishedDate',
