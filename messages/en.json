@@ -120,7 +120,7 @@
       "taxAudit": "Tax Audit",
       "internalAudit": "Internal Audit",
       "consulting": "Consulting",
-      "training": "Training"
+      "training": "Knowledge Base"
     },
     "contacts": {
       "address": "Astana, Kazakhstan",
@@ -162,13 +162,13 @@
     "subtitle": "Seminars, articles, and expert materials for professionals in audit and financial consulting.",
     "cta": "View Materials",
     "categoriesTitle": "Categories",
-    "seminarsTitle": "Seminars and Materials",
+    "seminarsTitle": "Text Materials",
     "viewAll": "View All",
     "videosTitle": "Video materials",
     "imageAlt": "JUST Audit Knowledge Base",
     "seminarsList": {
-      "breadcrumb": "Seminars and Materials",
-      "title": "Seminars and Materials",
+      "breadcrumb": "Text Materials",
+      "title": "Text Materials",
       "subtitle": "Practical materials from our experts — seminars, articles, and analyses with presentations and additional files.",
       "resultsLabel": "materials",
       "filtersTitle": "Filters",
@@ -208,7 +208,9 @@
       "yearOlder": "2021 and earlier",
       "allCategoriesLabel": "All categories",
       "yearLabel": "Year",
-      "allYearsLabel": "All years"
+      "allYearsLabel": "All years",
+      "noTopicTitle": "Other videos",
+      "noTopicDescription": "Videos for other topics"
     },
     "videoDetail": {
       "videoUnavailable": "Video unavailable",

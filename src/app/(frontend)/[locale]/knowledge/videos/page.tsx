@@ -1,8 +1,10 @@
+// videos/page.tsx
 import { getPayload } from 'payload'
 import { getTranslations } from 'next-intl/server'
 import configPromise from '@payload-config'
 import type { Where } from 'payload'
 import { Link } from '@/i18n/navigation'
+import Image from 'next/image'
 import type { Locale } from '@/i18n/routing'
 import { VideoCard } from '@/components/education/video-card'
 import { SearchSortBar } from '@/components/education/search-sort-bar'
@@ -184,7 +186,7 @@ export default async function VideosListPage({
         return (
             <main className="min-h-screen bg-[#F7F5F2]">
                 <PageHeader t={t} />
-                <section className="w-full gap-10 px-5 pb-20 lg:flex lg:px-10">
+                <section className="w-full gap-10 px-6 pb-20 lg:flex lg:px-16">
                     <VideoFiltersSidebar {...sidebarProps} />
                     <div className="mt-8 flex-1 lg:mt-0">
                         <SearchSortBar
@@ -235,7 +237,7 @@ export default async function VideosListPage({
     return (
         <main className="min-h-screen bg-[#F7F5F2]">
             <PageHeader t={t} />
-            <section className="w-full gap-10 px-5 pb-20 lg:flex lg:px-10">
+            <section className="w-full gap-10 px-6 pb-20 lg:flex lg:px-16">
                 <VideoFiltersSidebar {...sidebarProps} />
                 <div className="mt-8 flex-1 lg:mt-0">
                     <SearchSortBar
@@ -279,7 +281,7 @@ export default async function VideosListPage({
 function PageHeader({ t }: { t: Awaited<ReturnType<typeof getTranslations>> }) {
     return (
         <>
-            <div className="w-full px-5 pt-8 lg:px-10">
+            <div className="w-full px-6 pt-8 lg:px-16">
                 <nav className="flex items-center gap-2 text-sm text-[#1A1A1A]/50">
                     <Link href="/">{t('home')}</Link>
                     <span>/</span>
@@ -288,13 +290,27 @@ function PageHeader({ t }: { t: Awaited<ReturnType<typeof getTranslations>> }) {
                     <span className="text-[#1A1A1A]">{t('videosTitle')}</span>
                 </nav>
             </div>
-            <section className="w-full px-5 pb-10 pt-6 lg:px-10">
-                <h1 className="font-serif text-4xl text-[#1A1A1A]">
-                    {t('videosList.titleLine1')}
-                    <br />
-                    {t('videosList.titleLine2')}
-                </h1>
-                <p className="mt-4 max-w-xl text-base text-[#1A1A1A]/60">{t('videosList.subtitle')}</p>
+            <section className="w-full gap-10 px-6 pb-10 pt-6 lg:flex lg:px-16">
+                <div className="grid w-full items-center gap-10 lg:grid-cols-[3fr_2fr]">
+                    <div className="text-left">
+                        <h1 className="font-serif text-4xl text-[#1A1A1A]">
+                            {t('videosList.titleLine1')}
+                        </h1>
+                        <p className="mt-4 max-w-xl text-base text-[#1A1A1A]/60">
+                            {t('videosList.subtitle')}
+                        </p>
+                    </div>
+                    <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl bg-[#EDE9E3] lg:ml-auto lg:aspect-[16/10] lg:max-w-md">
+                        <Image
+                            src="/images/education.png"
+                            alt={t('imageAlt')}
+                            fill
+                            priority
+                            className="object-cover"
+                            sizes="(max-width: 1024px) 100vw, 400px"
+                        />
+                    </div>
+                </div>
             </section>
         </>
     )

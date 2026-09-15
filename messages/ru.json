@@ -120,7 +120,7 @@
       "taxAudit": "Налоговый аудит",
       "internalAudit": "Внутренний аудит",
       "consulting": "Консалтинг",
-      "training": "Обучение"
+      "training": "База знаний"
     },
     "contacts": {
       "address": "г. Астана, Казахстан",
@@ -162,13 +162,13 @@
     "subtitle": "Семинары, статьи и экспертные материалы для профессионалов в сфере аудита и финансового консалтинга.",
     "cta": "Смотреть материалы",
     "categoriesTitle": "Категории",
-    "seminarsTitle": "Семинары и материалы",
+    "seminarsTitle": "Текстовые материалы",
     "viewAll": "Смотреть все",
     "videosTitle": "Видеоматериалы",
     "imageAlt": "База знаний JUST Audit",
     "seminarsList": {
-      "breadcrumb": "Семинары и материалы",
-      "title": "Семинары и материалы",
+      "breadcrumb": "Текстовые материалы",
+      "title": "Текстовые материалы",
       "subtitle": "Практические материалы от наших экспертов: семинары, статьи и разборы с презентациями и дополнительными файлами.",
       "resultsLabel": "материалов",
       "filtersTitle": "Фильтры",
@@ -208,7 +208,9 @@
       "yearOlder": "2021 и ранее",
       "allCategoriesLabel": "Все категории",
       "yearLabel": "Год",
-      "allYearsLabel": "Все годы"
+      "allYearsLabel": "Все годы",
+      "noTopicTitle": "Другие видео",
+      "noTopicDescription": "Видео на другие темы"
     },
     "videoDetail": {
       "videoUnavailable": "Видео недоступно",
