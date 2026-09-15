@@ -142,14 +142,16 @@ export const EducationMaterials: CollectionConfig = {
         {
             name: 'thumbnail',
             type: 'upload',
-            relationTo: 'media', // adjust if your Media collection slug differs
+            relationTo: 'media',
+            hasMany: false, // pins the type to UploadFieldSingleValidation, no union needed
             admin: {
-                description:
-                    'Optional for YouTube (falls back to the YouTube-hosted thumbnail). Required for Instagram — there is no free API to fetch an Instagram preview image automatically, so upload a screenshot/cover manually.',
+                description: '...',
             },
-            validate: (value, { siblingData }) => {
-                const url = (siblingData as { videoUrl?: string } | undefined)?.videoUrl
-                if (isInstagramUrl(url) && !value) {
+            validate: (value: unknown, options: unknown) => {
+                const siblingData = (options as { siblingData?: { videoUrl?: string } })?.siblingData
+                const url = siblingData?.videoUrl
+                const isEmpty = value === null || value === undefined || value === ''
+                if (isInstagramUrl(url) && isEmpty) {
                     return 'Thumbnail is required for Instagram videos (no automatic preview available for Instagram links).'
                 }
                 return true
