@@ -11,7 +11,7 @@ interface VideoCardProps {
 
 export function VideoCard({ material, variant = 'grid' }: VideoCardProps) {
   const thumbnail = material.thumbnail?.url ?? getYoutubeThumbnail(material.videoUrl)
-  const topicLabel = material.topics?.[0]?.name
+  const topicLabel = material.topics?.[0]?.topic?.name
 
   return (
       <Link

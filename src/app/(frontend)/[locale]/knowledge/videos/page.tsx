@@ -10,6 +10,57 @@ import { Pagination } from '@/components/education/pagination'
 import { VideoFiltersSidebar } from '@/components/education/filters/video-filters-sidebar'
 import { TopicSection } from '@/components/education/topic-section'
 import type { EducationMaterial, EducationCategory, EducationTopic } from '@/lib/education/types'
+import type { Metadata } from 'next'
+
+export const revalidate = 60
+
+const TITLES: Record<string, string> = {
+    ru: 'Видео материалы | Just Audit',
+    kz: 'Бейне материалдар | Just Audit',
+    en: 'Video Materials | Just Audit',
+}
+
+const DESCRIPTIONS: Record<string, string> = {
+    ru: 'Экспертные видеоматериалы об аудите, финансах и консалтинге от команды JUST AUDIT.',
+    kz: 'JUST AUDIT командасының аудит, қаржы және консалтинг бойынша сарапшы бейне материалдары.',
+    en: 'Expert video content on audit, finance, and consulting from the JUST AUDIT team.',
+}
+
+const OG_LOCALES: Record<string, string> = {
+    ru: 'ru_KZ',
+    kz: 'kk_KZ',
+    en: 'en_US',
+}
+
+export async function generateMetadata({
+                                           params,
+                                       }: {
+    params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+    const { locale } = await params
+
+    return {
+        title: {
+            default: TITLES[locale] ?? TITLES.ru,
+            template: '%s | Just Audit',
+        },
+        description: DESCRIPTIONS[locale] ?? DESCRIPTIONS.ru,
+        alternates: {
+            canonical: `https://justaudit.kz/${locale}/knowledge/videos`,
+            languages: {
+                'ru-KZ': 'https://justaudit.kz/ru/knowledge/videos',
+                'kk-KZ': 'https://justaudit.kz/kz/knowledge/videos',
+                'en-US': 'https://justaudit.kz/en/knowledge/videos',
+            },
+        },
+        openGraph: {
+            type: 'website',
+            locale: OG_LOCALES[locale] ?? OG_LOCALES.ru,
+            url: `https://justaudit.kz/${locale}/knowledge/videos`,
+            siteName: 'Just Audit',
+        },
+    }
+}
 
 const PAGE_SIZE = 9
 const PREVIEW_SIZE = 4 // cards shown per topic row before "Показать все"
@@ -131,9 +182,9 @@ export default async function VideosListPage({
         const paged = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
 
         return (
-            <div className="bg-[#F7F5F2]">
+            <main className="min-h-screen bg-[#F7F5F2]">
                 <PageHeader t={t} />
-                <section className="mx-auto max-w-6xl gap-10 px-6 pb-20 lg:flex lg:px-16">
+                <section className="w-full gap-10 px-5 pb-20 lg:flex lg:px-10">
                     <VideoFiltersSidebar {...sidebarProps} />
                     <div className="mt-8 flex-1 lg:mt-0">
                         <SearchSortBar
@@ -165,7 +216,7 @@ export default async function VideosListPage({
                         </div>
                     </div>
                 </section>
-            </div>
+            </main>
         )
     }
 
@@ -182,9 +233,9 @@ export default async function VideosListPage({
     const untaggedMaterials = allMaterials.filter((m) => !m.topics || m.topics.length === 0)
 
     return (
-        <div className="bg-[#F7F5F2]">
+        <main className="min-h-screen bg-[#F7F5F2]">
             <PageHeader t={t} />
-            <section className="mx-auto max-w-6xl gap-10 px-6 pb-20 lg:flex lg:px-16">
+            <section className="w-full gap-10 px-5 pb-20 lg:flex lg:px-10">
                 <VideoFiltersSidebar {...sidebarProps} />
                 <div className="mt-8 flex-1 lg:mt-0">
                     <SearchSortBar
@@ -221,14 +272,14 @@ export default async function VideosListPage({
                     </div>
                 </div>
             </section>
-        </div>
+        </main>
     )
 }
 
 function PageHeader({ t }: { t: Awaited<ReturnType<typeof getTranslations>> }) {
     return (
         <>
-            <div className="mx-auto max-w-6xl px-6 pt-8 lg:px-16">
+            <div className="w-full px-5 pt-8 lg:px-10">
                 <nav className="flex items-center gap-2 text-sm text-[#1A1A1A]/50">
                     <Link href="/">{t('home')}</Link>
                     <span>/</span>
@@ -237,7 +288,7 @@ function PageHeader({ t }: { t: Awaited<ReturnType<typeof getTranslations>> }) {
                     <span className="text-[#1A1A1A]">{t('videosTitle')}</span>
                 </nav>
             </div>
-            <section className="mx-auto max-w-6xl px-6 pb-10 pt-6 lg:px-16">
+            <section className="w-full px-5 pb-10 pt-6 lg:px-10">
                 <h1 className="font-serif text-4xl text-[#1A1A1A]">
                     {t('videosList.titleLine1')}
                     <br />

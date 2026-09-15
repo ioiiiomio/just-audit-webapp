@@ -3,10 +3,7 @@ import { Link } from '@/i18n/navigation'
 import { getTranslations } from 'next-intl/server'
 import { formatDuration } from '@/lib/education/format'
 import { FormatBadge } from './format-badge'
-import {
-  MATERIAL_TYPE_LABELS,
-  type EducationMaterial,
-} from '@/lib/education/types'
+import type { EducationMaterial } from '@/lib/education/types'
 import { GraduationCap } from 'lucide-react'
 
 export async function EducationCard({ material, locale }: { material: EducationMaterial; locale: string }) {
@@ -31,9 +28,11 @@ export async function EducationCard({ material, locale }: { material: EducationM
               </div>
           )}
 
-          <span className="absolute left-3 top-3 rounded-full bg-white px-3 py-1 text-xs font-medium text-[#1A1A1A] shadow-sm">
-          {MATERIAL_TYPE_LABELS[material.type]}
-        </span>
+          {material.type ? (
+              <span className="absolute left-3 top-3 rounded-full bg-white px-3 py-1 text-xs font-medium text-[#1A1A1A] shadow-sm">
+                {material.type.name}
+              </span>
+          ) : null}
 
           {material.durationSeconds ? (
               <span className="absolute bottom-3 right-3 rounded bg-black/70 px-2 py-0.5 text-xs text-white">

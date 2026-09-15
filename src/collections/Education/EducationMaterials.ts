@@ -47,15 +47,13 @@ export const EducationMaterials: CollectionConfig = {
             },
         },
         {
+            // Was a hardcoded `select` (lecture/seminar/masterclass/webinar) — now a
+            // relationship so new types can be created from the admin without a
+            // code deploy. See education-material-types collection.
             name: 'type',
-            type: 'select',
+            type: 'relationship',
+            relationTo: 'education-material-types',
             required: true,
-            options: [
-                { label: 'Лекция', value: 'lecture' },
-                { label: 'Семинар', value: 'seminar' },
-                { label: 'Мастер-класс', value: 'masterclass' },
-                { label: 'Вебинар', value: 'webinar' },
-            ],
         },
         {
             name: 'format',

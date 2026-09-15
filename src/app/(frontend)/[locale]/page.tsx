@@ -61,7 +61,7 @@ export async function generateMetadata({
       siteName: "Just Audit",
     },
     other: {
-      generator: "Built by Arslan",
+      generator: "Built by ioiiiomio",
     },
   };
 }

@@ -10,7 +10,7 @@ interface TopicSectionProps {
     /** Omit for the "materials without a topic" bucket — it gets a folder icon instead of a number. */
     index?: number
     title: string
-    description?: string
+    description?: string | null
     /** Already sorted (by this topic's order) and sliced to the preview size. */
     materials: EducationMaterial[]
     /** Full count for this topic, used for the "N уроков" label and the "show all" link. */

@@ -1,6 +1,6 @@
 // Populated-relation shape for EducationMaterials, assuming queries use `depth: 2`
-// so category/topics/expert/thumbnail/downloadFiles.file come back as objects, not IDs.
-// Swap these for the generated types in `@/payload-types` once you've run
+// so category/topics/type/expert/thumbnail/downloadFiles.file come back as objects,
+// not IDs. Swap these for the generated types in `@/payload-types` once you've run
 // `pnpm payload generate:types` against the updated collections.
 
 export interface EducationCategory {
@@ -21,11 +21,23 @@ export interface EducationTopic {
   order?: number | null
 }
 
+/**
+ * Was a hardcoded string union (lecture/seminar/masterclass/webinar) — now a
+ * Payload-managed collection (education-material-types) so new types can be
+ * added from the admin without a code deploy.
+ */
+export interface EducationMaterialType {
+  id: string | number
+  name: string
+  slug: string
+  order?: number | null
+}
+
 export interface EducationMedia {
   id: string | number
   url: string
   alt?: string | null
-  filesize?: number | null
+  filesize?: number
   filename?: string | null
 }
 
@@ -37,8 +49,6 @@ export interface EducationExpert {
   bulletPoints?: { label: string; icon?: string | null; id?: string }[] | null
 }
 
-export type EducationMaterialType = 'lecture' | 'seminar' | 'masterclass' | 'webinar'
-export type EducationMaterialLevel = 'basic' | 'medium' | 'advanced'
 export type EducationMaterialFormat = 'pdf' | 'video' | 'document' | 'excel'
 export type EducationContentType = 'video' | 'article'
 
@@ -49,7 +59,6 @@ export interface EducationMaterial {
   contentType: EducationContentType
   type: EducationMaterialType
   format?: EducationMaterialFormat | null
-  level?: EducationMaterialLevel | null
   category?: EducationCategory | null
   /**
    * Each entry pairs a topic with this material's position *within that
@@ -59,7 +68,12 @@ export interface EducationMaterial {
   topics?: { topic: EducationTopic; order: number }[] | null
   excerpt?: string | null
   videoUrl?: string | null
-  content?: unknown
+  // Left loosely typed on purpose: `lexical`'s SerializedEditorState type isn't
+  // reachable as a direct import in this project's TS config, and this value
+  // only ever gets handed straight to `<RichText data={...} />` — it's never
+  // read or transformed here, so precision isn't worth chasing a working
+  // import path for a third time.
+  content?: any
   faq?: { question: string; answer: string; id?: string }[] | null
   durationSeconds?: number | null
   thumbnail?: EducationMedia | null
@@ -67,19 +81,6 @@ export interface EducationMaterial {
   expert?: EducationExpert | null
   downloadFiles?: { label: string; file: EducationMedia; id?: string }[] | null
   tags?: { label: string; id?: string }[] | null
-}
-
-export const MATERIAL_TYPE_LABELS: Record<EducationMaterialType, string> = {
-  lecture: 'Лекция',
-  seminar: 'Семинар',
-  masterclass: 'Мастер-класс',
-  webinar: 'Вебинар',
-}
-
-export const MATERIAL_LEVEL_LABELS: Record<EducationMaterialLevel, string> = {
-  basic: 'Базовый',
-  medium: 'Средний',
-  advanced: 'Продвинутый',
 }
 
 export const MATERIAL_FORMAT_LABELS: Record<EducationMaterialFormat, string> = {

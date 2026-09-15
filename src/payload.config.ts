@@ -32,6 +32,7 @@ import { resendAdapter } from "@payloadcms/email-resend";
 import { EducationCategories } from './collections/Education/EducationCategories'
 import { EducationTopics } from './collections/Education/EducationTopics'
 import { EducationMaterials } from './collections/Education/EducationMaterials'
+import {EducationMaterialTypes} from "@/collections/Education/EducationMaterialTypes";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -62,6 +63,7 @@ export default buildConfig({
     EducationCategories,
     EducationTopics,
     EducationMaterials,
+    EducationMaterialTypes,
   ],
   globals: [
     SiteSettings,
