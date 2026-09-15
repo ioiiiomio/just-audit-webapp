@@ -20,7 +20,6 @@ import { Submissions } from "./collections/Submissions";
 import { Announcements } from "./collections/Announcements";
 import { NavItems } from "./collections/NavItems";
 import { Footer } from "./globals/Footer";
-
 // pages
 import { Careers } from "./globals/Careers";
 import { CareerBenefits } from "./collections/CareerBenefits";
@@ -28,6 +27,11 @@ import { ContactDetails } from "./collections/ContactDetails";
 import { Pages } from "./collections/Pages";
 
 import { resendAdapter } from "@payloadcms/email-resend";
+
+// edu section
+import { EducationCategories } from './collections/Education/EducationCategories'
+import { EducationTopics } from './collections/Education/EducationTopics'
+import { EducationMaterials } from './collections/Education/EducationMaterials'
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -55,6 +59,9 @@ export default buildConfig({
     NavItems,
     CareerBenefits,
     Pages,
+    EducationCategories,
+    EducationTopics,
+    EducationMaterials,
   ],
   globals: [
     SiteSettings,
@@ -99,21 +106,42 @@ export default buildConfig({
     "https://just-audit-pi.vercel.app",
     "http://localhost:3000",
   ],
+  // plugins: [
+  //   s3Storage({
+  //     collections: {
+  //       media: true,
+  //     },
+  //     bucket: process.env.R2_BUCKET || "",
+  //     config: {
+  //       endpoint: process.env.R2_ENDPOINT,
+  //       region: "auto",
+  //       credentials: {
+  //         accessKeyId: process.env.R2_ACCESS_KEY_ID || "",
+  //         secretAccessKey: process.env.R2_SECRET_ACCESS_KEY || "",
+  //       },
+  //       forcePathStyle: true,
+  //     },
+  //   }),
+  // ],
   plugins: [
-    s3Storage({
-      collections: {
-        media: true,
-      },
-      bucket: process.env.R2_BUCKET || "",
-      config: {
-        endpoint: process.env.R2_ENDPOINT,
-        region: "auto",
-        credentials: {
-          accessKeyId: process.env.R2_ACCESS_KEY_ID || "",
-          secretAccessKey: process.env.R2_SECRET_ACCESS_KEY || "",
-        },
-        forcePathStyle: true,
-      },
-    }),
+    ...(process.env.USE_R2_STORAGE === "true"
+        ? [
+          s3Storage({
+            collections: {
+              media: true,
+            },
+            bucket: process.env.R2_BUCKET || "",
+            config: {
+              endpoint: process.env.R2_ENDPOINT,
+              region: "auto",
+              credentials: {
+                accessKeyId: process.env.R2_ACCESS_KEY_ID || "",
+                secretAccessKey: process.env.R2_SECRET_ACCESS_KEY || "",
+              },
+              forcePathStyle: true,
+            },
+          }),
+        ]
+        : []),
   ],
 });

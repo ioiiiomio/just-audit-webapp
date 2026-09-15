@@ -153,6 +153,61 @@
       "errorResumeSize": "The resume file exceeds 5MB"
     }
   },
+  "knowledge": {
+    "home": "Home",
+    "breadcrumb": "Knowledge Base",
+    "badge": "JUST Audit Knowledge Base",
+    "heroTitleLine1": "Knowledge that",
+    "heroTitleLine2": "creates value",
+    "subtitle": "Seminars, articles, and expert materials for professionals in audit and financial consulting.",
+    "cta": "View Materials",
+    "categoriesTitle": "Categories",
+    "seminarsTitle": "Seminars and Materials",
+    "viewAll": "View All",
+    "videosTitle": "YouTube Videos",
+    "imageAlt": "JUST Audit Knowledge Base",
+    "seminarsList": {
+      "breadcrumb": "Seminars and Materials",
+      "title": "Seminars and Materials",
+      "subtitle": "Practical materials from our experts — seminars, articles, and analyses with presentations and additional files.",
+      "resultsLabel": "materials"
+    },
+    "seminarDetail": {
+      "breadcrumb": "Text Seminar",
+      "badge": "Text Seminar",
+      "durationApprox": "≈ 45 min.",
+      "formatTextFiles": "Text + files",
+      "consultationTitle": "Need advice on applying the materiality principle?",
+      "consultationSubtitle": "Our experts will help adapt the approach to your business and industry risks.",
+      "consultationCta": "Get a Consultation",
+      "relatedTitle": "Related Seminars and Materials",
+      "expertTitle": "Seminar Expert",
+      "contentsTitle": "Contents"
+    },
+    "videosList": {
+      "titleLine1": "Video materials",
+      "titleLine2": "and seminars",
+      "subtitle": "Expert video content on audit, finance, and consulting from the JUST AUDIT team.",
+      "resultsLabel": "videos",
+      "durationUnder10": "Under 10 minutes",
+      "duration10to30": "10–30 minutes",
+      "duration30to60": "30–60 minutes",
+      "durationOver60": "Over 60 minutes",
+      "yearOlder": "2021 and earlier"
+    },
+    "videoDetail": {
+      "videoUnavailable": "Video unavailable",
+      "publishedLabel": "Published",
+      "durationLabel": "Duration",
+      "categoryLabel": "Category",
+      "sourceLabel": "Source",
+      "watchOnYoutube": "Watch on YouTube",
+      "aboutVideoTitle": "About the video",
+      "tagsTitle": "Tags",
+      "otherVideosTitle": "Other videos",
+      "allVideosCta": "All videos"
+    }
+  },
   "cookies": {
     "message": "We use cookies to improve the website experience.",
     "policyLinkText": "Learn more",

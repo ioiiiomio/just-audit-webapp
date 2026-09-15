@@ -153,6 +153,61 @@
       "errorResumeSize": "Файл резюме превышает 5MB"
     }
   },
+  "knowledge": {
+    "home": "Главная",
+    "breadcrumb": "База знаний",
+    "badge": "База знаний JUST Audit",
+    "heroTitleLine1": "Знания которые",
+    "heroTitleLine2": "создают ценность",
+    "subtitle": "Семинары, статьи и экспертные материалы для профессионалов в сфере аудита и финансового консалтинга.",
+    "cta": "Смотреть материалы",
+    "categoriesTitle": "Категории",
+    "seminarsTitle": "Семинары и материалы",
+    "viewAll": "Смотреть все",
+    "videosTitle": "YouTube-видео",
+    "imageAlt": "База знаний JUST Audit",
+    "seminarsList": {
+      "breadcrumb": "Семинары и материалы",
+      "title": "Семинары и материалы",
+      "subtitle": "Практические материалы от наших экспертов: семинары, статьи и разборы с презентациями и дополнительными файлами.",
+      "resultsLabel": "материалов"
+    },
+    "seminarDetail": {
+      "breadcrumb": "Текстовый семинар",
+      "badge": "Текстовый семинар",
+      "durationApprox": "≈ 45 мин.",
+      "formatTextFiles": "Текст + файлы",
+      "consultationTitle": "Нужна консультация по применению принципа существенности?",
+      "consultationSubtitle": "Наши эксперты помогут адаптировать подход под ваш бизнес и отраслевые риски.",
+      "consultationCta": "Получить консультацию",
+      "relatedTitle": "Похожие семинары и материалы",
+      "expertTitle": "Эксперт семинара",
+      "contentsTitle": "Содержание"
+    },
+    "videosList": {
+      "titleLine1": "Видеоматериалы",
+      "titleLine2": "и семинары",
+      "subtitle": "Экспертные видеоматериалы об аудите, финансах и консалтинге от команды JUST AUDIT.",
+      "resultsLabel": "видео",
+      "durationUnder10": "До 10 минут",
+      "duration10to30": "10–30 минут",
+      "duration30to60": "30–60 минут",
+      "durationOver60": "Более 60 минут",
+      "yearOlder": "2021 и ранее"
+    },
+    "videoDetail": {
+      "videoUnavailable": "Видео недоступно",
+      "publishedLabel": "Опубликовано",
+      "durationLabel": "Длительность",
+      "categoryLabel": "Категория",
+      "sourceLabel": "Источник",
+      "watchOnYoutube": "Смотреть на YouTube",
+      "aboutVideoTitle": "О видео",
+      "tagsTitle": "Теги",
+      "otherVideosTitle": "Другие видео",
+      "allVideosCta": "Все видео"
+    }
+  },
   "cookies": {
     "message": "Мы используем файлы cookie для улучшения работы сайта.",
     "policyLinkText": "Подробнее",

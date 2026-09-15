@@ -9,4 +9,5 @@ export const navItems: NavItem[] = [
   { label: "nav.team", type: "route", href: "#team" },
   { label: "nav.careers", type: "route", href: "/careers" },
   { label: "nav.contact", type: "anchor", href: "#contact" },
+  { label: "nav.knowledge", type: "route", href: "/knowledge" },
 ];
