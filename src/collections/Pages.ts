@@ -28,7 +28,15 @@ export const Pages: CollectionConfig = {
       index: true,
       admin: {
         description:
-          'URL segment, e.g. "about-office". Shared across all locales → /ru/about-office, /kz/about-office, /en/about-office.',
+            'URL segment, e.g. "about-office". Shared across all locales → /ru/about-office, /kz/about-office, /en/about-office.',
+      },
+      hooks: {
+        beforeValidate: [
+          ({ value }) =>
+              typeof value === "string"
+                  ? value.trim().toLowerCase().replace(/^\/+|\/+$/g, "")
+                  : value,
+        ],
       },
       validate: (value: string | null | undefined) => {
         const reserved = [
