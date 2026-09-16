@@ -190,7 +190,7 @@
       "downloads": {
         "title": "Материалы для скачивания",
         "downloadAll": "Скачать все материалы",
-        "downloadPdf": "Скачать PDF",
+        "downloadPdf": "Скачать страницу в формате PDF",
         "emailPrompt": "Введите email, на который отправить материалы:",
         "sendEmail": "Отправить на email",
         "sent": "Отправлено",

@@ -190,7 +190,7 @@
       "downloads": {
         "title": "Materials for download",
         "downloadAll": "Download all materials",
-        "downloadPdf": "Download PDF",
+        "downloadPdf": "Download page as PDF",
         "emailPrompt": "Enter the email address to send the materials to:",
         "sendEmail": "Send to email",
         "sent": "Sent",
