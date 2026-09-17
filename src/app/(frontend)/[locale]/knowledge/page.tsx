@@ -6,10 +6,9 @@ import type { Locale } from '@/i18n/routing'
 import { ArrowRight } from 'lucide-react'
 import { EducationCard } from '@/components/education/education-card'
 import { VideoCard } from '@/components/education/video-card'
-import { CategoryPills } from '@/components/education/category-pills'
 import { NewsletterCTA } from '@/components/education/newsletter-cta'
 import Image from 'next/image'
-import type { EducationMaterial, EducationCategory } from '@/lib/education/types'
+import type { EducationMaterial } from '@/lib/education/types'
 import type { Metadata } from 'next'
 
 export const revalidate = 60
@@ -71,15 +70,7 @@ export default async function EducationLandingPage({
   const t = await getTranslations({ locale, namespace: 'knowledge' })
   const payload = await getPayload({ config: configPromise })
 
-  const [categoriesResult, allMaterialsCount, lectures, videos] = await Promise.all([
-    payload.find({
-      collection: 'education-categories',
-      locale,
-      sort: 'order',
-      limit: 20,
-      depth: 0,
-    }),
-    payload.count({ collection: 'education-materials' }),
+  const [lectures, videos] = await Promise.all([
     payload.find({
       collection: 'education-materials',
       locale,
@@ -97,17 +88,6 @@ export default async function EducationLandingPage({
       depth: 1,
     }),
   ])
-
-  // Category counts require a per-category query; batched here since the list is short.
-  const categoriesWithCounts = await Promise.all(
-      (categoriesResult.docs as EducationCategory[]).map(async (category) => {
-        const { totalDocs } = await payload.count({
-          collection: 'education-materials',
-          where: { category: { equals: category.id } },
-        })
-        return { ...category, count: totalDocs }
-      }),
-  )
 
   return (
       <main className="min-h-screen bg-[#F7F5F2]">
@@ -147,12 +127,6 @@ export default async function EducationLandingPage({
               />
             </div>
           </div>
-        </section>
-
-        {/* Categories */}
-        <section className="mx-auto max-w-6xl px-6 pb-14 lg:px-16">
-          <h2 className="mb-6 font-serif text-2xl text-[#1A1A1A]">{t('categoriesTitle')}</h2>
-          <CategoryPills categories={categoriesWithCounts} totalCount={allMaterialsCount.totalDocs} />
         </section>
 
         {/* YouTube row */}
