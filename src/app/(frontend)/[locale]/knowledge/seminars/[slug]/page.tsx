@@ -106,21 +106,6 @@ export default async function SeminarDetailPage({
                 </div>
             ) : null}
 
-            <div className="flex flex-col items-start gap-4 rounded-2xl bg-white p-8 sm:flex-row sm:items-center sm:justify-between">
-              <p className="font-serif text-lg text-[#1A1A1A]">
-                {t('seminarDetail.consultationTitle')}
-                <span className="mt-1 block text-sm font-sans font-normal text-[#1A1A1A]/60">
-                {t('seminarDetail.consultationSubtitle')}
-              </span>
-              </p>
-              <Link
-                  href="/contact"
-                  className="shrink-0 rounded-lg bg-[#155335] px-6 py-3 text-sm font-medium text-white hover:opacity-90"
-              >
-                {t('seminarDetail.consultationCta')}
-              </Link>
-            </div>
-
             {relatedResult.docs.length ? (
                 <div>
                   <h2 className="mb-4 font-serif text-2xl text-[#1A1A1A]">{t('seminarDetail.relatedTitle')}</h2>

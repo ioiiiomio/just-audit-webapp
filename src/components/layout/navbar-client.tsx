@@ -24,11 +24,11 @@ interface NavbarClientProps {
 }
 
 export function NavbarClient({
-  navItems,
-  logoUrl,
-  ctaLabel,
-  ctaHref,
-}: NavbarClientProps) {
+                               navItems,
+                               logoUrl,
+                               ctaLabel,
+                               ctaHref,
+                             }: NavbarClientProps) {
   const locale = useLocale();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
@@ -42,129 +42,136 @@ export function NavbarClient({
     }
   };
 
+  // ctaHref already has the locale baked in (e.g. "/en#contact"), so it must
+  // be rendered as a plain <a>, not the locale-aware `Link` (which would
+  // prepend the locale again and produce "/en/en#contact"). If we're already
+  // on this locale's homepage, smooth-scroll instead of a full reload.
+  const handleCtaClick = (e: React.MouseEvent) => {
+    if (pathname === "/") {
+      e.preventDefault();
+      const el = document.querySelector("#contact");
+      if (el) smoothScrollTo(el, 900);
+      setOpen(false);
+    }
+  };
+
   const renderLink = (
-    item: NavItem,
-    className: string,
-    onClick?: () => void,
+      item: NavItem,
+      className: string,
+      onClick?: () => void,
   ) => (
-    <Link
-      key={item.id}
-      href={item.type === "anchor" ? `/${item.href}` : item.href}
-      onClick={(e) => {
-        if (item.type === "anchor") handleAnchorClick(e, item.href);
-        onClick?.();
-      }}
-      className={className}
-    >
-      {item.label}
-    </Link>
+      <Link
+          key={item.id}
+          href={item.type === "anchor" ? `/${item.href}` : item.href}
+          onClick={(e) => {
+            if (item.type === "anchor") handleAnchorClick(e, item.href);
+            onClick?.();
+          }}
+          className={className}
+      >
+        {item.label}
+      </Link>
   );
 
   return (
-    <header className="sticky top-0 z-50 bg-[#F7F5F2] text-[#155335] lg:bg-[#F7F5F2]/70">
-      <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-        <Link href="/" className="flex items-center">
-          <Image
-            src={logoUrl}
-            alt="Just Audit"
-            width={120}
-            height={40}
-            priority
-          />
-        </Link>
+      <header className="sticky top-0 z-50 bg-[#F7F5F2] text-[#155335] lg:bg-[#F7F5F2]/70">
+        <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+          <Link href="/" className="flex items-center">
+            <Image
+                src={logoUrl}
+                alt="Just Audit"
+                width={120}
+                height={40}
+                priority
+            />
+          </Link>
 
-        <ul className="hidden items-center gap-8 font-[family-name:var(--font-montserrat)] text-sm font-semibold lg:flex">
-          {navItems.map((item) => (
-            <li key={item.id}>
-              {renderLink(item, "transition-opacity hover:opacity-80")}
-            </li>
-          ))}
-        </ul>
+          <ul className="hidden items-center gap-8 font-[family-name:var(--font-montserrat)] text-sm font-semibold lg:flex">
+            {navItems.map((item) => (
+                <li key={item.id}>
+                  {renderLink(item, "transition-opacity hover:opacity-80")}
+                </li>
+            ))}
+          </ul>
 
-        <div className="hidden items-center gap-6 lg:flex">
-          <div className="flex items-center gap-1 text-sm font-semibold">
-            <Link
-              href={pathname}
-              locale="ru"
-              className={cn("px-1", locale === "ru" && "underline")}
+          <div className="hidden items-center gap-6 lg:flex">
+            <div className="flex items-center gap-1 text-sm font-semibold">
+              <Link
+                  href={pathname}
+                  locale="ru"
+                  className={cn("px-1", locale === "ru" && "underline")}
+              >
+                RU
+              </Link>
+              <span>|</span>
+              <Link
+                  href={pathname}
+                  locale="kz"
+                  className={cn("px-1", locale === "kz" && "underline")}
+              >
+                KZ
+              </Link>
+              <span>|</span>
+              <Link
+                  href={pathname}
+                  locale="en"
+                  className={cn("px-1", locale === "en" && "underline")}
+              >
+                EN
+              </Link>
+            </div>
+
+            <Button
+                asChild
+                className="rounded-l bg-[#155335] text-white hover:bg-[#155335]/90"
             >
-              RU
-            </Link>
-            <span>|</span>
-            <Link
-              href={pathname}
-              locale="kz"
-              className={cn("px-1", locale === "kz" && "underline")}
-            >
-              KZ
-            </Link>
-            <span>|</span>
-            <Link
-              href={pathname}
-              locale="en"
-              className={cn("px-1", locale === "en" && "underline")}
-            >
-              EN
-            </Link>
+              <a href={ctaHref} onClick={handleCtaClick}>
+                {ctaLabel}
+              </a>
+            </Button>
           </div>
 
-          <Button
-            asChild
-            className="rounded-l bg-[#155335] text-white hover:bg-[#155335]/90"
+          <button
+              className="lg:hidden"
+              aria-label="Toggle menu"
+              onClick={() => setOpen((v) => !v)}
           >
-            <Link
-              href="#contact"
-              onClick={(e) => handleAnchorClick(e, "#contact")}
-            >
-              {ctaLabel}
-            </Link>
-          </Button>
-        </div>
+            {open ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </nav>
 
-        <button
-          className="lg:hidden"
-          aria-label="Toggle menu"
-          onClick={() => setOpen((v) => !v)}
-        >
-          {open ? <X size={24} /> : <Menu size={24} />}
-        </button>
-      </nav>
-
-      {open && (
-        <div className="flex flex-col gap-4 bg-[#F7F5F2] px-6 pb-6 lg:hidden">
-          {navItems.map((item) =>
-            renderLink(
-              item,
-              "font-[family-name:var(--font-montserrat)] font-semibold",
-              () => setOpen(false),
-            ),
-          )}
-          <div className="flex items-center gap-1 text-sm font-semibold">
-            <Link href={pathname} locale="ru">
-              RU
-            </Link>
-            <span>|</span>
-            <Link href={pathname} locale="kz">
-              KZ
-            </Link>
-            <span>|</span>
-            <Link href={pathname} locale="en">
-              EN
-            </Link>
-          </div>
-          <Button
-            asChild
-            className="rounded-l bg-[#155335] text-white hover:bg-[#155335]/90"
-          >
-            <Link
-              href="#contact"
-              onClick={(e) => handleAnchorClick(e, "#contact")}
-            >
-              {ctaLabel}
-            </Link>
-          </Button>
-        </div>
-      )}
-    </header>
+        {open && (
+            <div className="flex flex-col gap-4 bg-[#F7F5F2] px-6 pb-6 lg:hidden">
+              {navItems.map((item) =>
+                  renderLink(
+                      item,
+                      "font-[family-name:var(--font-montserrat)] font-semibold",
+                      () => setOpen(false),
+                  ),
+              )}
+              <div className="flex items-center gap-1 text-sm font-semibold">
+                <Link href={pathname} locale="ru">
+                  RU
+                </Link>
+                <span>|</span>
+                <Link href={pathname} locale="kz">
+                  KZ
+                </Link>
+                <span>|</span>
+                <Link href={pathname} locale="en">
+                  EN
+                </Link>
+              </div>
+              <Button
+                  asChild
+                  className="rounded-l bg-[#155335] text-white hover:bg-[#155335]/90"
+              >
+                <a href={ctaHref} onClick={handleCtaClick}>
+                  {ctaLabel}
+                </a>
+              </Button>
+            </div>
+        )}
+      </header>
   );
 }

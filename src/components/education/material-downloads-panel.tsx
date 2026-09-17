@@ -56,30 +56,30 @@ export function MaterialDownloadsPanel({
         window.print()
     }
 
-    const handleSendEmail = async () => {
-        const email = window.prompt(emailPromptText)
-        if (!email) return
-
-        setEmailStatus('sending')
-        try {
-            const res = await fetch('/api/education/send-materials', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    email,
-                    materialSlug,
-                    materialTitle,
-                    files: files.map((f) => ({ label: f.label, url: f.file?.url })),
-                }),
-            })
-            if (!res.ok) throw new Error('failed')
-            setEmailStatus('sent')
-            setTimeout(() => setEmailStatus('idle'), 4000)
-        } catch {
-            setEmailStatus('error')
-            setTimeout(() => setEmailStatus('idle'), 4000)
-        }
-    }
+    // const handleSendEmail = async () => {
+    //     const email = window.prompt(emailPromptText)
+    //     if (!email) return
+    //
+    //     setEmailStatus('sending')
+    //     try {
+    //         const res = await fetch('/api/education/send-materials', {
+    //             method: 'POST',
+    //             headers: { 'Content-Type': 'application/json' },
+    //             body: JSON.stringify({
+    //                 email,
+    //                 materialSlug,
+    //                 materialTitle,
+    //                 files: files.map((f) => ({ label: f.label, url: f.file?.url })),
+    //             }),
+    //         })
+    //         if (!res.ok) throw new Error('failed')
+    //         setEmailStatus('sent')
+    //         setTimeout(() => setEmailStatus('idle'), 4000)
+    //     } catch {
+    //         setEmailStatus('error')
+    //         setTimeout(() => setEmailStatus('idle'), 4000)
+    //     }
+    // }
 
     return (
         <div className="rounded-2xl border border-[#EDE9E3] bg-white p-6">
@@ -115,21 +115,21 @@ export function MaterialDownloadsPanel({
             >
                 <FileDown className="h-4 w-4" /> {downloadPdfLabel}
             </button>
-            <button
-                type="button"
-                onClick={handleSendEmail}
-                disabled={emailStatus === 'sending'}
-                className="mt-3 flex w-full items-center justify-center gap-2 rounded-lg border border-[#EDE9E3] py-3 text-sm text-[#1A1A1A] hover:border-[#155335]/30 disabled:opacity-60"
-            >
-                {emailStatus === 'sending' ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                ) : emailStatus === 'sent' ? (
-                    <Check className="h-4 w-4 text-[#155335]" />
-                ) : (
-                    <Mail className="h-4 w-4" />
-                )}
-                {emailStatus === 'sent' ? sentLabel : emailStatus === 'error' ? errorLabel : sendEmailLabel}
-            </button>
+            {/*<button*/}
+            {/*    type="button"*/}
+            {/*    onClick={handleSendEmail}*/}
+            {/*    disabled={emailStatus === 'sending'}*/}
+            {/*    className="mt-3 flex w-full items-center justify-center gap-2 rounded-lg border border-[#EDE9E3] py-3 text-sm text-[#1A1A1A] hover:border-[#155335]/30 disabled:opacity-60"*/}
+            {/*>*/}
+            {/*    {emailStatus === 'sending' ? (*/}
+            {/*        <Loader2 className="h-4 w-4 animate-spin" />*/}
+            {/*    ) : emailStatus === 'sent' ? (*/}
+            {/*        <Check className="h-4 w-4 text-[#155335]" />*/}
+            {/*    ) : (*/}
+            {/*        <Mail className="h-4 w-4" />*/}
+            {/*    )}*/}
+            {/*    {emailStatus === 'sent' ? sentLabel : emailStatus === 'error' ? errorLabel : sendEmailLabel}*/}
+            {/*</button>*/}
         </div>
     )
 }
