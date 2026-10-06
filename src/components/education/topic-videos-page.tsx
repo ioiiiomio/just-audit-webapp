@@ -8,6 +8,7 @@ import type { Locale } from '@/i18n/routing'
 import { VideoCard } from '@/components/education/video-card'
 import { Pagination } from '@/components/education/pagination'
 import { SearchSortBar } from '@/components/education/search-sort-bar'
+import { VideoListItem} from "@/components/education/filters/video-list-item";
 import { VideoFiltersSidebar } from '@/components/education/filters/video-filters-sidebar'
 import type { EducationMaterial, EducationTopic } from '@/lib/education/types'
 import { OTHER_TOPIC_SLUG, topicOrderOf } from '@/lib/education/topics'
@@ -203,9 +204,13 @@ export async function TopicVideosView({
                                     : 'mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4'
                             }
                         >
-                            {paged.map((material) => (
-                                <VideoCard key={material.id} material={material} variant="grid" />
-                            ))}
+                            {paged.map((material) =>
+                                view === 'list' ? (
+                                    <VideoListItem key={material.id} material={material} locale={locale} />
+                                ) : (
+                                    <VideoCard key={material.id} material={material} variant="grid" />
+                                ),
+                            )}
                         </div>
                     ) : (
                         <p className="mt-10 rounded-2xl border border-[#EDE9E3] bg-white p-10 text-center text-[#1A1A1A]/60">

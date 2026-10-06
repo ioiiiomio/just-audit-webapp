@@ -11,6 +11,7 @@ import { VideoCard } from '@/components/education/video-card'
 import { SearchSortBar } from '@/components/education/search-sort-bar'
 import { Pagination } from '@/components/education/pagination'
 import { VideoFiltersSidebar } from '@/components/education/filters/video-filters-sidebar'
+import { VideoListItem} from "@/components/education/filters/video-list-item";
 import { TopicSection } from '@/components/education/topic-section'
 import { OTHER_TOPIC_SLUG, topicOrderOf } from '@/lib/education/topics'
 import type { EducationMaterial, EducationCategory, EducationTopic } from '@/lib/education/types'
@@ -198,6 +199,7 @@ export default async function VideosListPage({
                             searchPlaceholder={t('searchSortBar.searchPlaceholder')}
                             gridViewLabel={t('searchSortBar.gridViewLabel')}
                             listViewLabel={t('searchSortBar.listViewLabel')}
+                            showViewToggle={false}
                             foundLabel={t('searchSortBar.foundLabel')}
                         />
                         <div
@@ -205,9 +207,13 @@ export default async function VideosListPage({
                                 view === 'list' ? 'mt-6 flex flex-col gap-4' : 'mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3'
                             }
                         >
-                            {paged.map((material) => (
-                                <VideoCard key={material.id} material={material} variant="grid" />
-                            ))}
+                            {paged.map((material) =>
+                                view === 'list' ? (
+                                    <VideoListItem key={material.id} material={material} locale={locale} />
+                                ) : (
+                                    <VideoCard key={material.id} material={material} variant="grid" />
+                                ),
+                            )}
                         </div>
                         <div className="mt-10">
                             <Pagination
@@ -249,6 +255,7 @@ export default async function VideosListPage({
                         searchPlaceholder={t('searchSortBar.searchPlaceholder')}
                         gridViewLabel={t('searchSortBar.gridViewLabel')}
                         listViewLabel={t('searchSortBar.listViewLabel')}
+                        showViewToggle={false}
                         foundLabel={t('searchSortBar.foundLabel')}
                     />
 
