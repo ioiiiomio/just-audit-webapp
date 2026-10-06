@@ -3,6 +3,7 @@ import { getPayload } from 'payload'
 import { getTranslations } from 'next-intl/server'
 import configPromise from '@payload-config'
 import type { Where } from 'payload'
+import { redirect } from 'next/navigation'
 import { Link } from '@/i18n/navigation'
 import Image from 'next/image'
 import type { Locale } from '@/i18n/routing'
@@ -11,6 +12,7 @@ import { SearchSortBar } from '@/components/education/search-sort-bar'
 import { Pagination } from '@/components/education/pagination'
 import { VideoFiltersSidebar } from '@/components/education/filters/video-filters-sidebar'
 import { TopicSection } from '@/components/education/topic-section'
+import { OTHER_TOPIC_SLUG, topicOrderOf } from '@/lib/education/topics'
 import type { EducationMaterial, EducationCategory, EducationTopic } from '@/lib/education/types'
 import type { Metadata } from 'next'
 
@@ -65,16 +67,9 @@ export async function generateMetadata({
 }
 
 const PAGE_SIZE = 9
-const PREVIEW_SIZE = 4 // cards shown per topic row before "Показать все"
 
 // Stable values used for filtering logic; display labels are localized separately.
 const YEAR_VALUES = ['2024', '2023', '2022', 'older'] as const
-
-// `topics` on EducationMaterial is now `{ topic, order }[]` — order is scoped
-// to one topic, so the same video can rank differently in different topics.
-function topicOrderOf(material: EducationMaterial, topicId: string | number) {
-    return material.topics?.find((entry) => entry.topic?.id === topicId)?.order ?? 0
-}
 
 export default async function VideosListPage({
                                                  params,
@@ -126,6 +121,14 @@ export default async function VideosListPage({
     const categories = categoriesResult.docs as EducationCategory[]
     const topics = topicsResult.docs as EducationTopic[]
 
+    const activeTopic = sp.topic ? topics.find((topic) => topic.slug === sp.topic) : undefined
+
+    // Old `?topic=` links (e.g. from the sidebar) → the dedicated topic page.
+    // Kept only when combined with a search, where the flat view below handles it.
+    if (activeTopic && !sp.q) {
+        redirect(`/${locale}/knowledge/videos/${activeTopic.slug}`)
+    }
+
     const categoryOptions = await Promise.all(
         categories.map(async (category) => {
             const { totalDocs } = await payload.count({
@@ -149,7 +152,6 @@ export default async function VideosListPage({
     }))
 
     const view = sp.view === 'list' ? 'list' : 'grid'
-    const activeTopic = sp.topic ? topics.find((topic) => topic.slug === sp.topic) : undefined
 
     const sidebarProps = {
         totalCount: allMaterials.length,
@@ -170,8 +172,8 @@ export default async function VideosListPage({
         { value: 'title', label: t('searchSortBar.sortByTitle') },
     ]
 
-    // ---- Flat, paginated view — shown once a topic is picked or a search is typed ----
-    if (activeTopic || sp.q) {
+    // ---- Flat, paginated view — shown when a search is typed ----
+    if (sp.q) {
         let filtered = allMaterials
         if (activeTopic) {
             filtered = filtered
@@ -188,7 +190,7 @@ export default async function VideosListPage({
                 <PageHeader t={t} />
                 <section className="w-full gap-10 px-6 pb-20 lg:flex lg:px-16">
                     <VideoFiltersSidebar {...sidebarProps} />
-                    <div className="mt-8 flex-1 lg:mt-0">
+                    <div className="mt-8 min-w-0 flex-1 lg:mt-0">
                         <SearchSortBar
                             resultsCount={totalDocs}
                             resultsLabel={t('videosList.resultsLabel')}
@@ -239,7 +241,7 @@ export default async function VideosListPage({
             <PageHeader t={t} />
             <section className="w-full gap-10 px-6 pb-20 lg:flex lg:px-16">
                 <VideoFiltersSidebar {...sidebarProps} />
-                <div className="mt-8 flex-1 lg:mt-0">
+                <div className="mt-8 min-w-0 flex-1 lg:mt-0">
                     <SearchSortBar
                         resultsCount={allMaterials.length}
                         resultsLabel={t('videosList.resultsLabel')}
@@ -257,9 +259,10 @@ export default async function VideosListPage({
                                 index={index}
                                 title={topic.name}
                                 description={topic.description}
-                                materials={materials.slice(0, PREVIEW_SIZE)}
+                                materials={materials}
                                 totalCount={materials.length}
-                                viewAllHref={`/knowledge/videos?topic=${topic.slug}`}
+                                viewAllHref={`/knowledge/videos/${topic.slug}`}
+                                viewAllLabel={t('videosList.viewAll')}
                             />
                         ))}
 
@@ -267,8 +270,10 @@ export default async function VideosListPage({
                             <TopicSection
                                 title={t('videosList.noTopicTitle')}
                                 description={t('videosList.noTopicDescription')}
-                                materials={untaggedMaterials.slice(0, PREVIEW_SIZE)}
+                                materials={untaggedMaterials}
                                 totalCount={untaggedMaterials.length}
+                                viewAllHref={`/knowledge/videos/${OTHER_TOPIC_SLUG}`}
+                                viewAllLabel={t('videosList.viewAll')}
                             />
                         ) : null}
                     </div>
@@ -293,12 +298,8 @@ function PageHeader({ t }: { t: Awaited<ReturnType<typeof getTranslations>> }) {
             <section className="w-full gap-10 px-6 pb-10 pt-6 lg:flex lg:px-16">
                 <div className="grid w-full items-center gap-10 lg:grid-cols-[3fr_2fr]">
                     <div className="text-left">
-                        <h1 className="font-serif text-4xl text-[#1A1A1A]">
-                            {t('videosList.titleLine1')}
-                        </h1>
-                        <p className="mt-4 max-w-xl text-base text-[#1A1A1A]/60">
-                            {t('videosList.subtitle')}
-                        </p>
+                        <h1 className="font-serif text-4xl text-[#1A1A1A]">{t('videosList.titleLine1')}</h1>
+                        <p className="mt-4 max-w-xl text-base text-[#1A1A1A]/60">{t('videosList.subtitle')}</p>
                     </div>
                     <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl bg-[#EDE9E3] lg:ml-auto lg:aspect-[16/10] lg:max-w-md">
                         <Image

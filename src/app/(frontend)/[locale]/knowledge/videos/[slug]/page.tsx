@@ -1,36 +1,89 @@
+import { cache } from 'react'
 import { getPayload } from 'payload'
 import { getTranslations } from 'next-intl/server'
 import configPromise from '@payload-config'
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
+import type { Metadata } from 'next'
 import { Link } from '@/i18n/navigation'
 import type { Locale } from '@/i18n/routing'
 import { Calendar, Clock, Folder, Radio, Youtube, Instagram, ExternalLink, ArrowRight } from 'lucide-react'
 import { ExpertCard } from '@/components/education/expert-card'
 import { NewsletterCTA } from '@/components/education/newsletter-cta'
 import { InstagramEmbed } from '@/components/education/instagram-embed'
+import { loadTopicVideos, topicVideosMetadata, TopicVideosView } from '@/components/education/topic-videos-page'
 import { formatClock, formatDate, getYoutubeId, detectVideoProvider } from '@/lib/education/format'
 import type { EducationMaterial } from '@/lib/education/types'
 
-export default async function VideoDetailPage({
-                                                params,
-                                              }: {
+type Props = {
   params: Promise<{ locale: Locale; slug: string }>
-}) {
-  const { locale, slug } = await params
-  const t = await getTranslations({ locale, namespace: 'knowledge' })
-  const payload = await getPayload({ config: configPromise })
+  searchParams: Promise<Record<string, string | undefined>>
+}
 
+// Shared between generateMetadata and the page render — one DB hit per request.
+const loadVideo = cache(async (locale: Locale, slug: string) => {
+  const payload = await getPayload({ config: configPromise })
   const result = await payload.find({
     collection: 'education-materials',
-    locale: locale,
+    locale,
     where: { and: [{ slug: { equals: slug } }, { contentType: { equals: 'video' } }] },
     limit: 1,
     depth: 2,
   })
+  return result.docs[0] as EducationMaterial | undefined
+})
 
-  const material = result.docs[0] as EducationMaterial | undefined
-  if (!material) return notFound()
+// /knowledge/videos/[slug] serves two things:
+//   1. a topic slug (or "other") → list of all videos in that topic
+//   2. anything else             → single video detail page
+// Topics are checked first, so a topic and a video must never share a slug.
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale, slug } = await params
+
+  const topicData = await loadTopicVideos(locale, slug)
+  if (topicData) return topicVideosMetadata(locale, slug, topicData)
+
+  const material = await loadVideo(locale, slug)
+  if (!material) return {}
+
+  const url = `https://justaudit.kz/${locale}/knowledge/videos/${slug}`
+  return {
+    title: `${material.title} | Just Audit`,
+    description: material.excerpt ?? undefined,
+    alternates: {
+      canonical: url,
+      languages: {
+        'ru-KZ': `https://justaudit.kz/ru/knowledge/videos/${slug}`,
+        'kk-KZ': `https://justaudit.kz/kz/knowledge/videos/${slug}`,
+        'en-US': `https://justaudit.kz/en/knowledge/videos/${slug}`,
+      },
+    },
+    openGraph: {
+      type: 'video.other',
+      url,
+      siteName: 'Just Audit',
+      images: material.thumbnail?.url ? [{ url: material.thumbnail.url }] : undefined,
+    },
+  }
+}
+
+export default async function Page({ params, searchParams }: Props) {
+  const { locale, slug } = await params
+
+  const topicData = await loadTopicVideos(locale, slug)
+  if (topicData) {
+    return <TopicVideosView locale={locale} slug={slug} data={topicData} searchParams={await searchParams} />
+  }
+
+  return <VideoDetailPage locale={locale} slug={slug} />
+}
+
+async function VideoDetailPage({ locale, slug }: { locale: Locale; slug: string }) {
+  const t = await getTranslations({ locale, namespace: 'knowledge' })
+  const payload = await getPayload({ config: configPromise })
+
+  const material = await loadVideo(locale, slug)
+  if (!material) notFound()
 
   const relatedResult = await payload.find({
     collection: 'education-materials',

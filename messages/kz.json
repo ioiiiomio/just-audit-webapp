@@ -210,7 +210,8 @@
       "yearLabel": "Жыл",
       "allYearsLabel": "Барлық жылдар",
       "noTopicTitle": "Өзге видеолар",
-      "noTopicDescription": "Өзге тақырыптарға қатысты видеолар"
+      "noTopicDescription": "Өзге тақырыптарға қатысты видеолар",
+      "viewAll": "Барлығын көру"
     },
     "videoDetail": {
       "videoUnavailable": "Бейне қолжетімсіз",

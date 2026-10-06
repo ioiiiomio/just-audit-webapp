@@ -210,7 +210,8 @@
       "yearLabel": "Год",
       "allYearsLabel": "Все годы",
       "noTopicTitle": "Другие видео",
-      "noTopicDescription": "Видео на другие темы"
+      "noTopicDescription": "Видео на другие темы",
+      "viewAll": "Смотреть все"
     },
     "videoDetail": {
       "videoUnavailable": "Видео недоступно",

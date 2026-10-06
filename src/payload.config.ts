@@ -15,6 +15,7 @@ import { Hero } from "./globals/Hero";
 import { About } from "./globals/About";
 import { Approach } from "./globals/Approach";
 import { TeamMembers } from "./globals/TeamMembers";
+import {Projects} from "@/collections/Projects";
 import { WhyUs } from "./globals/WhyUs";
 import { Submissions } from "./collections/Submissions";
 import { Announcements } from "./collections/Announcements";
@@ -59,6 +60,7 @@ export default buildConfig({
     Certificates,
     NavItems,
     CareerBenefits,
+    Projects,
     Pages,
     EducationCategories,
     EducationTopics,
@@ -87,7 +89,7 @@ export default buildConfig({
     },
   }),
   sharp,
-  // NOTE: 'kz' is used here as the project's chosen URL/locale code for the
+  // NOTE: 'kz' is used here as the projects's chosen URL/locale code for the
   // Kazakh-language version of the site (matching the next-intl routing
   // config), even though the strict ISO 639-1 code for Kazakh is 'kk'.
   // Keep this in sync with src/i18n/routing.ts.

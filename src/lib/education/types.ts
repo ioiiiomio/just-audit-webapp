@@ -69,7 +69,7 @@ export interface EducationMaterial {
   excerpt?: string | null
   videoUrl?: string | null
   // Left loosely typed on purpose: `lexical`'s SerializedEditorState type isn't
-  // reachable as a direct import in this project's TS config, and this value
+  // reachable as a direct import in this projects's TS config, and this value
   // only ever gets handed straight to `<RichText data={...} />` — it's never
   // read or transformed here, so precision isn't worth chasing a working
   // import path for a third time.

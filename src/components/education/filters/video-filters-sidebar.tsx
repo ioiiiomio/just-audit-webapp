@@ -2,8 +2,8 @@ import { FilterRadioGroup, ResetFiltersLink, type FilterOption } from './filter-
 
 interface VideoFiltersSidebarProps {
     totalCount: number
-    categories: FilterOption[]
-    topics: FilterOption[]
+    categories?: FilterOption[]
+    topics?: FilterOption[]
     years: FilterOption[]
     categoriesTitle?: string
     allCategoriesLabel?: string
@@ -15,8 +15,8 @@ interface VideoFiltersSidebarProps {
 
 export function VideoFiltersSidebar({
                                         totalCount,
-                                        categories,
-                                        topics,
+                                        categories = [],
+                                        topics = [],
                                         years,
                                         categoriesTitle = 'Категории',
                                         allCategoriesLabel = 'Все категории',
@@ -27,28 +27,38 @@ export function VideoFiltersSidebar({
                                     }: VideoFiltersSidebarProps) {
     return (
         <aside className="w-full shrink-0 space-y-6 lg:w-72">
-            <h2 className="font-serif text-lg text-[#1A1A1A]">{categoriesTitle}</h2>
-            <FilterRadioGroup
-                title=""
-                paramKey="category"
-                allLabel={allCategoriesLabel}
-                allCount={totalCount}
-                options={categories}
-            />
-            <FilterRadioGroup
-                title={topicsLabel}
-                paramKey="topic"
-                allLabel={allTopicsLabel}
-                allCount={totalCount}
-                options={topics}
-            />
-            <FilterRadioGroup
-                title={yearLabel}
-                paramKey="year"
-                allLabel={allYearsLabel}
-                allCount={totalCount}
-                options={years}
-            />
+            {categories.length > 0 ? (
+                <>
+                    <h2 className="font-serif text-lg text-[#1A1A1A]">{categoriesTitle}</h2>
+                    <FilterRadioGroup
+                        title=""
+                        paramKey="category"
+                        allLabel={allCategoriesLabel}
+                        allCount={totalCount}
+                        options={categories}
+                    />
+                </>
+            ) : null}
+
+            {topics.length > 0 ? (
+                <FilterRadioGroup
+                    title={topicsLabel}
+                    paramKey="topic"
+                    allLabel={allTopicsLabel}
+                    allCount={totalCount}
+                    options={topics}
+                />
+            ) : null}
+
+            {years.length > 0 ? (
+                <FilterRadioGroup
+                    title={yearLabel}
+                    paramKey="year"
+                    allLabel={allYearsLabel}
+                    allCount={totalCount}
+                    options={years}
+                />
+            ) : null}
 
             <ResetFiltersLink />
         </aside>

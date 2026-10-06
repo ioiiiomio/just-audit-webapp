@@ -210,7 +210,8 @@
       "yearLabel": "Year",
       "allYearsLabel": "All years",
       "noTopicTitle": "Other videos",
-      "noTopicDescription": "Videos for other topics"
+      "noTopicDescription": "Videos for other topics",
+      "viewAll": "View all"
     },
     "videoDetail": {
       "videoUnavailable": "Video unavailable",

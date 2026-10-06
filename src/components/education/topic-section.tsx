@@ -1,7 +1,7 @@
 'use client'
 
-import { useRef, useState } from 'react'
-import { ChevronDown, ChevronRight, FolderOpen } from 'lucide-react'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { ChevronDown, ChevronLeft, ChevronRight, FolderOpen } from 'lucide-react'
 import { Link } from '@/i18n/navigation'
 import { VideoCard } from '@/components/education/video-card'
 import type { EducationMaterial } from '@/lib/education/types'
@@ -11,109 +11,154 @@ interface TopicSectionProps {
     index?: number
     title: string
     description?: string | null
-    /** Already sorted (by this topic's order) and sliced to the preview size. */
+    /** Already sorted by this topic's order. Pass all of them — the row scrolls horizontally. */
     materials: EducationMaterial[]
-    /** Full count for this topic, used for the "N уроков" label and the "show all" link. */
+    /** Full count for this topic, shown in the header. */
     totalCount: number
-    /** Link to the flat, paginated view for this one topic. Omit for the untagged bucket. */
+    /** Link to the dedicated page for this topic (/knowledge/videos/[topic]). */
     viewAllHref?: string
+    viewAllLabel?: string
 }
 
-// Russian plural rules for "урок" (one / few / many) — kept local to this
-// client component so we don't have to pass a formatting function down from
-// the server component (function props can't cross that boundary in Next 15).
-function formatLessons(count: number) {
-    const mod10 = count % 10
-    const mod100 = count % 100
-    if (mod10 === 1 && mod100 !== 11) return `${count} видео`
-    if ([2, 3, 4].includes(mod10) && ![12, 13, 14].includes(mod100)) return `${count} видео`
-    return `${count} видео`
-}
+// Card width = (row width − gaps) / cards-per-view. Gap is gap-6 = 1.5rem.
+// 5 per view on wide screens, fewer on narrower ones so titles stay readable.
+const CARD_WIDTH = [
+    'w-[85%]', //                                      mobile: 1 + a peek of the next
+    'sm:w-[calc((100%_-_1.5rem)/2)]', //               2 per view
+    'md:w-[calc((100%_-_3rem)/3)]', //                 3 per view
+    'xl:w-[calc((100%_-_4.5rem)/4)]', //               4 per view
+    '2xl:w-[calc((100%_-_6rem)/5)]', //                5 per view
+].join(' ')
 
-export function TopicSection({ index, title, description, materials, totalCount, viewAllHref }: TopicSectionProps) {
+export function TopicSection({
+                                 index,
+                                 title,
+                                 description,
+                                 materials,
+                                 totalCount,
+                                 viewAllHref,
+                                 viewAllLabel = 'Смотреть все',
+                             }: TopicSectionProps) {
     const [expanded, setExpanded] = useState(true)
+    const [canScrollLeft, setCanScrollLeft] = useState(false)
+    const [canScrollRight, setCanScrollRight] = useState(false)
     const scrollerRef = useRef<HTMLDivElement>(null)
+
+    // Arrows depend on real overflow, not on how many items were passed in.
+    const updateScrollState = useCallback(() => {
+        const el = scrollerRef.current
+        if (!el) return
+        setCanScrollLeft(el.scrollLeft > 4)
+        setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 4)
+    }, [])
+
+    useEffect(() => {
+        const el = scrollerRef.current
+        if (!el) return
+        updateScrollState()
+        const observer = new ResizeObserver(updateScrollState)
+        observer.observe(el)
+        return () => observer.disconnect()
+    }, [expanded, materials.length, updateScrollState])
+
+    // One click = one full "page" of cards (e.g. the next 5); snap-start aligns it.
+    const scrollByPage = (direction: 1 | -1) => {
+        const el = scrollerRef.current
+        if (!el) return
+        el.scrollBy({ left: direction * el.clientWidth, behavior: 'smooth' })
+    }
+
+    const toggle = () => setExpanded((value) => !value)
 
     if (materials.length === 0) return null
 
-    const hasMore = totalCount > materials.length
-
     return (
         <div className="mb-6 overflow-hidden rounded-2xl border border-[#155335]/10">
-            <button
-                type="button"
-                onClick={() => setExpanded((value) => !value)}
-                className="flex w-full items-center justify-between bg-[#155335]/5 px-6 py-4 text-left"
-                aria-expanded={expanded}
-            >
-                <div className="flex items-center gap-3">
+            {/* Header: a div, not a button — so the "View all" link can live inside it */}
+            <div className="flex w-full items-center justify-between gap-4 bg-[#155335]/5 px-6 py-4">
+                <button
+                    type="button"
+                    onClick={toggle}
+                    aria-expanded={expanded}
+                    className="flex min-w-0 flex-1 items-center gap-3 text-left"
+                >
                     {typeof index === 'number' ? (
                         <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#155335] text-sm font-medium text-white">
-              {index}
-            </span>
+                            {index}
+                        </span>
                     ) : (
                         <span className="flex h-7 w-7 shrink-0 items-center justify-center text-[#155335]">
-              <FolderOpen size={18} />
-            </span>
+                            <FolderOpen size={18} />
+                        </span>
                     )}
-                    <div>
+                    <div className="min-w-0">
                         <p className="font-serif text-lg text-[#1A1A1A]">{title}</p>
                         {description ? <p className="text-sm text-[#1A1A1A]/50">{description}</p> : null}
                     </div>
+                </button>
+
+                <div className="flex shrink-0 items-center gap-4">
+                    <span className="hidden text-sm text-[#1A1A1A]/60 sm:inline">{totalCount} видео</span>
+
+                    {viewAllHref ? (
+                        <Link
+                            href={viewAllHref}
+                            className="inline-flex items-center gap-1 rounded-full border border-[#155335]/20 px-4 py-1.5 text-sm font-medium text-[#155335] transition hover:bg-[#155335] hover:text-white"
+                        >
+                            {viewAllLabel}
+                            <ChevronRight size={14} />
+                        </Link>
+                    ) : null}
+
+                    <button
+                        type="button"
+                        onClick={toggle}
+                        aria-expanded={expanded}
+                        aria-label={expanded ? 'Свернуть' : 'Развернуть'}
+                        className="flex h-8 w-8 items-center justify-center rounded-full text-[#1A1A1A]/60 hover:bg-[#155335]/10"
+                    >
+                        <ChevronDown size={18} className={`transition-transform ${expanded ? 'rotate-180' : ''}`} />
+                    </button>
                 </div>
-                <div className="flex items-center gap-4">
-                    <span className="text-sm text-[#1A1A1A]/60">{formatLessons(totalCount)}</span>
-                    <ChevronDown
-                        size={18}
-                        className={`text-[#1A1A1A]/60 transition-transform ${expanded ? 'rotate-180' : ''}`}
-                    />
-                </div>
-            </button>
+            </div>
 
             {expanded ? (
                 <div className="relative bg-white px-6 py-6">
                     <div
                         ref={scrollerRef}
-                        className="flex gap-6 overflow-x-auto scroll-smooth"
-                        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                        onScroll={updateScrollState}
+                        className="flex snap-x snap-mandatory gap-6 overflow-x-auto scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
                     >
                         {materials.map((material) => (
-                            <div key={material.id} className="w-[260px] shrink-0">
+                            <div key={material.id} className={`${CARD_WIDTH} shrink-0 snap-start`}>
                                 <VideoCard material={material} variant="grid" />
                             </div>
                         ))}
                     </div>
 
-                    {hasMore ? (
+                    {canScrollLeft ? (
                         <button
                             type="button"
-                            onClick={() => scrollerRef.current?.scrollBy({ left: 280, behavior: 'smooth' })}
-                            className="absolute right-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white text-[#155335] shadow-md"
-                            aria-label="Scroll"
+                            onClick={() => scrollByPage(-1)}
+                            className="absolute left-2 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-[#155335]/10 bg-white text-[#155335] shadow-md transition hover:bg-[#155335] hover:text-white"
+                            aria-label="Назад"
                         >
-                            <ChevronRight size={18} />
+                            <ChevronLeft size={20} />
                         </button>
                     ) : null}
 
-                    {viewAllHref && hasMore ? (
-                        <div className="mt-4 text-right">
-                            <Link href={viewAllHref} className="inline-flex items-center gap-1 text-sm font-medium text-[#155335]">
-                                Показать все {formatLessons(totalCount)} →
-                            </Link>
-                        </div>
+                    {canScrollRight ? (
+                        <button
+                            type="button"
+                            onClick={() => scrollByPage(1)}
+                            className="absolute right-2 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-[#155335]/10 bg-white text-[#155335] shadow-md transition hover:bg-[#155335] hover:text-white"
+                            aria-label="Вперёд"
+                        >
+                            <ChevronRight size={20} />
+                        </button>
                     ) : null}
                 </div>
             ) : null}
         </div>
     )
 }
-
-/*
-  NOTE on the scrollbar: the inline style above hides it in Firefox/IE.
-  For Chrome/Safari, add this once to your global CSS:
-
-    .topic-section-scroller::-webkit-scrollbar { display: none; }
-
-  and add that class to the scroller div, if you want it hidden there too —
-  left as a plain scrollbar for now since it's cosmetic only.
-*/
