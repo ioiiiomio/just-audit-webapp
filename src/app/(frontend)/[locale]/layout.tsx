@@ -15,6 +15,7 @@ import { routing } from "@/i18n/routing";
 import "./globals.css";
 
 import { CookieConsent } from "@/components/cookie-consent";
+import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Footer } from "@/components/layout/footer";
 
 const playfair = Playfair_Display({
@@ -96,6 +97,7 @@ export default async function LocaleLayout({ children, params }: Props) {
           />
         </NextIntlClientProvider>
       </body>
+      <SpeedInsights />
     </html>
   );
 }
