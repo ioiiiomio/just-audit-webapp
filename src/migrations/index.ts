@@ -3,6 +3,8 @@ import * as migration_20260706_122724_add_contact_details from './20260706_12272
 import * as migration_20260916_044847 from './20260916_044847';
 import * as migration_20261001_143441_projects from './20261001_143441_projects';
 import * as migration_20261023_092050_localize_team_member_name from './20261023_092050_localize_team_member_name';
+import * as migration_20261023_103749_team_carousel from './20261023_103749_team_carousel';
+import * as migration_20261023_105732_team_carousel from './20261023_105732_team_carousel';
 
 export const migrations = [
   {
@@ -28,6 +30,16 @@ export const migrations = [
   {
     up: migration_20261023_092050_localize_team_member_name.up,
     down: migration_20261023_092050_localize_team_member_name.down,
-    name: '20261023_092050_localize_team_member_name'
+    name: '20261023_092050_localize_team_member_name',
+  },
+  {
+    up: migration_20261023_103749_team_carousel.up,
+    down: migration_20261023_103749_team_carousel.down,
+    name: '20261023_103749_team_carousel',
+  },
+  {
+    up: migration_20261023_105732_team_carousel.up,
+    down: migration_20261023_105732_team_carousel.down,
+    name: '20261023_105732_team_carousel'
   },
 ];

@@ -19,6 +19,22 @@ export const TeamMembers: GlobalConfig = {
       required: true,
     },
     {
+      name: "carouselHeading",
+      type: "text",
+      localized: true,
+      admin: {
+        description: 'Heading above the homepage carousel, e.g. "Наша команда"',
+      },
+    },
+    {
+      name: "viewAllLabel",
+      type: "text",
+      localized: true,
+      admin: {
+        description: 'Link to the team page, e.g. "вся команда"',
+      },
+    },
+    {
       name: "items",
       type: "array",
       label: "Team Members",
@@ -55,7 +71,16 @@ export const TeamMembers: GlobalConfig = {
           defaultValue: false,
           admin: {
             description:
-              "Shows this member in the large highlight card on the homepage",
+                "Founder card — shown at the top of the team section on the homepage and on the team page",
+          },
+        },
+        {
+          name: "showOnHomepage",
+          type: "checkbox",
+          defaultValue: false,
+          admin: {
+            condition: (_, siblingData) => !siblingData.featured,
+            description: "Show in the homepage carousel (first 8 are used)",
           },
         },
         {

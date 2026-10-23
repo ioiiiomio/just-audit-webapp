@@ -1,3 +1,5 @@
+// src/app/(frontend)/[locale]/page.tsx
+import type { Metadata } from "next";
 import { getPayload } from "payload";
 import config from "@payload-config";
 
@@ -8,10 +10,8 @@ import { CertificatesSection } from "@/components/sections/certificates-section"
 import { ContactSection } from "@/components/sections/contact-section";
 import { HeroSection } from "@/components/sections/hero-section";
 import { ServicesSection } from "@/components/sections/services-section";
-import { SpecialistsSection } from "@/components/sections/specialists-section";
+import { TeamPreviewSection } from "@/components/sections/team-preview-section";
 import { WhyUsSection } from "@/components/sections/why-us-section";
-// src/app/(frontend)/[locale]/page.tsx
-import type { Metadata } from "next";
 
 export const revalidate = 60;
 
@@ -34,8 +34,8 @@ const OG_LOCALES: Record<string, string> = {
 };
 
 export async function generateMetadata({
-  params,
-}: {
+                                         params,
+                                       }: {
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
@@ -67,8 +67,8 @@ export async function generateMetadata({
 }
 
 export default async function HomePage({
-  params,
-}: {
+                                         params,
+                                       }: {
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
@@ -99,44 +99,44 @@ export default async function HomePage({
   });
 
   return (
-    <main className="min-h-screen">
-      <AnnouncementsBanner locale={locale} />
+      <main className="min-h-screen">
+        <AnnouncementsBanner locale={locale} />
 
-      <HeroSection
-        {...hero}
-        title={hero.title ?? ""}
-        subtitle={hero.subtitle ?? ""}
-        ctaLabel={hero.ctaLabel ?? ""}
-      />
+        <HeroSection
+            {...hero}
+            title={hero.title ?? ""}
+            subtitle={hero.subtitle ?? ""}
+            ctaLabel={hero.ctaLabel ?? ""}
+        />
 
-      <AboutSection
-        {...about}
-        eyebrow={about.eyebrow ?? ""}
-        title={about.title ?? ""}
-        principlesEyebrow={about.principlesEyebrow ?? ""}
-        paragraphs={about.paragraphs ?? []}
-        principles={about.principles ?? []}
-      />
+        <AboutSection
+            {...about}
+            eyebrow={about.eyebrow ?? ""}
+            title={about.title ?? ""}
+            principlesEyebrow={about.principlesEyebrow ?? ""}
+            paragraphs={about.paragraphs ?? []}
+            principles={about.principles ?? []}
+        />
 
-      <ApproachSection
-        {...approach}
-        eyebrow={approach.eyebrow ?? ""}
-        title={approach.title ?? ""}
-        items={approach.items ?? []}
-      />
+        <ApproachSection
+            {...approach}
+            eyebrow={approach.eyebrow ?? ""}
+            title={approach.title ?? ""}
+            items={approach.items ?? []}
+        />
 
-      <SpecialistsSection locale={locale} />
-      <CertificatesSection locale={locale} />
-      <ServicesSection locale={locale} />
+        <TeamPreviewSection locale={locale} />
+        <CertificatesSection locale={locale} />
+        <ServicesSection locale={locale} />
 
-      <WhyUsSection
-        {...whyUs}
-        eyebrow={whyUs.eyebrow ?? ""}
-        title={whyUs.title ?? ""}
-        points={whyUs.points ?? []}
-      />
+        <WhyUsSection
+            {...whyUs}
+            eyebrow={whyUs.eyebrow ?? ""}
+            title={whyUs.title ?? ""}
+            points={whyUs.points ?? []}
+        />
 
-      <ContactSection locale={locale} />
-    </main>
+        <ContactSection locale={locale} />
+      </main>
   );
 }
