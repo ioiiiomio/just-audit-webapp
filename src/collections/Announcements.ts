@@ -8,9 +8,9 @@ export const Announcements: CollectionConfig = {
   },
   admin: {
     useAsTitle: "title",
-    defaultColumns: ["title", "type", "isActive", "startDate", "endDate"],
+    defaultColumns: ["title", "display", "type", "isActive", "startDate", "endDate"],
     description:
-      "Banner messages shown on the homepage (maintenance notices, news, etc.)",
+        "Banner strips or popups shown on the homepage (maintenance notices, news, etc.)",
   },
   access: {
     read: () => true,
@@ -28,6 +28,21 @@ export const Announcements: CollectionConfig = {
       localized: true,
     },
     {
+      name: "display",
+      type: "select",
+      required: true,
+      defaultValue: "banner",
+      options: [
+        { label: "Banner (strip at the top)", value: "banner" },
+        { label: "Modal (popup)", value: "modal" },
+      ],
+      admin: {
+        position: "sidebar",
+        description:
+            "If several popups are active, only the highest-priority one is shown",
+      },
+    },
+    {
       name: "type",
       type: "select",
       required: true,
@@ -38,6 +53,35 @@ export const Announcements: CollectionConfig = {
         { label: "Success", value: "success" },
         { label: "Warning", value: "warning" },
       ],
+    },
+    {
+      name: "contact",
+      type: "group",
+      admin: {
+        condition: (data) => data?.display === "modal",
+        description: "Optional contact card inside the popup",
+      },
+      fields: [
+        { name: "name", type: "text", localized: true },
+        {
+          name: "note",
+          type: "textarea",
+          localized: true,
+          admin: { description: "e.g. «По всем вопросам свяжитесь с нами…»" },
+        },
+        { name: "phone", type: "text" },
+        { name: "email", type: "email" },
+      ],
+    },
+    {
+      name: "buttonLabel",
+      type: "text",
+      localized: true,
+      admin: {
+        condition: (data) => data?.display === "modal",
+        description:
+            'Main button text. Closes the popup, or opens the link below if set. Default: "Понятно"',
+      },
     },
     {
       name: "isActive",
@@ -77,7 +121,7 @@ export const Announcements: CollectionConfig = {
       defaultValue: 0,
       admin: {
         description:
-          "Higher numbers show first when multiple announcements are active",
+            "Higher numbers show first when multiple announcements are active",
       },
     },
   ],

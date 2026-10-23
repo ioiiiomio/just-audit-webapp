@@ -25,9 +25,9 @@ const typeStyles: Record<AnnouncementType, StyleConfig> = {
 
 const STORAGE_KEY = "dismissed-announcements";
 
-export function AnnouncementsBannerClient({
-  announcements,
-}: {
+export function AnnouncementBannerClient({
+                                           announcements,
+                                         }: {
   announcements: Announcement[];
 }) {
   const [dismissed, setDismissed] = useState<string[]>([]);
@@ -58,46 +58,46 @@ export function AnnouncementsBannerClient({
   if (!hydrated) return null;
 
   const visible = announcements.filter(
-    (a) => !dismissed.includes(String(a.id)),
+      (a) => !dismissed.includes(String(a.id)),
   );
   if (visible.length === 0) return null;
 
   return (
-    <div className="space-y-px">
-      {visible.map((announcement) => {
-        const { icon: Icon, bg, text } = typeStyles[announcement.type];
-        const id = String(announcement.id);
+      <div className="space-y-px">
+        {visible.map((announcement) => {
+          const { icon: Icon, bg, text } = typeStyles[announcement.type];
+          const id = String(announcement.id);
 
-        return (
-          <div
-            key={id}
-            className={`${bg} ${text} flex items-center gap-3 px-6 py-3 lg:px-16`}
-          >
-            <Icon className="size-5 shrink-0" />
-            <div className="flex-1 font-body text-sm">
-              <span className="font-bold">{announcement.title}</span>
-              {announcement.message && (
-                <span className="ml-2 opacity-90">{announcement.message}</span>
-              )}
-              {announcement.link?.href && announcement.link?.label && (
-                <Link
-                  href={announcement.link.href}
-                  className="ml-3 underline underline-offset-2 hover:opacity-80"
+          return (
+              <div
+                  key={id}
+                  className={`${bg} ${text} flex items-center gap-3 px-6 py-3 lg:px-16`}
+              >
+                <Icon className="size-5 shrink-0" />
+                <div className="flex-1 font-body text-sm">
+                  <span className="font-bold">{announcement.title}</span>
+                  {announcement.message && (
+                      <span className="ml-2 opacity-90">{announcement.message}</span>
+                  )}
+                  {announcement.link?.href && announcement.link?.label && (
+                      <Link
+                          href={announcement.link.href}
+                          className="ml-3 underline underline-offset-2 hover:opacity-80"
+                      >
+                        {announcement.link.label}
+                      </Link>
+                  )}
+                </div>
+                <button
+                    onClick={() => dismiss(id)}
+                    aria-label="Dismiss announcement"
+                    className="shrink-0 opacity-80 hover:opacity-100"
                 >
-                  {announcement.link.label}
-                </Link>
-              )}
-            </div>
-            <button
-              onClick={() => dismiss(id)}
-              aria-label="Dismiss announcement"
-              className="shrink-0 opacity-80 hover:opacity-100"
-            >
-              <X className="size-4" />
-            </button>
-          </div>
-        );
-      })}
-    </div>
+                  <X className="size-4" />
+                </button>
+              </div>
+          );
+        })}
+      </div>
   );
 }

@@ -4,7 +4,6 @@ import { getPayload } from "payload";
 import config from "@payload-config";
 
 import { AboutSection } from "@/components/sections/about-section";
-import { AnnouncementsBanner } from "@/components/sections/announcements-banner";
 import { ApproachSection } from "@/components/sections/approach-section";
 import { CertificatesSection } from "@/components/sections/certificates-section";
 import { ContactSection } from "@/components/sections/contact-section";
@@ -12,6 +11,7 @@ import { HeroSection } from "@/components/sections/hero-section";
 import { ServicesSection } from "@/components/sections/services-section";
 import { TeamPreviewSection } from "@/components/sections/team-preview-section";
 import { WhyUsSection } from "@/components/sections/why-us-section";
+import {AnnouncementsBanner} from "@/components/sections/announcement-banner";
 
 export const revalidate = 60;
 
@@ -100,7 +100,8 @@ export default async function HomePage({
 
   return (
       <main className="min-h-screen">
-        <AnnouncementsBanner locale={locale} />
+
+          <AnnouncementsBanner locale={locale} />
 
         <HeroSection
             {...hero}
