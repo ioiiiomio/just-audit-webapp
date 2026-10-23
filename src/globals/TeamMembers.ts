@@ -27,6 +27,7 @@ export const TeamMembers: GlobalConfig = {
           name: "name",
           type: "text",
           required: true,
+          localized: true,
         },
         {
           name: "position",
