@@ -2,62 +2,69 @@
 import type { MetadataRoute } from "next";
 import { getPayload } from "payload";
 import config from "@payload-config";
+import { routing } from "@/i18n/routing";
+import { buildAlternates } from "@/lib/seo";
 
-const locales = ["ru", "kz", "en"] as const;
+export const revalidate = 3600; // rebuild at most once an hour
 
-const staticRoutes = [
-  { path: "", priority: 1 },
-  { path: "/about", priority: 0.8 },
-  { path: "/services", priority: 0.8 },
-  { path: "/contacts", priority: 0.7 },
-  { path: "/careers", priority: 0.6 },
-];
+const SITE = "https://www.justaudit.kz";
+
+type Entry = { path: string; lastModified?: string | Date };
+
+// One URL per locale, each listing its language alternates (ru / kk / en / x-default)
+function expand({ path, lastModified }: Entry): MetadataRoute.Sitemap {
+    return routing.locales.map((locale) => ({
+        url: `${SITE}/${locale}${path}`,
+        lastModified,
+        alternates: { languages: buildAlternates(locale, path).languages },
+    }));
+}
+
+const newest = (dates: (string | undefined | null)[]) =>
+    dates.filter(Boolean).sort().at(-1) ?? undefined;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const base = "https://justaudit.kz";
+    const payload = await getPayload({ config });
+    const base = { depth: 0, pagination: false, locale: "ru" } as const;
 
-  const staticEntries: MetadataRoute.Sitemap = locales.flatMap((locale) =>
-    staticRoutes.map(({ path, priority }) => ({
-      url: `${base}/${locale}${path}`,
-      lastModified: new Date(),
-      changeFrequency: "weekly" as const,
-      priority,
-    })),
-  );
+    const [pages, projects, articles, videos, topics] = await Promise.all([
+        payload.find({ ...base, collection: "pages", select: { slug: true, updatedAt: true } }),
+        payload.find({ ...base, collection: "projects", select: { slug: true, updatedAt: true } }),
+        payload.find({
+            ...base,
+            collection: "education-materials",
+            where: { contentType: { equals: "article" } },
+            select: { slug: true, updatedAt: true },
+        }),
+        payload.find({
+            ...base,
+            collection: "education-materials",
+            where: { contentType: { equals: "video" } },
+            select: { slug: true, updatedAt: true },
+        }),
+        payload.find({ ...base, collection: "education-topics", select: { slug: true, updatedAt: true } }),
+    ]);
 
-  const payload = await getPayload({ config });
+    const latestArticle = newest(articles.docs.map((d) => d.updatedAt));
+    const latestVideo = newest(videos.docs.map((d) => d.updatedAt));
 
-  const { docs: pages } = await payload.find({
-    collection: "pages",
-    limit: 1000,
-    depth: 0,
-  });
+    const entries: Entry[] = [
+        // Static routes: no lastModified rather than a fake "now"
+        { path: "" },
+        { path: "/team" },
+        { path: "/careers" },
 
-  const dynamicPageEntries: MetadataRoute.Sitemap = locales.flatMap((locale) =>
-    pages.map((page) => ({
-      url: `${base}/${locale}/${page.slug}`,
-      lastModified: new Date(page.updatedAt),
-      changeFrequency: "monthly" as const,
-      priority: 0.5,
-    })),
-  );
+        // List pages: dated by their newest item
+        { path: "/knowledge", lastModified: newest([latestArticle, latestVideo]) },
+        { path: "/knowledge/seminars", lastModified: latestArticle },
+        { path: "/knowledge/videos", lastModified: latestVideo },
 
-  const { docs: certificates } = await payload.find({
-    collection: "certificates",
-    limit: 1000,
-    depth: 0,
-  });
-
-  const certificateEntries: MetadataRoute.Sitemap = locales.flatMap((locale) =>
-    certificates
-      .filter((cert) => cert.title) // skip untitled certificates
-      .map((cert) => ({
-        url: `${base}/${locale}/certificates/${cert.id}`,
-        lastModified: new Date(cert.updatedAt),
-        changeFrequency: "yearly" as const,
-        priority: 0.3,
-      })),
-  );
-
-  return [...staticEntries, ...dynamicPageEntries, ...certificateEntries];
+        // CMS content
+        ...pages.docs.map((d) => ({ path: `/${d.slug}`, lastModified: d.updatedAt })),
+        ...projects.docs.map((d) => ({ path: `/projects/${d.slug}`, lastModified: d.updatedAt })),
+        ...articles.docs.map((d) => ({ path: `/knowledge/seminars/${d.slug}`, lastModified: d.updatedAt })),
+        ...videos.docs.map((d) => ({ path: `/knowledge/videos/${d.slug}`, lastModified: d.updatedAt })),
+        ...topics.docs.map((d) => ({ path: `/knowledge/videos/${d.slug}`, lastModified: d.updatedAt })),
+    ];
+    return entries.flatMap(expand);
 }

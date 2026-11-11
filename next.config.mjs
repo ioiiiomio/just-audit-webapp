@@ -23,6 +23,15 @@ const nextConfig = {
     qualities: [30, 75],
     minimumCacheTTL: 2678400, // 31 days
   },
+
+  // Old sitemap URLs → the matching homepage sections
+  async redirects() {
+    return [
+      { source: "/:locale(ru|kz|en)/about", destination: "/:locale#about", permanent: true },
+      { source: "/:locale(ru|kz|en)/services", destination: "/:locale#services", permanent: true },
+      { source: "/:locale(ru|kz|en)/contacts", destination: "/:locale#contact", permanent: true },
+    ];
+  },
 };
 
 export default withPayload(withNextIntl(nextConfig), {
