@@ -1,23 +1,27 @@
 // videos/page.tsx
+import { unstable_cache } from 'next/cache'
 import { getPayload } from 'payload'
 import { getTranslations } from 'next-intl/server'
 import configPromise from '@payload-config'
-import type { Where } from 'payload'
 import { redirect } from 'next/navigation'
 import { Link } from '@/i18n/navigation'
 import Image from 'next/image'
+import type { Metadata } from 'next'
 import type { Locale } from '@/i18n/routing'
 import { VideoCard } from '@/components/education/video-card'
 import { SearchSortBar } from '@/components/education/search-sort-bar'
 import { Pagination } from '@/components/education/pagination'
 import { VideoFiltersSidebar } from '@/components/education/filters/video-filters-sidebar'
-import { VideoListItem} from "@/components/education/filters/video-list-item";
+import { VideoListItem } from '@/components/education/filters/video-list-item'
 import { TopicSection } from '@/components/education/topic-section'
 import { OTHER_TOPIC_SLUG, topicOrderOf } from '@/lib/education/topics'
 import type { EducationMaterial, EducationCategory, EducationTopic } from '@/lib/education/types'
-import type { Metadata } from 'next'
+import { buildAlternates } from '@/lib/seo'
 
-export const revalidate = 60
+const BASE_PATH = '/knowledge/videos'
+const SITE = 'https://www.justaudit.kz'
+const PAGE_SIZE = 9
+const YEAR_BUCKETS = 4 // current year + 3 previous, then "older"
 
 const TITLES: Record<string, string> = {
     ru: 'Видео материалы | Just Audit',
@@ -31,131 +35,139 @@ const DESCRIPTIONS: Record<string, string> = {
     en: 'Expert video content on audit, finance, and consulting from the JUST AUDIT team.',
 }
 
-const OG_LOCALES: Record<string, string> = {
-    ru: 'ru_KZ',
-    kz: 'kk_KZ',
-    en: 'en_US',
+const OG_LOCALES: Record<string, string> = { ru: 'ru_KZ', kz: 'kk_KZ', en: 'en_US' }
+
+type Props = {
+    params: Promise<{ locale: Locale }>
+    searchParams: Promise<Record<string, string | undefined>>
 }
 
-export async function generateMetadata({
-                                           params,
-                                       }: {
-    params: Promise<{ locale: string }>
-}): Promise<Metadata> {
+// One cached fetch per locale (60 s). Replaces the per-request query + one
+// count() per category. Filtering/sorting below happens in memory.
+const getVideosData = unstable_cache(
+    async (locale: Locale) => {
+        const payload = await getPayload({ config: configPromise })
+        const [all, categories, topics] = await Promise.all([
+            payload.find({
+                collection: 'education-materials',
+                locale,
+                where: { contentType: { equals: 'video' } },
+                sort: '-publishedDate',
+                depth: 2,
+                pagination: false,
+            }),
+            payload.find({ collection: 'education-categories', locale, sort: 'order', depth: 0, pagination: false }),
+            payload.find({ collection: 'education-topics', locale, sort: 'order', depth: 0, pagination: false }),
+        ])
+        return {
+            materials: all.docs as EducationMaterial[],
+            categories: categories.docs as EducationCategory[],
+            topics: topics.docs as EducationTopic[],
+        }
+    },
+    ['videos-list'],
+    { revalidate: 60, tags: ['education-materials'] },
+)
+
+export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
     const { locale } = await params
+    const sp = await searchParams
+
+    // Search / filter / sort views are variations of this list: keep them out of the index
+    const isVariant = Boolean(sp.q || sp.category || sp.year || sp.topic || sp.sort || sp.view || sp.page)
 
     return {
-        title: {
-            default: TITLES[locale] ?? TITLES.ru,
-            template: '%s | Just Audit',
-        },
+        title: { absolute: TITLES[locale] ?? TITLES.ru },
         description: DESCRIPTIONS[locale] ?? DESCRIPTIONS.ru,
-        alternates: {
-            canonical: `https://justaudit.kz/${locale}/knowledge/videos`,
-            languages: {
-                'ru-KZ': 'https://justaudit.kz/ru/knowledge/videos',
-                'kk-KZ': 'https://justaudit.kz/kz/knowledge/videos',
-                'en-US': 'https://justaudit.kz/en/knowledge/videos',
-            },
-        },
+        alternates: buildAlternates(locale, BASE_PATH),
+        robots: isVariant ? { index: false, follow: true } : undefined,
         openGraph: {
             type: 'website',
             locale: OG_LOCALES[locale] ?? OG_LOCALES.ru,
-            url: `https://justaudit.kz/${locale}/knowledge/videos`,
+            url: `${SITE}/${locale}${BASE_PATH}`,
             siteName: 'Just Audit',
         },
     }
 }
 
-const PAGE_SIZE = 9
+const yearOf = (m: EducationMaterial) =>
+    m.publishedDate ? new Date(m.publishedDate).getFullYear() : null
 
-// Stable values used for filtering logic; display labels are localized separately.
-const YEAR_VALUES = ['2024', '2023', '2022', 'older'] as const
-
-export default async function VideosListPage({
-                                                 params,
-                                                 searchParams,
-                                             }: {
-    params: Promise<{ locale: Locale }>
-    searchParams: Promise<Record<string, string | undefined>>
-}) {
+export default async function VideosListPage({ params, searchParams }: Props) {
     const { locale } = await params
     const sp = await searchParams
-    const page = Number(sp.page) || 1
-    const t = await getTranslations({ locale, namespace: 'knowledge' })
+    const page = Math.max(1, Number(sp.page) || 1)
 
-    const payload = await getPayload({ config: configPromise })
-
-    // Filters that map cleanly to a DB `where` clause. Topic filtering happens
-    // in memory below, since ordering lives inside the `topics` array field.
-    const and: Where[] = [{ contentType: { equals: 'video' } }]
-    if (sp.category) and.push({ 'category.slug': { equals: sp.category } })
-    if (sp.q) and.push({ title: { like: sp.q } })
-    if (sp.year && sp.year !== 'older') {
-        and.push({ publishedDate: { greater_than_equal: `${sp.year}-01-01` } })
-        and.push({ publishedDate: { less_than: `${Number(sp.year) + 1}-01-01` } })
-    } else if (sp.year === 'older') {
-        and.push({ publishedDate: { less_than: '2022-01-01' } })
-    }
-
-    const sortMap: Record<string, string> = { newest: '-publishedDate', oldest: 'publishedDate', title: 'title' }
-    const sort = sortMap[sp.sort ?? 'newest'] ?? '-publishedDate'
-
-    const [allMaterialsResult, categoriesResult, topicsResult] = await Promise.all([
-        // depth: 2 populates `topics[].topic` (name/slug) and `category`.
-        // pagination: false returns every matching doc — fine at a firm's-library
-        // scale (tens/low hundreds of videos); move sorting/grouping server-side
-        // (or filter `topics.topic` directly in `where`) if this ever grows large.
-        payload.find({
-            collection: 'education-materials',
-            locale,
-            where: { and },
-            sort,
-            depth: 2,
-            pagination: false,
-        }),
-        payload.find({ collection: 'education-categories', locale, sort: 'order', depth: 0 }),
-        payload.find({ collection: 'education-topics', locale, sort: 'order', depth: 0 }),
+    const [t, { materials: allVideos, categories, topics }] = await Promise.all([
+        getTranslations({ locale, namespace: 'knowledge' }),
+        getVideosData(locale),
     ])
-
-    const allMaterials = allMaterialsResult.docs as EducationMaterial[]
-    const categories = categoriesResult.docs as EducationCategory[]
-    const topics = topicsResult.docs as EducationTopic[]
 
     const activeTopic = sp.topic ? topics.find((topic) => topic.slug === sp.topic) : undefined
 
     // Old `?topic=` links (e.g. from the sidebar) → the dedicated topic page.
     // Kept only when combined with a search, where the flat view below handles it.
     if (activeTopic && !sp.q) {
-        redirect(`/${locale}/knowledge/videos/${activeTopic.slug}`)
+        redirect(`/${locale}${BASE_PATH}/${activeTopic.slug}`)
     }
 
-    const categoryOptions = await Promise.all(
-        categories.map(async (category) => {
-            const { totalDocs } = await payload.count({
-                collection: 'education-materials',
-                where: { and: [{ contentType: { equals: 'video' } }, { category: { equals: category.id } }] },
-            })
-            return { value: category.slug, label: category.name, count: totalDocs }
-        }),
-    )
+    // ---- Year buckets, derived from today's date (no more hard-coded years) ----
+    const currentYear = new Date().getFullYear()
+    const recentYears = Array.from({ length: YEAR_BUCKETS }, (_, i) => String(currentYear - i))
+    const olderThan = currentYear - YEAR_BUCKETS + 1
+
+    const matchesYear = (m: EducationMaterial, year: string) => {
+        const y = yearOf(m)
+        if (y === null) return false
+        return year === 'older' ? y < olderThan : y === Number(year)
+    }
+
+    // ---- Apply filters in memory (same semantics as the old `where`) ----
+    let filtered = allVideos
+    if (sp.category) filtered = filtered.filter((m) => m.category?.slug === sp.category)
+    if (sp.year) filtered = filtered.filter((m) => matchesYear(m, sp.year!))
+    if (sp.q) {
+        // Payload `like` semantics: every word must appear, case-insensitive
+        const words = sp.q.toLowerCase().split(/\s+/).filter(Boolean)
+        filtered = filtered.filter((m) => {
+            const title = m.title.toLowerCase()
+            return words.every((w) => title.includes(w))
+        })
+    }
+
+    const sortBy = sp.sort ?? 'newest'
+    if (sortBy !== 'newest') {
+        filtered = [...filtered].sort((a, b) => {
+            if (sortBy === 'title') return a.title.localeCompare(b.title, locale)
+            const dateA = a.publishedDate ? new Date(a.publishedDate).getTime() : 0
+            const dateB = b.publishedDate ? new Date(b.publishedDate).getTime() : 0
+            return dateA - dateB // oldest
+        })
+    }
+
+    // ---- Facet counts ----
+    const categoryOptions = categories.map((category) => ({
+        value: category.slug,
+        label: category.name,
+        count: allVideos.filter((m) => m.category?.id === category.id).length,
+    }))
 
     const topicOptions = topics.map((topic) => ({
         value: topic.slug,
         label: topic.name,
-        count: allMaterials.filter((m) => m.topics?.some((entry) => entry.topic?.id === topic.id)).length,
+        count: filtered.filter((m) => m.topics?.some((entry) => entry.topic?.id === topic.id)).length,
     }))
 
-    const yearOptions = YEAR_VALUES.map((year) => ({
+    const yearOptions = [...recentYears, 'older'].map((year) => ({
         value: year,
         label: year === 'older' ? t('videosList.yearOlder') : year,
-        count: 0,
+        count: allVideos.filter((m) => matchesYear(m, year)).length,
     }))
 
     const view = sp.view === 'list' ? 'list' : 'grid'
 
     const sidebarProps = {
-        totalCount: allMaterials.length,
+        totalCount: filtered.length,
         categories: categoryOptions,
         topics: topicOptions,
         years: yearOptions,
@@ -175,16 +187,16 @@ export default async function VideosListPage({
 
     // ---- Flat, paginated view — shown when a search is typed ----
     if (sp.q) {
-        let filtered = allMaterials
+        let results = filtered
         if (activeTopic) {
-            filtered = filtered
+            results = results
                 .filter((m) => m.topics?.some((entry) => entry.topic?.id === activeTopic.id))
                 .sort((a, b) => topicOrderOf(a, activeTopic.id) - topicOrderOf(b, activeTopic.id))
         }
 
-        const totalDocs = filtered.length
+        const totalDocs = results.length
         const totalPages = Math.ceil(totalDocs / PAGE_SIZE)
-        const paged = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
+        const paged = results.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
 
         return (
             <main className="min-h-screen bg-[#F7F5F2]">
@@ -219,7 +231,7 @@ export default async function VideosListPage({
                             <Pagination
                                 currentPage={page}
                                 totalPages={totalPages}
-                                basePath="/knowledge/videos"
+                                basePath={BASE_PATH}
                                 searchParams={sp}
                                 nextLabel={t('pagination.nextLabel')}
                             />
@@ -233,14 +245,14 @@ export default async function VideosListPage({
     // ---- Grouped-by-topic view — default browsing state ----
     const topicGroups = topics
         .map((topic, i) => {
-            const materials = allMaterials
+            const materials = filtered
                 .filter((m) => m.topics?.some((entry) => entry.topic?.id === topic.id))
                 .sort((a, b) => topicOrderOf(a, topic.id) - topicOrderOf(b, topic.id))
             return { index: i + 1, topic, materials }
         })
         .filter((group) => group.materials.length > 0)
 
-    const untaggedMaterials = allMaterials.filter((m) => !m.topics || m.topics.length === 0)
+    const untaggedMaterials = filtered.filter((m) => !m.topics || m.topics.length === 0)
 
     return (
         <main className="min-h-screen bg-[#F7F5F2]">
@@ -249,7 +261,7 @@ export default async function VideosListPage({
                 <VideoFiltersSidebar {...sidebarProps} />
                 <div className="mt-8 min-w-0 flex-1 lg:mt-0">
                     <SearchSortBar
-                        resultsCount={allMaterials.length}
+                        resultsCount={filtered.length}
                         resultsLabel={t('videosList.resultsLabel')}
                         sortOptions={sortOptions}
                         searchPlaceholder={t('searchSortBar.searchPlaceholder')}
@@ -268,7 +280,7 @@ export default async function VideosListPage({
                                 description={topic.description}
                                 materials={materials}
                                 totalCount={materials.length}
-                                viewAllHref={`/knowledge/videos/${topic.slug}`}
+                                viewAllHref={`${BASE_PATH}/${topic.slug}`}
                                 viewAllLabel={t('videosList.viewAll')}
                             />
                         ))}
@@ -279,7 +291,7 @@ export default async function VideosListPage({
                                 description={t('videosList.noTopicDescription')}
                                 materials={untaggedMaterials}
                                 totalCount={untaggedMaterials.length}
-                                viewAllHref={`/knowledge/videos/${OTHER_TOPIC_SLUG}`}
+                                viewAllHref={`${BASE_PATH}/${OTHER_TOPIC_SLUG}`}
                                 viewAllLabel={t('videosList.viewAll')}
                             />
                         ) : null}
@@ -294,11 +306,11 @@ function PageHeader({ t }: { t: Awaited<ReturnType<typeof getTranslations>> }) {
     return (
         <>
             <div className="w-full px-6 pt-8 lg:px-16">
-                <nav className="flex items-center gap-2 text-sm text-[#1A1A1A]/50">
+                <nav className="flex items-center gap-2 text-sm text-[#1A1A1A]/70">
                     <Link href="/">{t('home')}</Link>
-                    <span>/</span>
+                    <span aria-hidden="true">/</span>
                     <Link href="/knowledge">{t('breadcrumb')}</Link>
-                    <span>/</span>
+                    <span aria-hidden="true">/</span>
                     <span className="text-[#1A1A1A]">{t('videosTitle')}</span>
                 </nav>
             </div>
@@ -306,7 +318,7 @@ function PageHeader({ t }: { t: Awaited<ReturnType<typeof getTranslations>> }) {
                 <div className="grid w-full items-center gap-10 lg:grid-cols-[3fr_2fr]">
                     <div className="text-left">
                         <h1 className="font-serif text-4xl text-[#1A1A1A]">{t('videosList.titleLine1')}</h1>
-                        <p className="mt-4 max-w-xl text-base text-[#1A1A1A]/60">{t('videosList.subtitle')}</p>
+                        <p className="mt-4 max-w-xl text-base text-[#1A1A1A]/70">{t('videosList.subtitle')}</p>
                     </div>
                     <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl bg-[#EDE9E3] lg:ml-auto lg:aspect-[16/10] lg:max-w-md">
                         <Image
@@ -315,7 +327,7 @@ function PageHeader({ t }: { t: Awaited<ReturnType<typeof getTranslations>> }) {
                             fill
                             priority
                             className="object-cover"
-                            sizes="(max-width: 1024px) 100vw, 400px"
+                            sizes="(max-width: 1024px) 100vw, 448px"
                         />
                     </div>
                 </div>

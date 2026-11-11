@@ -1,18 +1,22 @@
 // seminars/page.tsx
+import { unstable_cache } from 'next/cache'
 import { getPayload } from 'payload'
 import { getTranslations } from 'next-intl/server'
 import configPromise from '@payload-config'
 import { Link } from '@/i18n/navigation'
 import Image from 'next/image'
+import type { Metadata } from 'next'
 import type { Locale } from '@/i18n/routing'
 import { EducationCard } from '@/components/education/education-card'
 import { SearchSortBar } from '@/components/education/search-sort-bar'
 import { Pagination } from '@/components/education/pagination'
 import { MaterialsFiltersSidebar } from '@/components/education/filters/materials-filters-sidebar'
 import type { EducationMaterial, EducationMaterialType, EducationTopic } from '@/lib/education/types'
-import type { Metadata } from 'next'
+import { buildAlternates } from '@/lib/seo'
 
-export const revalidate = 60
+const BASE_PATH = '/knowledge/seminars'
+const SITE = 'https://www.justaudit.kz'
+const PAGE_SIZE = 9
 
 const TITLES: Record<string, string> = {
     ru: 'Текстовые материалы | Just Audit',
@@ -26,75 +30,77 @@ const DESCRIPTIONS: Record<string, string> = {
     en: 'Practical materials from our experts — seminars, articles, and analyses with presentations and additional files.',
 }
 
-const OG_LOCALES: Record<string, string> = {
-    ru: 'ru_KZ',
-    kz: 'kk_KZ',
-    en: 'en_US',
+const OG_LOCALES: Record<string, string> = { ru: 'ru_KZ', kz: 'kk_KZ', en: 'en_US' }
+
+type Props = {
+    params: Promise<{ locale: Locale }>
+    searchParams: Promise<Record<string, string | undefined>>
 }
 
-export async function generateMetadata({
-                                           params,
-                                       }: {
-    params: Promise<{ locale: string }>
-}): Promise<Metadata> {
+// The page is dynamic (it reads searchParams), so `export const revalidate`
+// had no effect: every visit re-fetched every article from Neon.
+// This caches the data itself for 60 s per locale instead.
+const getSeminarsData = unstable_cache(
+    async (locale: Locale) => {
+        const payload = await getPayload({ config: configPromise })
+        const [all, types, topics] = await Promise.all([
+            payload.find({
+                collection: 'education-materials',
+                locale,
+                where: { contentType: { equals: 'article' } },
+                depth: 2,
+                pagination: false,
+            }),
+            payload.find({ collection: 'education-material-types', locale, sort: 'order', depth: 0, pagination: false }),
+            payload.find({ collection: 'education-topics', locale, sort: 'order', depth: 0, pagination: false }),
+        ])
+        return {
+            materials: all.docs as EducationMaterial[],
+            materialTypes: types.docs as EducationMaterialType[],
+            topics: topics.docs as EducationTopic[],
+        }
+    },
+    ['seminars-list'],
+    { revalidate: 60, tags: ['education-materials'] },
+)
+
+export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
     const { locale } = await params
+    const sp = await searchParams
+
+    // Filtered / searched / sorted views are variations of the same list:
+    // keep them out of the index, but let crawlers follow the article links
+    const isVariant = Boolean(sp.q || sp.type || sp.topic || sp.sort || sp.view)
+    const page = Number(sp.page) || 1
+
+    const alternates = buildAlternates(locale, BASE_PATH)
+    // Paginated pages get a self-referencing canonical (Google's recommendation)
+    if (page > 1) alternates.canonical = `${SITE}/${locale}${BASE_PATH}?page=${page}`
 
     return {
-        title: {
-            default: TITLES[locale] ?? TITLES.ru,
-            template: '%s | Just Audit',
-        },
+        // `absolute` prevents a layout title template from adding "| Just Audit" twice
+        title: { absolute: TITLES[locale] ?? TITLES.ru },
         description: DESCRIPTIONS[locale] ?? DESCRIPTIONS.ru,
-        alternates: {
-            canonical: `https://justaudit.kz/${locale}/knowledge/seminars`,
-            languages: {
-                'ru-KZ': 'https://justaudit.kz/ru/knowledge/seminars',
-                'kk-KZ': 'https://justaudit.kz/kz/knowledge/seminars',
-                'en-US': 'https://justaudit.kz/en/knowledge/seminars',
-            },
-        },
+        alternates,
+        robots: isVariant ? { index: false, follow: true } : undefined,
         openGraph: {
             type: 'website',
             locale: OG_LOCALES[locale] ?? OG_LOCALES.ru,
-            url: `https://justaudit.kz/${locale}/knowledge/seminars`,
+            url: `${SITE}/${locale}${BASE_PATH}`,
             siteName: 'Just Audit',
         },
     }
 }
 
-const PAGE_SIZE = 9
-
-export default async function SeminarsListPage({
-                                                   params,
-                                                   searchParams,
-                                               }: {
-    params: Promise<{ locale: Locale }>
-    searchParams: Promise<Record<string, string | undefined>>
-}) {
+export default async function SeminarsListPage({ params, searchParams }: Props) {
     const { locale } = await params
     const sp = await searchParams
-    const page = Number(sp.page) || 1
-    const t = await getTranslations({ locale, namespace: 'knowledge' })
+    const page = Math.max(1, Number(sp.page) || 1)
 
-    const payload = await getPayload({ config: configPromise })
-
-    const [allResult, materialTypesResult, topicsResult] = await Promise.all([
-        // Every text material, unfiltered — type/topic/search are applied in
-        // memory below against this one fetch, same approach used on the videos page.
-        payload.find({
-            collection: 'education-materials',
-            locale,
-            where: { contentType: { equals: 'article' } },
-            depth: 2,
-            pagination: false,
-        }),
-        payload.find({ collection: 'education-material-types', locale, sort: 'order', depth: 0 }),
-        payload.find({ collection: 'education-topics', locale, sort: 'order', depth: 0 }),
+    const [t, { materials: allMaterials, materialTypes, topics }] = await Promise.all([
+        getTranslations({ locale, namespace: 'knowledge' }),
+        getSeminarsData(locale),
     ])
-
-    const allMaterials = allResult.docs as EducationMaterial[]
-    const materialTypes = materialTypesResult.docs as EducationMaterialType[]
-    const topics = topicsResult.docs as EducationTopic[]
 
     // ---- Facet counts — static, computed against the full unfiltered set ----
     const typeOptions = materialTypes.map((materialType) => ({
@@ -136,23 +142,19 @@ export default async function SeminarsListPage({
     return (
         <main className="min-h-screen bg-[#F7F5F2]">
             <div className="w-full px-6 pt-8 lg:px-16">
-                <nav className="flex items-center gap-2 text-sm text-[#1A1A1A]/50">
+                <nav className="flex items-center gap-2 text-sm text-[#1A1A1A]/70">
                     <Link href="/">{t('home')}</Link>
-                    <span>/</span>
+                    <span aria-hidden="true">/</span>
                     <Link href="/knowledge">{t('breadcrumb')}</Link>
-                    <span>/</span>
+                    <span aria-hidden="true">/</span>
                     <span className="text-[#1A1A1A]">{t('seminarsList.title')}</span>
                 </nav>
             </div>
             <section className="w-full gap-10 px-6 pb-10 pt-6 lg:flex lg:px-16">
                 <div className="grid w-full items-center gap-10 lg:grid-cols-[3fr_2fr]">
                     <div className="text-left">
-                        <h1 className="font-serif text-4xl text-[#1A1A1A]">
-                            {t('seminarsList.title')}
-                        </h1>
-                        <p className="mt-4 max-w-xl text-base text-[#1A1A1A]/60">
-                            {t('seminarsList.subtitle')}
-                        </p>
+                        <h1 className="font-serif text-4xl text-[#1A1A1A]">{t('seminarsList.title')}</h1>
+                        <p className="mt-4 max-w-xl text-base text-[#1A1A1A]/70">{t('seminarsList.subtitle')}</p>
                     </div>
                     <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl bg-[#EDE9E3] lg:ml-auto lg:aspect-[16/10] lg:max-w-md">
                         <Image
@@ -161,7 +163,7 @@ export default async function SeminarsListPage({
                             fill
                             priority
                             className="object-cover"
-                            sizes="(max-width: 1024px) 100vw, 400px"
+                            sizes="(max-width: 1024px) 100vw, 448px"
                         />
                     </div>
                 </div>
@@ -169,7 +171,7 @@ export default async function SeminarsListPage({
 
             <section className="w-full gap-10 px-6 pb-20 lg:flex lg:px-16">
                 <MaterialsFiltersSidebar typeOptions={typeOptions} topics={topicOptions} totalCount={totalDocs} />
-                <div className="mt-8 flex-1 lg:mt-0">
+                <div className="mt-8 min-w-0 flex-1 lg:mt-0">
                     <SearchSortBar
                         resultsCount={totalDocs}
                         resultsLabel={t('seminarsList.resultsLabel')}
@@ -196,7 +198,7 @@ export default async function SeminarsListPage({
                         <Pagination
                             currentPage={page}
                             totalPages={totalPages}
-                            basePath="/knowledge/seminars"
+                            basePath={BASE_PATH}
                             searchParams={sp}
                             nextLabel={t('pagination.nextLabel')}
                         />

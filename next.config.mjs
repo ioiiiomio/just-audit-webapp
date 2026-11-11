@@ -20,6 +20,8 @@ const nextConfig = {
         hostname: "**",
       },
     ],
+    qualities: [30, 75],
+    minimumCacheTTL: 2678400, // 31 days
   },
 };
 

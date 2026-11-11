@@ -47,4 +47,8 @@
   h4 {
     @apply font-heading;
   }
+  .font-heading {
+    -webkit-text-stroke: 0.35px currentColor;
+    paint-order: stroke fill;
+  }
 }

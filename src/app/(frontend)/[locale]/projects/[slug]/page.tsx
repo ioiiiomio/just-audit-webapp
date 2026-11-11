@@ -3,28 +3,27 @@ import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { cache } from 'react'
 import { getPayload } from 'payload'
+import { setRequestLocale } from 'next-intl/server'
 import config from '@payload-config'
 import type { Media, Project } from '@/payload-types'
+import type { Locale } from '@/i18n/routing'
+import { buildAlternates } from '@/lib/seo'
 import { CmsLinkButton, HeadingRule, ProjectIcon } from '@/components/ui/project-ui'
 import { GalleryCarousel } from '@/components/ui/gallery-carousel'
 
 export const revalidate = 60
 
-type Locale = 'ru' | 'kz' | 'en'
 type Params = Promise<{ locale: Locale; slug: string }>
 
-const SITE_URL = process.env.NEXT_PUBLIC_SERVER_URL ?? 'https://www.justaudit.kz'
-const LOCALES: Locale[] = ['ru', 'kz', 'en']
-
-// If your Payload localization uses a different code for Kazakh (e.g. 'kk'), map it here.
-const toPayloadLocale = (locale: Locale) => locale
+const SITE = 'https://www.justaudit.kz'
+const BASE_PATH = '/projects'
 
 const getProject = cache(async (slug: string, locale: Locale): Promise<Project | null> => {
   const payload = await getPayload({ config })
   const { docs } = await payload.find({
     collection: 'projects',
     where: { slug: { equals: slug } },
-    locale: toPayloadLocale(locale),
+    locale,
     fallbackLocale: 'ru',
     depth: 1,
     limit: 1,
@@ -34,6 +33,8 @@ const getProject = cache(async (slug: string, locale: Locale): Promise<Project |
 
 const asMedia = (m: number | Media | null | undefined): Media | null =>
     m && typeof m === 'object' && m.url ? m : null
+
+const absoluteUrl = (url: string) => (url.startsWith('http') ? url : `${SITE}${url}`)
 
 const paragraphs = (text?: string | null) =>
     (text ?? '')
@@ -53,21 +54,29 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   return {
     title,
     description,
-    alternates: {
-      canonical: `${SITE_URL}/${locale}/projects/${slug}`,
-      languages: Object.fromEntries(LOCALES.map((l) => [l, `${SITE_URL}/${l}/projects/${slug}`])),
-    },
+    alternates: buildAlternates(locale, `${BASE_PATH}/${slug}`),
     openGraph: {
       title,
       description,
-      url: `${SITE_URL}/${locale}/projects/${slug}`,
-      images: image?.url ? [{ url: image.url }] : undefined,
+      url: `${SITE}/${locale}${BASE_PATH}/${slug}`,
+      images: image?.url
+          ? [
+            {
+              url: absoluteUrl(image.url),
+              width: image.width ?? undefined,
+              height: image.height ?? undefined,
+              alt: image.alt ?? title,
+            },
+          ]
+          : undefined,
     },
   }
 }
 
 export default async function ProjectPage({ params }: { params: Params }) {
   const { locale, slug } = await params
+  setRequestLocale(locale)
+
   const project = await getProject(slug, locale)
   if (!project) notFound()
 
@@ -106,7 +115,7 @@ export default async function ProjectPage({ params }: { params: Params }) {
                     alt={heroImage.alt ?? project.title}
                     fill
                     priority
-                    sizes="(min-width: 1024px) 50vw, 100vw"
+                    sizes="(min-width: 1536px) 740px, (min-width: 1024px) 50vw, 100vw"
                     className="object-cover"
                 />
               </div>
@@ -167,9 +176,7 @@ export default async function ProjectPage({ params }: { params: Params }) {
               <div className="mb-12 flex flex-col items-center gap-4 md:grid md:grid-cols-[1fr_auto_1fr] md:gap-6">
                 <div className="hidden md:block" />
                 {project.gallery?.heading && (
-                    <h2 className="text-center font-serif text-3xl font-bold text-primary">
-                      {project.gallery.heading}
-                    </h2>
+                    <h2 className="text-center font-serif text-3xl font-bold text-primary">{project.gallery.heading}</h2>
                 )}
                 <div className="md:justify-self-end">
                   <CmsLinkButton link={project.gallery?.moreLink} variant="text" />
@@ -189,7 +196,7 @@ export default async function ProjectPage({ params }: { params: Params }) {
                           src={joinImage.url!}
                           alt=""
                           fill
-                          sizes="100vw"
+                          sizes="(min-width: 1536px) 1504px, 100vw"
                           className="object-cover object-right"
                       />
                       <div className="absolute inset-0 bg-gradient-to-r from-background via-background/85 to-transparent" />
@@ -200,9 +207,7 @@ export default async function ProjectPage({ params }: { params: Params }) {
                       <p className="mb-2 text-xs uppercase tracking-wide text-primary/70">{project.joinCta.eyebrow}</p>
                   )}
                   <h2 className="font-serif text-3xl font-bold text-primary">{project.joinCta.heading}</h2>
-                  {project.joinCta.subheading && (
-                      <p className="mt-2 text-foreground/80">{project.joinCta.subheading}</p>
-                  )}
+                  {project.joinCta.subheading && <p className="mt-2 text-foreground/80">{project.joinCta.subheading}</p>}
                   <CmsLinkButton link={project.joinCta.button} className="mt-6" />
                 </div>
               </div>

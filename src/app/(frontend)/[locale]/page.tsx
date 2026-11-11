@@ -1,7 +1,10 @@
 // src/app/(frontend)/[locale]/page.tsx
 import type { Metadata } from "next";
 import { getPayload } from "payload";
+import { setRequestLocale } from "next-intl/server";
 import config from "@payload-config";
+import type { Locale } from "@/i18n/routing";
+import { buildAlternates } from "@/lib/seo";
 
 import { AboutSection } from "@/components/sections/about-section";
 import { ApproachSection } from "@/components/sections/approach-section";
@@ -11,133 +14,99 @@ import { HeroSection } from "@/components/sections/hero-section";
 import { ServicesSection } from "@/components/sections/services-section";
 import { TeamPreviewSection } from "@/components/sections/team-preview-section";
 import { WhyUsSection } from "@/components/sections/why-us-section";
-import {AnnouncementsBanner} from "@/components/sections/announcement-banner";
+import { AnnouncementsBanner } from "@/components/sections/announcement-banner";
 
 export const revalidate = 60;
 
+const SITE = "https://www.justaudit.kz";
+
 const TITLES: Record<string, string> = {
-  ru: "Just Audit — Аудит и консалтинг",
-  kz: "Just Audit — Аудит және консалтинг",
-  en: "Just Audit — Audit and Consulting",
+    ru: "Just Audit — Аудит и консалтинг",
+    kz: "Just Audit — Аудит және консалтинг",
+    en: "Just Audit — Audit and Consulting",
 };
 
 const DESCRIPTIONS: Record<string, string> = {
-  ru: "Профессиональный аудит и консалтинг в Казахстане",
-  kz: "Қазақстандағы кәсіби аудит және консалтинг",
-  en: "Professional audit and consulting services in Kazakhstan",
+    ru: "Профессиональный аудит и консалтинг в Казахстане",
+    kz: "Қазақстандағы кәсіби аудит және консалтинг",
+    en: "Professional audit and consulting services in Kazakhstan",
 };
 
-const OG_LOCALES: Record<string, string> = {
-  ru: "ru_KZ",
-  kz: "kk_KZ",
-  en: "en_US",
-};
+const OG_LOCALES: Record<string, string> = { ru: "ru_KZ", kz: "kk_KZ", en: "en_US" };
 
-export async function generateMetadata({
-                                         params,
-                                       }: {
-  params: Promise<{ locale: string }>;
-}): Promise<Metadata> {
-  const { locale } = await params;
+type Props = { params: Promise<{ locale: Locale }> };
 
-  return {
-    title: {
-      default: TITLES[locale] ?? TITLES.ru,
-      template: "%s | Just Audit",
-    },
-    description: DESCRIPTIONS[locale] ?? DESCRIPTIONS.ru,
-    alternates: {
-      canonical: `https://justaudit.kz/${locale}`,
-      languages: {
-        "ru-KZ": "https://justaudit.kz/ru",
-        "kk-KZ": "https://justaudit.kz/kz",
-        "en-US": "https://justaudit.kz/en",
-      },
-    },
-    openGraph: {
-      type: "website",
-      locale: OG_LOCALES[locale] ?? OG_LOCALES.ru,
-      url: `https://justaudit.kz/${locale}`,
-      siteName: "Just Audit",
-    },
-    other: {
-      generator: "Built by ioiiiomio",
-    },
-  };
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+    const { locale } = await params;
+
+    return {
+        // `absolute` so the root "%s | Just Audit" template doesn't repeat the brand
+        title: { absolute: TITLES[locale] ?? TITLES.ru },
+        description: DESCRIPTIONS[locale] ?? DESCRIPTIONS.ru,
+        alternates: buildAlternates(locale),
+        openGraph: {
+            type: "website",
+            locale: OG_LOCALES[locale] ?? OG_LOCALES.ru,
+            url: `${SITE}/${locale}`,
+            siteName: "Just Audit",
+        },
+        generator: "Built by ioiiiomio",
+    };
 }
 
-export default async function HomePage({
-                                         params,
-                                       }: {
-  params: Promise<{ locale: string }>;
-}) {
-  const { locale } = await params;
-  const payload = await getPayload({ config });
-  const payloadLocale = locale as "ru" | "kz" | "en";
+export default async function HomePage({ params }: Props) {
+    const { locale } = await params;
+    setRequestLocale(locale);
 
-  const hero = await payload.findGlobal({
-    slug: "hero",
-    locale: payloadLocale,
-    depth: 1,
-  });
+    const payload = await getPayload({ config });
 
-  const about = await payload.findGlobal({
-    slug: "about",
-    locale: payloadLocale,
-  });
+    // Independent globals: fetch in parallel (was 4 sequential DB round-trips)
+    const [hero, about, approach, whyUs] = await Promise.all([
+        payload.findGlobal({ slug: "hero", locale, depth: 1 }),
+        payload.findGlobal({ slug: "about", locale, depth: 0 }),
+        payload.findGlobal({ slug: "approach", locale, depth: 1 }),
+        payload.findGlobal({ slug: "why-us", locale, depth: 1 }),
+    ]);
 
-  const approach = await payload.findGlobal({
-    slug: "approach",
-    locale: payloadLocale,
-    depth: 1,
-  });
+    return (
+        <main className="min-h-screen">
+            <AnnouncementsBanner locale={locale} />
 
-  const whyUs = await payload.findGlobal({
-    slug: "why-us",
-    locale: payloadLocale,
-    depth: 1,
-  });
+            <HeroSection
+                {...hero}
+                title={hero.title ?? ""}
+                subtitle={hero.subtitle ?? ""}
+                ctaLabel={hero.ctaLabel ?? ""}
+            />
 
-  return (
-      <main className="min-h-screen">
+            <AboutSection
+                {...about}
+                eyebrow={about.eyebrow ?? ""}
+                title={about.title ?? ""}
+                principlesEyebrow={about.principlesEyebrow ?? ""}
+                paragraphs={about.paragraphs ?? []}
+                principles={about.principles ?? []}
+            />
 
-          <AnnouncementsBanner locale={locale} />
+            <ApproachSection
+                {...approach}
+                eyebrow={approach.eyebrow ?? ""}
+                title={approach.title ?? ""}
+                items={approach.items ?? []}
+            />
 
-        <HeroSection
-            {...hero}
-            title={hero.title ?? ""}
-            subtitle={hero.subtitle ?? ""}
-            ctaLabel={hero.ctaLabel ?? ""}
-        />
+            <TeamPreviewSection locale={locale} />
+            <CertificatesSection locale={locale} />
+            <ServicesSection locale={locale} />
 
-        <AboutSection
-            {...about}
-            eyebrow={about.eyebrow ?? ""}
-            title={about.title ?? ""}
-            principlesEyebrow={about.principlesEyebrow ?? ""}
-            paragraphs={about.paragraphs ?? []}
-            principles={about.principles ?? []}
-        />
+            <WhyUsSection
+                {...whyUs}
+                eyebrow={whyUs.eyebrow ?? ""}
+                title={whyUs.title ?? ""}
+                points={whyUs.points ?? []}
+            />
 
-        <ApproachSection
-            {...approach}
-            eyebrow={approach.eyebrow ?? ""}
-            title={approach.title ?? ""}
-            items={approach.items ?? []}
-        />
-
-        <TeamPreviewSection locale={locale} />
-        <CertificatesSection locale={locale} />
-        <ServicesSection locale={locale} />
-
-        <WhyUsSection
-            {...whyUs}
-            eyebrow={whyUs.eyebrow ?? ""}
-            title={whyUs.title ?? ""}
-            points={whyUs.points ?? []}
-        />
-
-        <ContactSection locale={locale} />
-      </main>
-  );
+            <ContactSection locale={locale} />
+        </main>
+    );
 }

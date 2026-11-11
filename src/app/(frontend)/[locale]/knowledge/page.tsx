@@ -1,17 +1,20 @@
 import { getPayload } from 'payload'
-import { getTranslations } from 'next-intl/server'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
 import configPromise from '@payload-config'
 import { Link } from '@/i18n/navigation'
 import type { Locale } from '@/i18n/routing'
 import { ArrowRight } from 'lucide-react'
 import { EducationCard } from '@/components/education/education-card'
 import { VideoCard } from '@/components/education/video-card'
-import { NewsletterCTA } from '@/components/education/newsletter-cta'
 import Image from 'next/image'
 import type { EducationMaterial } from '@/lib/education/types'
 import type { Metadata } from 'next'
+import { buildAlternates } from '@/lib/seo'
 
 export const revalidate = 60
+
+const BASE_PATH = '/knowledge'
+const SITE = 'https://www.justaudit.kz'
 
 const TITLES: Record<string, string> = {
   ru: 'База знаний | Just Audit',
@@ -25,52 +28,34 @@ const DESCRIPTIONS: Record<string, string> = {
   en: 'Expert materials, videos, and seminars from the JUST AUDIT team — audit, finance, consulting.',
 }
 
-const OG_LOCALES: Record<string, string> = {
-  ru: 'ru_KZ',
-  kz: 'kk_KZ',
-  en: 'en_US',
-}
+const OG_LOCALES: Record<string, string> = { ru: 'ru_KZ', kz: 'kk_KZ', en: 'en_US' }
 
-export async function generateMetadata({
-                                         params,
-                                       }: {
-  params: Promise<{ locale: string }>
-}): Promise<Metadata> {
+type Props = { params: Promise<{ locale: Locale }> }
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params
-
   return {
-    title: {
-      default: TITLES[locale] ?? TITLES.ru,
-      template: '%s | Just Audit',
-    },
+    title: { absolute: TITLES[locale] ?? TITLES.ru },
     description: DESCRIPTIONS[locale] ?? DESCRIPTIONS.ru,
-    alternates: {
-      canonical: `https://justaudit.kz/${locale}/knowledge`,
-      languages: {
-        'ru-KZ': 'https://justaudit.kz/ru/knowledge',
-        'kk-KZ': 'https://justaudit.kz/kz/knowledge',
-        'en-US': 'https://justaudit.kz/en/knowledge',
-      },
-    },
+    alternates: buildAlternates(locale, BASE_PATH),
     openGraph: {
       type: 'website',
       locale: OG_LOCALES[locale] ?? OG_LOCALES.ru,
-      url: `https://justaudit.kz/${locale}/knowledge`,
+      url: `${SITE}/${locale}${BASE_PATH}`,
       siteName: 'Just Audit',
     },
   }
 }
 
-export default async function EducationLandingPage({
-                                                     params,
-                                                   }: {
-  params: Promise<{ locale: Locale }>
-}) {
+export default async function EducationLandingPage({ params }: Props) {
   const { locale } = await params
-  const t = await getTranslations({ locale, namespace: 'knowledge' })
+  // Lets next-intl render this page statically (ISR) instead of falling back to dynamic
+  setRequestLocale(locale)
+
   const payload = await getPayload({ config: configPromise })
 
-  const [lectures, videos] = await Promise.all([
+  const [t, lectures, videos] = await Promise.all([
+    getTranslations({ locale, namespace: 'knowledge' }),
     payload.find({
       collection: 'education-materials',
       locale,
@@ -92,9 +77,9 @@ export default async function EducationLandingPage({
   return (
       <main className="min-h-screen bg-[#F7F5F2]">
         <div className="mx-auto max-w-6xl px-6 pt-8 lg:px-16">
-          <nav className="flex items-center gap-2 text-sm text-[#1A1A1A]/50">
+          <nav className="flex items-center gap-2 text-sm text-[#1A1A1A]/70">
             <Link href="/">{t('home')}</Link>
-            <span>/</span>
+            <span aria-hidden="true">/</span>
             <span className="text-[#1A1A1A]">{t('breadcrumb')}</span>
           </nav>
         </div>
@@ -123,7 +108,7 @@ export default async function EducationLandingPage({
                   fill
                   priority
                   className="object-cover"
-                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  sizes="(max-width: 1024px) 100vw, 512px"
               />
             </div>
           </div>
