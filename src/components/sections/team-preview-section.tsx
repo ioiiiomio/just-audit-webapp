@@ -16,7 +16,7 @@ const VIEW_ALL_FALLBACK: Record<Locale, string> = {
     kz: "бүкіл команда",
     en: "whole team",
 };
-const HOMEPAGE_LIMIT = 8;
+const HOMEPAGE_LIMIT = 12;
 
 const mediaUrl = (m: number | Media | null | undefined) =>
     m && typeof m === "object" ? (m.url ?? null) : null;
@@ -30,8 +30,9 @@ export async function TeamPreviewSection({ locale }: { locale: string }) {
     const founder = members.find((m) => m.featured);
     const others = members.filter((m) => !m.featured);
     const picked = others.filter((m) => m.showOnHomepage);
+    const notPicked = others.filter((m) => !m.showOnHomepage);
 
-    const carouselMembers: CarouselMember[] = (picked.length ? picked : others)
+    const carouselMembers: CarouselMember[] = [...picked, ...notPicked]
         .slice(0, HOMEPAGE_LIMIT)
         .map((m, i) => ({
             id: m.id ?? `member-${i}`,

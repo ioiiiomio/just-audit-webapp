@@ -51,9 +51,8 @@ export function TeamCarousel({
 
     const scroll = (dir: -1 | 1) => {
         const el = trackRef.current;
-        const card = el?.querySelector<HTMLElement>("li");
-        if (!el || !card) return;
-        el.scrollBy({ left: dir * (card.offsetWidth + GAP), behavior: "smooth" });
+        if (!el) return;
+        el.scrollBy({ left: dir * (el.clientWidth + GAP), behavior: "smooth" });
     };
 
     return (
@@ -85,23 +84,23 @@ export function TeamCarousel({
                     {members.map((m) => (
                         <li
                             key={m.id}
-                            className="shrink-0 basis-[85%] snap-start sm:basis-[calc((100%-1rem)/2)] lg:basis-[calc((100%-2rem)/3)]"
+                            className="shrink-0 basis-[85%] snap-start sm:basis-[calc((100%-1rem)/2)] lg:basis-[calc((100%-3rem)/4)]"
                         >
-                            <article className="group flex h-full flex-col rounded-xl border border-brand-black/10 bg-white p-5 transition-shadow duration-300 hover:shadow-lg">
+                            <article className="group flex h-full flex-col rounded-xl border border-brand-black/10 bg-white p-4 transition-shadow duration-300 hover:shadow-lg">
                                 <div className="relative aspect-[4/5] overflow-hidden rounded-lg bg-brand-beige">
                                     {m.photoUrl && (
                                         <Image
                                             src={m.photoUrl}
                                             alt={m.name}
                                             fill
-                                            sizes="(min-width: 1024px) 360px, (min-width: 640px) 50vw, 85vw"
+                                            sizes="(min-width: 1024px) 270px, (min-width: 640px) 50vw, 85vw"
                                             className="object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]"
                                         />
                                     )}
                                 </div>
 
-                                <div className="mt-5 flex flex-1 flex-col">
-                                    <h3 className="font-heading text-xl font-bold text-brand-green">
+                                <div className="mt-4 flex flex-1 flex-col">
+                                    <h3 className="font-heading text-lg font-bold leading-snug text-brand-green">
                                         {m.name}
                                     </h3>
                                     {m.position && (
