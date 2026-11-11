@@ -16,6 +16,7 @@ import "./globals.css";
 
 import { CookieConsent } from "@/components/cookie-consent";
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import { Analytics } from "@vercel/analytics/next"
 import { Footer } from "@/components/layout/footer";
 
 const playfair = Playfair_Display({
@@ -97,6 +98,7 @@ export default async function LocaleLayout({ children, params }: Props) {
           />
         </NextIntlClientProvider>
       </body>
+      <Analytics />
       <SpeedInsights />
     </html>
   );
