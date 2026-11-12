@@ -30,127 +30,170 @@ const LOCALES = [
   { code: "en", label: "EN" },
 ] as const;
 
+const LOCALE_CODES: readonly string[] = LOCALES.map((l) => l.code);
+
+/**
+ * If `href` points to a section on the home page, return just the hash ("#contact").
+ * Otherwise return null (it's a normal route).
+ *
+ * Accepts every shape the CMS might send:
+ *   "#contact", "/#contact", "/en#contact", "en#contact", "/en/#contact",
+ *   "https://www.justaudit.kz/en#contact"
+ *
+ * Stripping the locale matters: next-intl's <Link> adds the locale prefix itself,
+ * so passing "/en#contact" produced "/en/en#contact" (the 404).
+ */
+function getHomeAnchor(href: string): string | null {
+  const hashIndex = href.indexOf("#");
+  if (hashIndex === -1) return null;
+
+  let path = href.slice(0, hashIndex);
+  try {
+    // drop origin if a full URL was stored
+    if (/^https?:\/\//.test(path)) path = new URL(path).pathname;
+  } catch {
+    /* ignore malformed URL */
+  }
+  path = path.replace(/^\/+|\/+$/g, ""); // trim slashes
+
+  const isHome = path === "" || LOCALE_CODES.includes(path);
+  return isHome ? href.slice(hashIndex) : null;
+}
+
 export function NavbarClient({
-  navItems,
-  logoUrl,
-  ctaLabel,
-  ctaHref,
-}: NavbarClientProps) {
+                               navItems,
+                               logoUrl,
+                               ctaLabel,
+                               ctaHref,
+                             }: NavbarClientProps) {
   const locale = useLocale();
-  const pathname = usePathname();
+  const pathname = usePathname(); // next-intl: locale-free, home is "/"
   const [open, setOpen] = useState(false);
 
-  // "#contact" → "/#contact" so the CTA also works from non-home pages
-  const ctaIsAnchor = ctaHref.startsWith("#");
-  const ctaLinkHref = ctaIsAnchor ? `/${ctaHref}` : ctaHref;
+  const isHomePage = pathname === "/";
 
-  const handleAnchorClick = (e: React.MouseEvent, href: string) => {
-    if (pathname === "/") {
+  /**
+   * On the home page: scroll smoothly to the section, no navigation.
+   * On any other page: let <Link> navigate to "/#section" (locale added by next-intl);
+   * Next.js scrolls to the element with that id after the page loads.
+   */
+  const handleAnchorClick = (e: React.MouseEvent, hash: string) => {
+    if (isHomePage) {
       e.preventDefault();
-      const el = document.querySelector(href);
-      if (el) smoothScrollTo(el, 900); // duration in ms — tweak to taste
+      const el = document.querySelector(hash);
+      if (el) {
+        smoothScrollTo(el, 900); // duration in ms — tweak to taste
+        window.history.replaceState(null, "", hash); // keep #contact in the URL
+      }
     }
     setOpen(false);
   };
 
-  const renderLink = (item: NavItem, className: string) => (
-    <Link
-      key={item.id}
-      href={item.type === "anchor" ? `/${item.href}` : item.href}
-      onClick={(e) => {
-        if (item.type === "anchor") handleAnchorClick(e, item.href);
-        else setOpen(false);
-      }}
-      className={className}
-    >
-      {item.label}
-    </Link>
-  );
+  const ctaAnchor = getHomeAnchor(ctaHref);
+  const ctaLinkHref = ctaAnchor ? `/${ctaAnchor}` : ctaHref;
+
+  const renderLink = (item: NavItem, className: string) => {
+    const anchor = item.type === "anchor" ? getHomeAnchor(item.href) : null;
+    return (
+        <Link
+            key={item.id}
+            href={anchor ? `/${anchor}` : item.href}
+            onClick={(e) => {
+              if (anchor) handleAnchorClick(e, anchor);
+              else setOpen(false);
+            }}
+            className={className}
+        >
+          {item.label}
+        </Link>
+    );
+  };
 
   const localeSwitcher = (
-    <div className="flex items-center gap-1 text-sm font-semibold">
-      {LOCALES.map(({ code, label }, i) => (
-        <span key={code} className="flex items-center gap-1">
+      <div className="flex items-center gap-1 text-sm font-semibold">
+        {LOCALES.map(({ code, label }, i) => (
+            <span key={code} className="flex items-center gap-1">
           {i > 0 && <span aria-hidden="true">|</span>}
-          <Link
-            href={pathname}
-            locale={code}
-            className={cn("px-1", locale === code && "underline underline-offset-4")}
-            aria-current={locale === code ? "true" : undefined}
-          >
+              <Link
+                  href={pathname}
+                  locale={code}
+                  className={cn("px-1", locale === code && "underline underline-offset-4")}
+                  aria-current={locale === code ? "true" : undefined}
+              >
             {label}
           </Link>
         </span>
-      ))}
-    </div>
+        ))}
+      </div>
   );
 
   const ctaButton = (
-    <Button
-      asChild
-      className="rounded-l bg-brand-green text-white hover:bg-brand-green/90"
-    >
-      <Link
-        href={ctaLinkHref}
-        onClick={(e) => {
-          if (ctaIsAnchor) handleAnchorClick(e, ctaHref);
-        }}
+      <Button
+          asChild
+          className="rounded-l bg-brand-green text-white hover:bg-brand-green/90"
       >
-        {ctaLabel}
-      </Link>
-    </Button>
+        <Link
+            href={ctaLinkHref}
+            onClick={(e) => {
+              if (ctaAnchor) handleAnchorClick(e, ctaAnchor);
+              else setOpen(false);
+            }}
+        >
+          {ctaLabel}
+        </Link>
+      </Button>
   );
 
   return (
-    <header className="sticky top-0 z-50 bg-brand-milk text-brand-green lg:bg-brand-milk/70 lg:backdrop-blur">
-      <nav>
-        <Container className="flex items-center justify-between py-4">
-          <Link href="/" className="flex items-center">
-            <Image
-              src={logoUrl}
-              alt="Just Audit"
-              width={120}
-              height={40}
-              priority
-            />
-          </Link>
+      <header className="sticky top-0 z-50 bg-brand-milk text-brand-green lg:bg-brand-milk/70 lg:backdrop-blur">
+        <nav>
+          <Container className="flex items-center justify-between py-4">
+            <Link href="/" className="flex items-center">
+              <Image
+                  src={logoUrl}
+                  alt="Just Audit"
+                  width={120}
+                  height={40}
+                  priority
+              />
+            </Link>
 
-          <ul className="hidden items-center gap-5 font-[family-name:var(--font-montserrat)] text-sm font-semibold lg:flex">
-            {navItems.map((item) => (
-              <li key={item.id}>
-                {renderLink(item, "transition-opacity hover:opacity-80")}
-              </li>
-            ))}
-          </ul>
+            <ul className="hidden items-center gap-5 font-[family-name:var(--font-montserrat)] text-sm font-semibold lg:flex">
+              {navItems.map((item) => (
+                  <li key={item.id}>
+                    {renderLink(item, "transition-opacity hover:opacity-80")}
+                  </li>
+              ))}
+            </ul>
 
-          <div className="ml-3 hidden items-center gap-4 lg:flex">
-            {localeSwitcher}
-            {ctaButton}
-          </div>
+            <div className="ml-3 hidden items-center gap-4 lg:flex">
+              {localeSwitcher}
+              {ctaButton}
+            </div>
 
-          <button
-            className="lg:hidden"
-            aria-label="Toggle menu"
-            aria-expanded={open}
-            onClick={() => setOpen((v) => !v)}
-          >
-            {open ? <X size={24} /> : <Menu size={24} />}
-          </button>
-        </Container>
-      </nav>
+            <button
+                className="lg:hidden"
+                aria-label="Toggle menu"
+                aria-expanded={open}
+                onClick={() => setOpen((v) => !v)}
+            >
+              {open ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </Container>
+        </nav>
 
-      {open && (
-        <Container className="flex flex-col gap-4 bg-brand-milk pb-6 lg:hidden">
-          {navItems.map((item) =>
-            renderLink(
-              item,
-              "font-[family-name:var(--font-montserrat)] font-semibold",
-            ),
-          )}
-          {localeSwitcher}
-          {ctaButton}
-        </Container>
-      )}
-    </header>
+        {open && (
+            <Container className="flex flex-col gap-4 bg-brand-milk pb-6 lg:hidden">
+              {navItems.map((item) =>
+                  renderLink(
+                      item,
+                      "font-[family-name:var(--font-montserrat)] font-semibold",
+                  ),
+              )}
+              {localeSwitcher}
+              {ctaButton}
+            </Container>
+        )}
+      </header>
   );
 }

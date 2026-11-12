@@ -1,4 +1,8 @@
 import type { CollectionConfig } from "payload";
+import {
+  revalidateAfterChange,
+  revalidateAfterDelete,
+} from "@/hooks/revalidate";
 
 export const Pages: CollectionConfig = {
   slug: "pages",
@@ -13,6 +17,11 @@ export const Pages: CollectionConfig = {
   },
   access: {
     read: () => true,
+  },
+  // Collection-level hooks: fire once per save/delete of the whole document
+  hooks: {
+    afterChange: [revalidateAfterChange],
+    afterDelete: [revalidateAfterDelete],
   },
   fields: [
     {
