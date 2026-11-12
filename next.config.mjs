@@ -28,6 +28,10 @@ const nextConfig = {
   // Old sitemap URLs → the matching homepage sections
   async redirects() {
     return [
+      // Root → default locale, permanent (replaces next-intl's 307)
+      { source: "/", destination: "/ru", permanent: true },
+
+      // Old sitemap URLs → the matching homepage sections
       { source: "/:locale(ru|kz|en)/about", destination: "/:locale#about", permanent: true },
       { source: "/:locale(ru|kz|en)/services", destination: "/:locale#services", permanent: true },
       { source: "/:locale(ru|kz|en)/contacts", destination: "/:locale#contact", permanent: true },
