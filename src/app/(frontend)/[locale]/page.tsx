@@ -16,7 +16,7 @@ import { TeamPreviewSection } from "@/components/sections/team-preview-section";
 import { WhyUsSection } from "@/components/sections/why-us-section";
 import { AnnouncementsBanner } from "@/components/sections/announcement-banner";
 
-export const revalidate = 60;
+export const revalidate = 3600;
 
 const SITE = "https://www.justaudit.kz";
 
@@ -110,3 +110,4 @@ export default async function HomePage({ params }: Props) {
         </main>
     );
 }
+

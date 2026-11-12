@@ -11,7 +11,7 @@ import { buildAlternates } from '@/lib/seo'
 import { CmsLinkButton, HeadingRule, ProjectIcon } from '@/components/ui/project-ui'
 import { GalleryCarousel } from '@/components/ui/gallery-carousel'
 
-export const revalidate = 60
+export const revalidate = 3600;
 
 type Params = Promise<{ locale: Locale; slug: string }>
 

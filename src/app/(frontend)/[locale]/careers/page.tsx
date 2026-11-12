@@ -2,7 +2,7 @@
 import { cache } from "react";
 import { getPayload } from "payload";
 import config from "@payload-config";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import Image from "next/image";
 import type { Metadata } from "next";
 
@@ -30,18 +30,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function CareersPage({ params }: Props) {
-  const { locale } = await params;
-  const payload = await getPayload({ config });
+    const { locale } = await params;
+    setRequestLocale(locale);                 // ← add
+    const payload = await getPayload({ config });
 
   // Run all three in parallel instead of one after another
-  const [t, careers, { docs: benefits }] = await Promise.all([
-    getTranslations("careers"),
-    getCareers(locale),
-    payload.find({
-      collection: "career-benefits",
-      locale,
-      sort: "order",
-      depth: 0,
+    const [t, careers, { docs: benefits }] = await Promise.all([
+        getTranslations({ locale, namespace: "careers" }),   // ← was getTranslations("careers")
+        getCareers(locale),
+        payload.find({
+        collection: "career-benefits",
+        locale,
+        sort: "order",
+        depth: 0,
     }),
   ]);
 

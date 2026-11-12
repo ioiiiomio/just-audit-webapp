@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
-import { getMessages, getTranslations } from "next-intl/server";
+import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 import {
   Montserrat,
   Montserrat_Alternates,
@@ -77,21 +77,26 @@ export default async function LocaleLayout({ children, params }: Props) {
     notFound();
   }
 
-  const messages = await getMessages();
-  const t = await getTranslations("cookies");
+  // Must run before any other next-intl call in this layout.
+  // Without it next-intl reads the locale from request headers,
+  // which forces every page under [locale] into dynamic rendering.
+  setRequestLocale(locale);
+
+  const messages = await getMessages({ locale });
+  const t = await getTranslations({ locale, namespace: "cookies" });
 
   return (
       <html lang={HTML_LANG[locale] ?? locale} data-scroll-behavior="smooth">
       <body
-        className={`${playfair.variable} ${montserrat.variable} ${montserratAlt.variable} flex min-h-dvh flex-col bg-brand-milk font-body text-brand-black antialiased`}
+          className={`${playfair.variable} ${montserrat.variable} ${montserratAlt.variable} flex min-h-dvh flex-col bg-brand-milk font-body text-brand-black antialiased`}
       >
-        <NextIntlClientProvider messages={messages}>
-          <Navbar locale={locale as Locale} />
-          <ScrollToTopButton />
-          {/* Grows to fill the viewport, so the footer always sits at the very bottom */}
-          <div className="flex-1">{children}</div>
-          <Footer locale={locale as Locale} />
-          <CookieConsent
+      <NextIntlClientProvider locale={locale} messages={messages}>
+        <Navbar locale={locale as Locale} />
+        <ScrollToTopButton />
+        {/* Grows to fill the viewport, so the footer always sits at the very bottom */}
+        <div className="flex-1">{children}</div>
+        <Footer locale={locale as Locale} />
+        <CookieConsent
             locale={locale}
             labels={{
               message: t("message"),
@@ -99,15 +104,14 @@ export default async function LocaleLayout({ children, params }: Props) {
               accept: t("accept"),
               decline: t("decline"),
             }}
-          />
-        </NextIntlClientProvider>
+        />
+      </NextIntlClientProvider>
       </body>
-    </html>
+      </html>
   );
 }
-{
-  /* 
+
+/*
   Built by Zhaniya Koshkimbayeva
   github: github.com/ioiiiomio
 */
-}

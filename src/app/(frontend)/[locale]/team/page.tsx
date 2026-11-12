@@ -5,7 +5,7 @@ import { SpecialistsSection } from "@/components/sections/specialists-section";
 import type { Locale } from "@/i18n/routing";
 import { buildAlternates } from "@/lib/seo";
 
-export const revalidate = 60;
+export const revalidate = 3600;
 
 const BASE_PATH = "/team";
 const SITE = "https://www.justaudit.kz";

@@ -1,5 +1,5 @@
 // src/hooks/revalidate.ts
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import type {
     CollectionAfterChangeHook,
     CollectionAfterDeleteHook,
@@ -15,6 +15,7 @@ import type {
 function revalidateSite(payload: Payload, reason: string) {
     payload.logger.info(`[revalidate] ${reason}`);
     revalidatePath("/", "layout");
+    revalidateTag("education-materials");   // ← data cache used by seminars/videos
 }
 
 /** Skip when seeding/migrating (pass `context: { disableRevalidate: true }`) or saving a draft. */
