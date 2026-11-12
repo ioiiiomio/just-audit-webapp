@@ -1,6 +1,6 @@
 import { getPayload } from "payload";
 import config from "@payload-config";
-import { AnnouncementBannerClient } from "./announcement-banner-client";
+import { AnnouncementsBannerClient as AnnouncementBannerClient } from "./announcement-banner-client";
 import {
     AnnouncementModal,
     type AnnouncementType,

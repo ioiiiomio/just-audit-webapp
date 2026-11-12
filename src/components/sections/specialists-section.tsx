@@ -3,7 +3,16 @@ import config from "@payload-config";
 import { SpecialistsGrid } from "./specialists-grid";
 import { Container } from "@/components/ui/container";
 
-export async function SpecialistsSection({ locale }: { locale: string }) {
+interface SpecialistsSectionProps {
+  locale: string;
+  /** Heading level: h1 on the /team page, h2 when embedded in another page */
+  as?: "h1" | "h2";
+}
+
+export async function SpecialistsSection({
+                                           locale,
+                                           as: Heading = "h2",
+                                         }: SpecialistsSectionProps) {
   const payload = await getPayload({ config });
   const teamMembersGlobal = await payload.findGlobal({
     slug: "team-members",
@@ -16,17 +25,17 @@ export async function SpecialistsSection({ locale }: { locale: string }) {
   const rest = members.filter((m) => !m.featured);
 
   return (
-    <section id="team" className="bg-brand-beige py-20 lg:py-28">
-      <Container className="text-center">
-        <h2 className="font-heading text-4xl font-bold text-brand-green sm:text-5xl">
-          {teamMembersGlobal.eyebrow}
-        </h2>
-        <div className="mx-auto mt-4 h-px w-12 bg-brand-green" />
-        <p className="mx-auto mt-6 max-w-2xl font-body text-brand-black/80">
-          {teamMembersGlobal.subtitle}
-        </p>
-        <SpecialistsGrid featured={featured as any} rest={rest as any} />
-      </Container>
-    </section>
+      <section id="team" className="bg-brand-milk py-20 lg:py-28">
+        <Container className="text-center">
+          <Heading className="font-heading text-4xl font-bold text-brand-green sm:text-5xl">
+            {teamMembersGlobal.eyebrow}
+          </Heading>
+          <div className="mx-auto mt-4 h-px w-12 bg-brand-green" />
+          <p className="mx-auto mt-6 max-w-2xl font-body text-brand-black/80">
+            {teamMembersGlobal.subtitle}
+          </p>
+          <SpecialistsGrid featured={featured as any} rest={rest as any} />
+        </Container>
+      </section>
   );
 }
