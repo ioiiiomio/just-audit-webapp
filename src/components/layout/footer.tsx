@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
+import { Container } from "@/components/ui/container";
 import {
   getFooterNavItems,
   getFooterSettings,
@@ -10,11 +11,9 @@ import {
   type ContactDetailDoc,
 } from "@/lib/contact-details";
 import type { Locale } from "@/i18n/routing";
-import { Service } from "@/payload-types";
 
 export async function Footer({ locale }: { locale: Locale }) {
   const t = await getTranslations({ locale });
-
   const [navItems, footerSettings, contactDetails] = await Promise.all([
     getFooterNavItems(locale),
     getFooterSettings(locale),
@@ -22,32 +21,28 @@ export async function Footer({ locale }: { locale: Locale }) {
   ]);
 
   const year = new Date().getFullYear();
-
-  const { description } = footerSettings;
-  const services: Service[] = footerSettings.services ?? [];
-
-  const contactItems = groupContactDetails(
-    contactDetails as ContactDetailDoc[],
-  );
+  const { description, services } = footerSettings;
+  const contactItems = groupContactDetails(contactDetails as ContactDetailDoc[]);
 
   return (
-    <footer className="bg-brand-green px-6 py-16 text-brand-milk lg:px-16">
-      <div className="mx-auto grid max-w-7xl gap-12 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
+    <footer className="bg-brand-green py-16 text-brand-milk">
+      <Container className="grid gap-12 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
         <div>
           <span className="font-heading text-2xl font-bold">JUST AUDIT</span>
           <p className="mt-4 max-w-xs font-body text-sm text-brand-milk/80">
             {description ?? t("footer.description")}
           </p>
-          <p className="mt-8 font-body text-sm text-brand-milk/60">
+          {/* Opacities raised from /60 and /40 — they failed Lighthouse contrast */}
+          <p className="mt-8 font-body text-sm text-brand-milk/80">
             © {t("footer.copyright", { year })}
           </p>
-          <p className="mt-2 font-body text-xs text-brand-milk/40">
+          <p className="mt-2 font-body text-xs text-brand-milk/70">
             Site by{" "}
             <a
               href="https://github.com/ioiiiomio"
               target="_blank"
               rel="noopener noreferrer"
-              className="underline hover:text-brand-milk/70"
+              className="underline hover:text-white"
             >
               ioiiiomio
             </a>
@@ -125,7 +120,7 @@ export async function Footer({ locale }: { locale: Locale }) {
             ))}
           </ul>
         </div>
-      </div>
+      </Container>
     </footer>
   );
 }

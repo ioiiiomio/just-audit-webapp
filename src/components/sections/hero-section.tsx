@@ -1,5 +1,6 @@
 import { getImageProps } from "next/image";
 import { Button } from "@/components/ui/button";
+import { Container } from "@/components/ui/container";
 import type { Media } from "@/payload-types";
 import Link from "next/link";
 
@@ -36,7 +37,7 @@ export function HeroSection({
     } = getImageProps({ ...common, sizes: "50vw", quality: 30 });
 
     return (
-        <section className="relative min-h-[500px] overflow-hidden py-24 lg:min-h-[600px] lg:py-32">
+        <section className="relative flex min-h-[500px] flex-col justify-center overflow-hidden py-24 lg:min-h-[600px] lg:py-32">
             <picture>
                 <source media="(min-width: 1024px)" srcSet={desktopSrcSet} sizes="100vw" />
                 <img
@@ -50,9 +51,12 @@ export function HeroSection({
                     className="object-cover"
                 />
             </picture>
-            <div className="absolute inset-0 hidden bg-gradient-to-r from-brand-milk from-[40%] via-brand-milk/70 via-[55%] to-transparent to-[80%] lg:block" />
+
+            {/* Desktop: gradient anchored to the Container's content edge, not the viewport */}
+            <div className="absolute inset-y-0 left-0 hidden w-[calc(max(4rem,50%_-_36rem)_+_50rem)] bg-gradient-to-r from-brand-milk from-[28%] via-brand-milk/70 via-[55%] to-transparent lg:block" />
             <div className="absolute inset-0 bg-brand-milk/90 lg:hidden" />
-            <div className="relative z-10 flex h-full max-w-7xl items-center px-6 lg:px-24">
+
+            <Container className="relative z-10">
                 <div className="max-w-lg">
                     <h1 className="font-heading text-3xl font-bold uppercase leading-[1.2] text-brand-green lg:text-[3rem]">
                         {title}
@@ -63,12 +67,12 @@ export function HeroSection({
                     <Button
                         asChild
                         size="lg"
-                        className="mt-8 bg-brand-green font-heading text-brand-milk hover:bg-brand-green/90 lg:mt-10 text-base lg:text-lg"
+                        className="mt-8 bg-brand-green font-heading text-base text-brand-milk hover:bg-brand-green/90 lg:mt-10 lg:text-lg"
                     >
                         <Link href="#contact">{ctaLabel}</Link>
                     </Button>
                 </div>
-            </div>
+            </Container>
         </section>
     );
 }

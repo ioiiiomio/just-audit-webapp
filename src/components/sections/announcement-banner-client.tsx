@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { X, Info, AlertTriangle, CheckCircle2, Wrench } from "lucide-react";
 import Link from "next/link";
+import { Container } from "@/components/ui/container";
 
 type AnnouncementType = "info" | "maintenance" | "success" | "warning";
 
@@ -25,9 +26,9 @@ const typeStyles: Record<AnnouncementType, StyleConfig> = {
 
 const STORAGE_KEY = "dismissed-announcements";
 
-export function AnnouncementBannerClient({
-                                           announcements,
-                                         }: {
+export function AnnouncementsBannerClient({
+                                            announcements,
+                                          }: {
   announcements: Announcement[];
 }) {
   const [dismissed, setDismissed] = useState<string[]>([]);
@@ -69,32 +70,32 @@ export function AnnouncementBannerClient({
           const id = String(announcement.id);
 
           return (
-              <div
-                  key={id}
-                  className={`${bg} ${text} flex items-center gap-3 px-6 py-3 lg:px-16`}
-              >
-                <Icon className="size-5 shrink-0" />
-                <div className="flex-1 font-body text-sm">
-                  <span className="font-bold">{announcement.title}</span>
-                  {announcement.message && (
-                      <span className="ml-2 opacity-90">{announcement.message}</span>
-                  )}
-                  {announcement.link?.href && announcement.link?.label && (
-                      <Link
-                          href={announcement.link.href}
-                          className="ml-3 underline underline-offset-2 hover:opacity-80"
-                      >
-                        {announcement.link.label}
-                      </Link>
-                  )}
-                </div>
-                <button
-                    onClick={() => dismiss(id)}
-                    aria-label="Dismiss announcement"
-                    className="shrink-0 opacity-80 hover:opacity-100"
-                >
-                  <X className="size-4" />
-                </button>
+              // Background stays full-bleed; content aligns with the rest of the page
+              <div key={id} className={`${bg} ${text}`}>
+                <Container className="flex items-center gap-3 py-3">
+                  <Icon className="size-5 shrink-0" />
+                  <div className="flex-1 font-body text-sm">
+                    <span className="font-bold">{announcement.title}</span>
+                    {announcement.message && (
+                        <span className="ml-2 opacity-90">{announcement.message}</span>
+                    )}
+                    {announcement.link?.href && announcement.link?.label && (
+                        <Link
+                            href={announcement.link.href}
+                            className="ml-3 underline underline-offset-2 hover:opacity-80"
+                        >
+                          {announcement.link.label}
+                        </Link>
+                    )}
+                  </div>
+                  <button
+                      onClick={() => dismiss(id)}
+                      aria-label="Dismiss announcement"
+                      className="shrink-0 opacity-80 hover:opacity-100"
+                  >
+                    <X className="size-4" />
+                  </button>
+                </Container>
               </div>
           );
         })}

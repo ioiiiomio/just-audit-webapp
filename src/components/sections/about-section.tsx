@@ -1,5 +1,6 @@
 import * as LucideIcons from "lucide-react";
 import { HelpCircle, type LucideIcon } from "lucide-react";
+import { Container } from "@/components/ui/container";
 
 function getIcon(name: string): LucideIcon {
   const Icon = (LucideIcons as unknown as Record<string, LucideIcon>)[name];
@@ -32,8 +33,8 @@ export function AboutSection({
   principles,
 }: AboutSectionProps) {
   return (
-    <section id="about" className="bg-brand-milk px-6 py-20 lg:px-24 lg:py-28">
-      <div className="mx-auto grid max-w-7xl gap-16 lg:grid-cols-2 lg:gap-24">
+    <section id="about" className="bg-brand-milk py-20 lg:py-28">
+      <Container className="grid gap-16 lg:grid-cols-2 lg:gap-24">
         <div>
           <span className="font-label text-sm font-bold uppercase tracking-wide text-brand-green">
             {eyebrow}
@@ -61,6 +62,7 @@ export function AboutSection({
                     <Icon className="size-6 text-brand-green" />
                   </div>
                   <div>
+                    {/* NOTE: `text-xxl` is not a default Tailwind class — check it exists in your theme */}
                     <h3 className="font-heading text-xxl font-bold text-brand-green">
                       {principle.title}
                     </h3>
@@ -73,7 +75,7 @@ export function AboutSection({
             })}
           </ul>
         </div>
-      </div>
+      </Container>
     </section>
   );
 }

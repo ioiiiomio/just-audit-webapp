@@ -3,6 +3,7 @@ import config from "@payload-config";
 import { getTranslations } from "next-intl/server";
 import { CertificatesCarousel } from "./certificates-carousel";
 import { resolveCertificateImage } from "@/lib/certificate-image";
+import { Container } from "@/components/ui/container";
 
 interface CertificatesSectionProps {
   locale: string;
@@ -28,8 +29,8 @@ export async function CertificatesSection({
   if (certificates.length === 0) return null;
 
   return (
-    <section id="certificates" className="bg-brand-milk py-20">
-      <div className="container mx-auto px-4">
+    <section id="certificates" className="bg-brand-milk py-20 lg:py-28">
+      <Container>
         <div className="mb-12 text-center">
           <h2 className="font-heading text-4xl font-bold text-brand-green sm:text-5xl">
             {t("title")}
@@ -39,7 +40,7 @@ export async function CertificatesSection({
           </p>
         </div>
         <CertificatesCarousel certificates={certificates} />
-      </div>
+      </Container>
     </section>
   );
 }

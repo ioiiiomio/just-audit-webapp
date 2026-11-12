@@ -5,6 +5,7 @@ import { Link, usePathname } from "@/i18n/navigation";
 import { useLocale } from "next-intl";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Container } from "@/components/ui/container";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { smoothScrollTo } from "@/lib/smooth-scroll";
@@ -23,155 +24,133 @@ interface NavbarClientProps {
   ctaHref: string;
 }
 
+const LOCALES = [
+  { code: "ru", label: "RU" },
+  { code: "kz", label: "KZ" },
+  { code: "en", label: "EN" },
+] as const;
+
 export function NavbarClient({
-                               navItems,
-                               logoUrl,
-                               ctaLabel,
-                               ctaHref,
-                             }: NavbarClientProps) {
+  navItems,
+  logoUrl,
+  ctaLabel,
+  ctaHref,
+}: NavbarClientProps) {
   const locale = useLocale();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+
+  // "#contact" → "/#contact" so the CTA also works from non-home pages
+  const ctaIsAnchor = ctaHref.startsWith("#");
+  const ctaLinkHref = ctaIsAnchor ? `/${ctaHref}` : ctaHref;
 
   const handleAnchorClick = (e: React.MouseEvent, href: string) => {
     if (pathname === "/") {
       e.preventDefault();
       const el = document.querySelector(href);
       if (el) smoothScrollTo(el, 900); // duration in ms — tweak to taste
-      setOpen(false);
     }
+    setOpen(false);
   };
 
-  // ctaHref already has the locale baked in (e.g. "/en#contact"), so it must
-  // be rendered as a plain <a>, not the locale-aware `Link` (which would
-  // prepend the locale again and produce "/en/en#contact"). If we're already
-  // on this locale's homepage, smooth-scroll instead of a full reload.
-  const handleCtaClick = (e: React.MouseEvent) => {
-    if (pathname === "/") {
-      e.preventDefault();
-      const el = document.querySelector("#contact");
-      if (el) smoothScrollTo(el, 900);
-      setOpen(false);
-    }
-  };
+  const renderLink = (item: NavItem, className: string) => (
+    <Link
+      key={item.id}
+      href={item.type === "anchor" ? `/${item.href}` : item.href}
+      onClick={(e) => {
+        if (item.type === "anchor") handleAnchorClick(e, item.href);
+        else setOpen(false);
+      }}
+      className={className}
+    >
+      {item.label}
+    </Link>
+  );
 
-  const renderLink = (
-      item: NavItem,
-      className: string,
-      onClick?: () => void,
-  ) => (
+  const localeSwitcher = (
+    <div className="flex items-center gap-1 text-sm font-semibold">
+      {LOCALES.map(({ code, label }, i) => (
+        <span key={code} className="flex items-center gap-1">
+          {i > 0 && <span aria-hidden="true">|</span>}
+          <Link
+            href={pathname}
+            locale={code}
+            className={cn("px-1", locale === code && "underline underline-offset-4")}
+            aria-current={locale === code ? "true" : undefined}
+          >
+            {label}
+          </Link>
+        </span>
+      ))}
+    </div>
+  );
+
+  const ctaButton = (
+    <Button
+      asChild
+      className="rounded-l bg-brand-green text-white hover:bg-brand-green/90"
+    >
       <Link
-          key={item.id}
-          href={item.type === "anchor" ? `/${item.href}` : item.href}
-          onClick={(e) => {
-            if (item.type === "anchor") handleAnchorClick(e, item.href);
-            onClick?.();
-          }}
-          className={className}
+        href={ctaLinkHref}
+        onClick={(e) => {
+          if (ctaIsAnchor) handleAnchorClick(e, ctaHref);
+        }}
       >
-        {item.label}
+        {ctaLabel}
       </Link>
+    </Button>
   );
 
   return (
-      <header className="sticky top-0 z-50 bg-[#F7F5F2] text-[#155335] lg:bg-[#F7F5F2]/70">
-        <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+    <header className="sticky top-0 z-50 bg-brand-milk text-brand-green lg:bg-brand-milk/70 lg:backdrop-blur">
+      <nav>
+        <Container className="flex items-center justify-between py-4">
           <Link href="/" className="flex items-center">
             <Image
-                src={logoUrl}
-                alt="Just Audit"
-                width={120}
-                height={40}
-                priority
+              src={logoUrl}
+              alt="Just Audit"
+              width={120}
+              height={40}
+              priority
             />
           </Link>
 
           <ul className="hidden items-center gap-8 font-[family-name:var(--font-montserrat)] text-sm font-semibold lg:flex">
             {navItems.map((item) => (
-                <li key={item.id}>
-                  {renderLink(item, "transition-opacity hover:opacity-80")}
-                </li>
+              <li key={item.id}>
+                {renderLink(item, "transition-opacity hover:opacity-80")}
+              </li>
             ))}
           </ul>
 
           <div className="hidden items-center gap-6 lg:flex">
-            <div className="flex items-center gap-1 text-sm font-semibold">
-              <Link
-                  href={pathname}
-                  locale="ru"
-                  className={cn("px-1", locale === "ru" && "underline")}
-              >
-                RU
-              </Link>
-              <span>|</span>
-              <Link
-                  href={pathname}
-                  locale="kz"
-                  className={cn("px-1", locale === "kz" && "underline")}
-              >
-                KZ
-              </Link>
-              <span>|</span>
-              <Link
-                  href={pathname}
-                  locale="en"
-                  className={cn("px-1", locale === "en" && "underline")}
-              >
-                EN
-              </Link>
-            </div>
-
-            <Button
-                asChild
-                className="rounded-l bg-[#155335] text-white hover:bg-[#155335]/90"
-            >
-              <a href={ctaHref} onClick={handleCtaClick}>
-                {ctaLabel}
-              </a>
-            </Button>
+            {localeSwitcher}
+            {ctaButton}
           </div>
 
           <button
-              className="lg:hidden"
-              aria-label="Toggle menu"
-              onClick={() => setOpen((v) => !v)}
+            className="lg:hidden"
+            aria-label="Toggle menu"
+            aria-expanded={open}
+            onClick={() => setOpen((v) => !v)}
           >
             {open ? <X size={24} /> : <Menu size={24} />}
           </button>
-        </nav>
+        </Container>
+      </nav>
 
-        {open && (
-            <div className="flex flex-col gap-4 bg-[#F7F5F2] px-6 pb-6 lg:hidden">
-              {navItems.map((item) =>
-                  renderLink(
-                      item,
-                      "font-[family-name:var(--font-montserrat)] font-semibold",
-                      () => setOpen(false),
-                  ),
-              )}
-              <div className="flex items-center gap-1 text-sm font-semibold">
-                <Link href={pathname} locale="ru">
-                  RU
-                </Link>
-                <span>|</span>
-                <Link href={pathname} locale="kz">
-                  KZ
-                </Link>
-                <span>|</span>
-                <Link href={pathname} locale="en">
-                  EN
-                </Link>
-              </div>
-              <Button
-                  asChild
-                  className="rounded-l bg-[#155335] text-white hover:bg-[#155335]/90"
-              >
-                <a href={ctaHref} onClick={handleCtaClick}>
-                  {ctaLabel}
-                </a>
-              </Button>
-            </div>
-        )}
-      </header>
+      {open && (
+        <Container className="flex flex-col gap-4 bg-brand-milk pb-6 lg:hidden">
+          {navItems.map((item) =>
+            renderLink(
+              item,
+              "font-[family-name:var(--font-montserrat)] font-semibold",
+            ),
+          )}
+          {localeSwitcher}
+          {ctaButton}
+        </Container>
+      )}
+    </header>
   );
 }

@@ -1,6 +1,7 @@
 import { getPayload } from "payload";
 import config from "@payload-config";
 import type { Media } from "@/payload-types";
+import { Container } from "@/components/ui/container";
 import { SpecialistsGrid } from "./specialists-grid";
 import { TeamCarousel, type CarouselMember } from "./team-carousel";
 
@@ -45,8 +46,8 @@ export async function TeamPreviewSection({ locale }: { locale: string }) {
     return (
         <>
             {/* Founder */}
-            <section id="team" className="bg-brand-beige px-6 py-24 lg:px-16">
-                <div className="mx-auto max-w-6xl text-center">
+            <section id="team" className="bg-brand-beige py-20 lg:py-28">
+                <Container className="text-center">
                     <h2 className="font-heading text-4xl font-bold text-brand-green sm:text-5xl">
                         {team.eyebrow}
                     </h2>
@@ -55,20 +56,20 @@ export async function TeamPreviewSection({ locale }: { locale: string }) {
                         {team.subtitle}
                     </p>
                     {founder && <SpecialistsGrid featured={[founder] as any} rest={[]} />}
-                </div>
+                </Container>
             </section>
 
             {/* Carousel */}
             {carouselMembers.length > 0 && (
-                <section className="bg-[#F5F2EE] px-6 py-24 lg:px-16">
-                    <div className="mx-auto max-w-6xl">
+                <section className="overflow-x-clip bg-[#F5F2EE] py-20 lg:py-28">
+                    <Container>
                         <TeamCarousel
                             heading={team.carouselHeading || HEADING_FALLBACK[l]}
                             members={carouselMembers}
                             viewAllHref={`/${l}/team`}
                             viewAllLabel={team.viewAllLabel || VIEW_ALL_FALLBACK[l]}
                         />
-                    </div>
+                    </Container>
                 </section>
             )}
         </>

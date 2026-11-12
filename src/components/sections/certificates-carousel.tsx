@@ -37,13 +37,16 @@ export function CertificatesCarousel({
             const resolved = resolveCertificateImage(cert);
             if (!resolved) return null;
 
+            const title = cert.title?.trim();
+
             return (
               <CarouselItem key={cert.id} className="md:basis-1/2 lg:basis-1/3">
                 <button
                   type="button"
+                  aria-label={title || "Certificate"}
                   onClick={() =>
                     setSelected({
-                      title: cert.title ?? "",
+                      title: title ?? "",
                       url: resolved.url,
                       isPdf: resolved.isPdf,
                     })
@@ -60,29 +63,36 @@ export function CertificatesCarousel({
                     ) : (
                       <Image
                         src={resolved.url}
-                        alt={cert.title ?? ""}
+                        alt={title ?? ""}
                         fill
+                        sizes="(min-width: 1024px) 360px, (min-width: 768px) 320px, 100vw"
                         className="object-cover"
                       />
                     )}
                   </div>
-                  <div className="flex flex-1 flex-col gap-1 p-4">
-                    <h3 className="font-label text-sm font-medium text-brand-black">
-                      {cert.title}
-                    </h3>
-                    {cert.issuedBy && (
-                      <p className="font-body text-xs text-brand-black/60">
-                        {cert.issuedBy}
-                      </p>
-                    )}
-                  </div>
+                  {/* Only render the caption when there is something to show —
+                      empty <h3>s were failing Lighthouse's "headings have content" audit */}
+                  {(title || cert.issuedBy) && (
+                    <div className="flex flex-1 flex-col gap-1 p-4">
+                      {title && (
+                        <h3 className="font-label text-sm font-medium text-brand-black">
+                          {title}
+                        </h3>
+                      )}
+                      {cert.issuedBy && (
+                        <p className="font-body text-xs text-brand-black/70">
+                          {cert.issuedBy}
+                        </p>
+                      )}
+                    </div>
+                  )}
                 </button>
               </CarouselItem>
             );
           })}
         </CarouselContent>
-        <CarouselPrevious />
-        <CarouselNext />
+        <CarouselPrevious className="left-2 lg:-left-12" />
+        <CarouselNext className="right-2 lg:-right-12" />
       </Carousel>
 
       {selected && (

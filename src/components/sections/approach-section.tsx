@@ -1,5 +1,6 @@
 import Image from "next/image";
 import type { Media } from "@/payload-types";
+import { Container } from "@/components/ui/container";
 
 interface ApproachItem {
   title: string;
@@ -25,14 +26,15 @@ export function ApproachSection({
       : "/images/approach-desk.png";
 
   return (
-    <section className="relative overflow-hidden py-24 lg:py-32">
+    <section className="relative overflow-hidden py-20 lg:py-28">
       <Image
         src={imageUrl ?? "/images/approach-desk.png"}
         alt=""
         fill
+        sizes="100vw"
         className="object-cover"
       />
-      <div className="relative z-10 mx-auto max-w-6xl px-6 text-center">
+      <Container className="relative z-10 text-center">
         <span className="font-label text-sm font-bold uppercase tracking-wide text-brand-green">
           {eyebrow}
         </span>
@@ -57,7 +59,7 @@ export function ApproachSection({
             </div>
           ))}
         </div>
-      </div>
+      </Container>
     </section>
   );
 }
