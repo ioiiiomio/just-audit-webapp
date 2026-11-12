@@ -14,11 +14,12 @@ const nextConfig = {
 
   reactStrictMode: true,
   images: {
+    // Payload media is served from our own /api/media/... (relative URLs don't need this).
+    // Only list external hosts you actually load images from — "**" lets anyone use
+    // /_next/image as a free image proxy on your Vercel bill.
     remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "**",
-      },
+      { protocol: "https", hostname: "www.justaudit.kz" },
+      { protocol: "https", hostname: "justaudit.kz" },
     ],
     qualities: [30, 75],
     minimumCacheTTL: 2678400, // 31 days
@@ -30,6 +31,22 @@ const nextConfig = {
       { source: "/:locale(ru|kz|en)/about", destination: "/:locale#about", permanent: true },
       { source: "/:locale(ru|kz|en)/services", destination: "/:locale#services", permanent: true },
       { source: "/:locale(ru|kz|en)/contacts", destination: "/:locale#contact", permanent: true },
+    ];
+  },
+
+  // Security headers for the public site (Payload admin excluded)
+  async headers() {
+    return [
+      {
+        source: "/((?!admin).*)",
+        headers: [
+          { key: "X-Frame-Options", value: "SAMEORIGIN" },
+          { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
+          { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          { key: "X-Content-Type-Options", value: "nosniff" },
+        ],
+      },
     ];
   },
 };
