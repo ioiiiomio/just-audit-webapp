@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, getTranslations } from "next-intl/server";
 import {
-  Playfair_Display,
   Montserrat,
   Montserrat_Alternates,
+  Cormorant,
 } from "next/font/google";
 import { notFound } from "next/navigation";
 import { Navbar } from "@/components/layout/navbar";
@@ -17,8 +17,9 @@ import "./globals.css";
 import { CookieConsent } from "@/components/cookie-consent";
 import { Footer } from "@/components/layout/footer";
 
-const playfair = Playfair_Display({
-  subsets: ["latin", "cyrillic"],
+const playfair = Cormorant({
+  subsets: ["latin", "cyrillic", "cyrillic-ext"],
+  weight: ["400"],
   variable: "--font-playfair",
   display: "swap",
 });

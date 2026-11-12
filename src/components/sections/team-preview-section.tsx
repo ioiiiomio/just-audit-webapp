@@ -46,7 +46,7 @@ export async function TeamPreviewSection({ locale }: { locale: string }) {
     return (
         <>
             {/* Founder */}
-            <section id="team" className="bg-brand-milk py-20 lg:py-28">
+            <section id="team" className="bg-brand-milk py-20 lg:py-20">
                 <Container className="text-center">
                     <h2 className="font-heading text-4xl font-bold text-brand-green sm:text-5xl">
                         {team.eyebrow}
@@ -61,7 +61,7 @@ export async function TeamPreviewSection({ locale }: { locale: string }) {
 
             {/* Carousel */}
             {carouselMembers.length > 0 && (
-                <section className="overflow-x-clip bg-brand-milk py-20 lg:py-28">
+                <section className="overflow-x-clip bg-brand-milk py-20 lg:py-12">
                     <Container>
                         <TeamCarousel
                             heading={team.carouselHeading || HEADING_FALLBACK[l]}

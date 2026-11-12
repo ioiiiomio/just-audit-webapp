@@ -115,7 +115,7 @@ export function NavbarClient({
             />
           </Link>
 
-          <ul className="hidden items-center gap-8 font-[family-name:var(--font-montserrat)] text-sm font-semibold lg:flex">
+          <ul className="hidden items-center gap-5 font-[family-name:var(--font-montserrat)] text-sm font-semibold lg:flex">
             {navItems.map((item) => (
               <li key={item.id}>
                 {renderLink(item, "transition-opacity hover:opacity-80")}
@@ -123,7 +123,7 @@ export function NavbarClient({
             ))}
           </ul>
 
-          <div className="hidden items-center gap-6 lg:flex">
+          <div className="ml-3 hidden items-center gap-4 lg:flex">
             {localeSwitcher}
             {ctaButton}
           </div>

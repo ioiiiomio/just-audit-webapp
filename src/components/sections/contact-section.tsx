@@ -52,7 +52,7 @@ export async function ContactSection({ locale }: { locale: string }) {
   ); // drop entries with no content at all
 
   return (
-    <section id="contact" className="scroll-mt-20 bg-brand-milk py-20 lg:py-28">
+    <section id="contact" className="scroll-mt-20 bg-brand-milk py-20 lg:py-32">
       <Container className="grid gap-16 lg:grid-cols-2 lg:gap-24">
         <div>
           <h2 className="font-heading text-4xl font-bold uppercase leading-tight text-brand-green sm:text-5xl">

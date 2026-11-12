@@ -16,7 +16,7 @@ export async function ServicesSection({ locale }: { locale: string }) {
   });
 
   return (
-    <section id="services" className="bg-brand-milk py-20 lg:py-28">
+    <section id="services" className="bg-brand-milk py-20 lg:py-24">
       <Container>
         <div className="mx-auto max-w-3xl text-center">
           <span className="font-label text-sm font-bold uppercase tracking-wide text-brand-green">
